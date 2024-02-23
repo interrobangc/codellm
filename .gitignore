@@ -1,0 +1,7 @@
+# Visual Studio Code
+*.code-workspace
+.DS_Store
+.vscode/settings.json
+
+**/node_modules/
+**/dist/

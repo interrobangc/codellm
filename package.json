@@ -1,0 +1,31 @@
+{
+  "name": "@interrobangc/codellm-repo",
+  "version": "1.0.0",
+  "description": "Parent repo for code-llm",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "workspaces": [
+    "cli",
+    "codellm"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.11.20",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "start": "run-s build start:cli",
+    "start:cli": "npm run -w cli start",
+    "test": "run-p lint",
+    "lint": "run-s lint:prettier lint:eslint",
+    "lint:prettier": "prettier .",
+    "lint:eslint": "eslint ."
+  }
+}

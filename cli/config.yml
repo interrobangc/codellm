@@ -1,0 +1,4 @@
+llms:
+  default:
+    provider: ollama
+    model: mixtral:8x7b

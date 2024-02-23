@@ -1,0 +1,13 @@
+{
+  "name": "@interrobangc/codellm",
+  "version": "0.0.1",
+  "description": "cli interface for code-llm",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx dist/bin/codellm-cli"
+  }
+}
