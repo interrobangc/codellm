@@ -1,27 +1,15 @@
 import { getPrompt } from '../prompt/index.js';
-import { CodeLlmClient, CodeLlmLlms, CodeLlmMessageList } from '../index.js';
+import { Client, Llms, MessageList } from '../index.js';
 
-export const sendChat = async (
-  llm: CodeLlmClient,
-  messages: CodeLlmMessageList,
-) => {
+export const sendChat = async (llm: Client, messages: MessageList) => {
   return llm.chat(messages);
 };
 
 export const selectTool = async (
-  llm: CodeLlmClient,
+  llm: Client,
   message: string,
 ): Promise<string> => {
-  const messages: CodeLlmMessageList = [];
-
-  messages.push({
-    role: 'system',
-    content: `
-      ${getPrompt('agent')}
-      ${getPrompt('selectTool')}
-      ${getPrompt('toolList')}
-    `,
-  });
+  const messages: MessageList = [];
 
   messages.push({
     role: 'user',
@@ -35,7 +23,7 @@ export const selectTool = async (
 };
 
 export const chat =
-  (llms: CodeLlmLlms) =>
+  (llms: Llms) =>
   async (message: string): Promise<string> => {
     const toolSelectResponse = await selectTool(llms.agent, message);
 

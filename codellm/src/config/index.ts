@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import { defaults } from './constants.js';
-import { CodeLlmConfig } from './types';
+import { Config } from './types';
 
-let config: CodeLlmConfig;
+let config: Config;
 
-export const setConfig = (newConfig: CodeLlmConfig) => {
+export const setConfig = (newConfig: Config) => {
   config = _.merge({}, defaults, newConfig);
 };
 
-export const getConfig = (): CodeLlmConfig => {
+export const getConfig = (): Config => {
   return config;
 };
 

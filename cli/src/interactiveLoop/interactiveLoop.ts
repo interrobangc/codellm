@@ -1,9 +1,9 @@
-import type { CodeLlmAgent } from '@interrobangc/codellm';
+import type { Agent } from '@interrobangc/codellm';
 import ora from 'ora';
 
 import { promptUser } from './promptUser.js';
 
-type InteractiveLoop = (agent: CodeLlmAgent) => Promise<void>;
+type InteractiveLoop = (agent: Agent) => Promise<void>;
 
 export const interactiveLoop: InteractiveLoop = async (agent) => {
   const question = await promptUser(`[user] `);

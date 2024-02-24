@@ -1,6 +1,6 @@
-import { CodeLlmConfig } from './types';
+import { Config } from './types';
 
-export const defaults: CodeLlmConfig = {
+export const defaults: Config = {
   debugLevel: 'debug',
   llms: {
     embedding: {

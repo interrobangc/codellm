@@ -1,18 +1,14 @@
 import { Ollama } from 'ollama';
-import { CodeLlmMessageList } from '../../types.js';
+import { MessageList } from '../../types.js';
+import { ProviderGetClientParams } from '../../types.js';
 import initModel from './initModel.js';
 
-export const getClient = async (
-  model: string,
-  config = {
-    host: 'http://localhost:11434',
-  },
-) => {
+export const getClient = async ({ model, config }: ProviderGetClientParams) => {
   const client = new Ollama(config);
 
   return {
     initModel: () => initModel(client, model),
-    chat: async (messages: CodeLlmMessageList) => {
+    chat: async (messages: MessageList) => {
       const response = await client.chat({ model, messages });
       return response.message.content;
     },

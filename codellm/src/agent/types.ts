@@ -1,3 +1,3 @@
-export type CodeLlmAgent = {
+export type Agent = {
   chat: (message: string) => Promise<string>;
 };

@@ -1,24 +1,40 @@
-import { CodeLlmService } from '../config/types.js';
+import { Config, Service } from '../config/types.js';
 
 const CHAT_MESSAGE_ROLES = {
-  agent: 'agent',
+  assistant: 'assistant',
   system: 'system',
   user: 'user',
 } as const;
 
-export type CodeLlmChatMessageRole =
+export type ChatMessageRole =
   (typeof CHAT_MESSAGE_ROLES)[keyof typeof CHAT_MESSAGE_ROLES];
 
-export type CodeLlmChatMessage = {
-  role: CodeLlmChatMessageRole;
+export type ChatMessage = {
+  role: ChatMessageRole;
   content: string;
 };
 
-export type CodeLlmMessageList = CodeLlmChatMessage[];
+export type MessageList = ChatMessage[];
 
-export type CodeLlmClient = {
+export type ClientCommon = {
   initModel: () => Promise<void>;
-  chat: (messages: CodeLlmMessageList) => Promise<string>;
+  chat: (messages: MessageList) => Promise<string>;
 };
 
-export type CodeLlmLlms = Record<CodeLlmService, CodeLlmClient>;
+export type Client = {
+  service: Service;
+} & ClientCommon;
+
+export type LlmClient = ClientCommon;
+
+export type Llms = Record<Service, Client>;
+
+export type GetClientParams = {
+  config: Config;
+  service: Service;
+};
+
+export type ProviderGetClientParams = {
+  model: string;
+  config?: Record<string, unknown>;
+};

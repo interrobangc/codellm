@@ -1,45 +1,47 @@
-import type { CodeLlmConfig, CodeLlmService } from '..';
-import { CodeLlmClient, CodeLlmMessageList } from './types';
-import * as ollama from './providers/ollama/index.js';
-import * as openai from './providers/openai/index.js';
+import { Service } from '../config/types.js';
+import { Client, GetClientParams, LlmClient, MessageList } from './types';
+import * as ollama from './provider/ollama/index.js';
+import * as openai from './provider/openai/index.js';
+import * as conversation from './conversation/index.js';
 
-export type GetClientParams = {
-  config: CodeLlmConfig;
-  service: CodeLlmService;
-};
-
-export const initModel = async (client: CodeLlmClient): Promise<void> => {
-  return client.initModel();
+export const initModel = async (client: LlmClient): Promise<void> => {
+  await client.initModel();
 };
 
 export const chat = async (
-  client: CodeLlmClient,
-  messages: CodeLlmMessageList,
+  service: Service,
+  client: LlmClient,
+  messages: MessageList,
 ): Promise<string> => {
-  console.log('chat', messages);
-  return client.chat(messages);
+  conversation.addMessages(service, messages);
+  console.log('chat', conversation.getHistory(service));
+  const response = await client.chat(conversation.getHistory(service));
+  conversation.addMessages(service, [{ role: 'assistant', content: response }]);
+
+  return response;
 };
 
 export const getClient = async ({
   config,
   service,
-}: GetClientParams): Promise<CodeLlmClient> => {
+}: GetClientParams): Promise<Client> => {
   const { model, provider } = config.llms[service];
 
-  let client: CodeLlmClient;
+  let client: LlmClient;
   switch (provider) {
     case 'ollama':
-      client = await ollama.getClient(model);
+      client = await ollama.getClient({ model, config: {} });
       break;
     case 'openai':
-      client = openai.getClient(model);
+      client = openai.getClient({ model, config: {} });
       break;
     default:
       throw new Error(`Invalid provider: ${provider}`);
   }
 
   return {
+    service,
     initModel: () => initModel(client),
-    chat: async (messages: CodeLlmMessageList) => chat(client, messages),
+    chat: async (messages: MessageList) => chat(service, client, messages),
   };
 };

@@ -3,10 +3,10 @@ export const PROVIDERS = {
   openai: 'openai',
 } as const;
 
-export type CodeLlmProvider = (typeof PROVIDERS)[keyof typeof PROVIDERS];
+export type Provider = (typeof PROVIDERS)[keyof typeof PROVIDERS];
 
-export type CodeLlmProviderItem = {
-  provider: CodeLlmProvider;
+export type ProviderItem = {
+  provider: Provider;
   model: string;
 };
 
@@ -16,9 +16,9 @@ const SERVICES = {
   agent: 'agent',
 } as const;
 
-export const services = Object.keys(SERVICES) as CodeLlmService[];
+export const services = Object.keys(SERVICES) as Service[];
 
-export type CodeLlmService = (typeof SERVICES)[keyof typeof SERVICES];
+export type Service = (typeof SERVICES)[keyof typeof SERVICES];
 
 const DEBUG_LEVELS = {
   none: 'none',
@@ -28,10 +28,9 @@ const DEBUG_LEVELS = {
   debug: 'debug',
 } as const;
 
-export type CodeLlmDebugLevel =
-  (typeof DEBUG_LEVELS)[keyof typeof DEBUG_LEVELS];
+export type DebugLevel = (typeof DEBUG_LEVELS)[keyof typeof DEBUG_LEVELS];
 
-export type CodeLlmConfig = {
-  debugLevel: CodeLlmDebugLevel;
-  llms: Record<CodeLlmService, CodeLlmProviderItem>;
+export type Config = {
+  debugLevel: DebugLevel;
+  llms: Record<Service, ProviderItem>;
 };
