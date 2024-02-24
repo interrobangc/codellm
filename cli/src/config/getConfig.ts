@@ -1,7 +1,7 @@
 import { CodeLlmConfig } from '@interrobangc/codellm'
 
-import parseFile from './parseFile'
-import DEFAULTS from './defaults'
+import parseFile from './parseFile.js'
+import DEFAULTS from './defaults.js'
 
 export const getConfig = (): CodeLlmConfig => {
   const configFilePath = DEFAULTS.configFile;

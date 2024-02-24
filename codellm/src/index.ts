@@ -1,4 +1,4 @@
-export * from './agent';
+export * from './agent/index.js';
 
-export * from './agent/types'
-export * from './config/types'
+export * from './agent/types.js'
+export * from './config/types.js'

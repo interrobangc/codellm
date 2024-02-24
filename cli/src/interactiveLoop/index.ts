@@ -1,1 +1,1 @@
-export * from './interactiveLoop'
+export * from './interactiveLoop.js'

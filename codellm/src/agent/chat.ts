@@ -1,7 +1,7 @@
-export const chat = async (message: string): Promise<string> => {
-  console.log(message);
+import { CodeLlmLlms } from './types';
 
-  return 'Hello, world!'
+export const chat = (llms: CodeLlmLlms) => async (message: string): Promise<string> => {
+  return llms['agent']?.chat('user', message) || 'No agent found';
 }
 
 export default chat;

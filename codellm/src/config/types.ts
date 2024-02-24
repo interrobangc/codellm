@@ -1,24 +1,34 @@
-const PROVIDERS = {
+export const PROVIDERS = {
   ollama: 'ollama',
   openai: 'openai',
 } as const
 
-export type CodeLlmConfigProviders = keyof typeof PROVIDERS
+export type CodeLlmProviders = keyof typeof PROVIDERS
 
-export type CodeLlmConfigProviderItem = {
-  provider: CodeLlmConfigProviders
+export type CodeLlmProviderItem = {
+  provider: CodeLlmProviders
   model: string
 }
 
 const SERVICES = {
-  default: 'default',
   embedding: 'embedding',
   toolSelection: 'toolSelection',
   agent: 'agent',
 } as const
 
-export type CodeLlmConfigServices = keyof typeof SERVICES
+export type CodeLlmServices = keyof typeof SERVICES
+
+const DEBUG_LEVELS = {
+  none: 'none',
+  error: 'error',
+  warn: 'warn',
+  info: 'info',
+  debug: 'debug',
+} as const
+
+export type CodeLlmDebugLevels = keyof typeof DEBUG_LEVELS
 
 export type CodeLlmConfig = {
-  llms: Record<CodeLlmConfigServices, CodeLlmConfigProviderItem>
+  debugLevel: CodeLlmDebugLevels,
+  llms: Record<CodeLlmServices, CodeLlmProviderItem>
 }
