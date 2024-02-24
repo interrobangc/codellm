@@ -1,14 +1,4 @@
-export const PROVIDERS = {
-  ollama: 'ollama',
-  openai: 'openai',
-} as const;
-
-export type Provider = (typeof PROVIDERS)[keyof typeof PROVIDERS];
-
-export type ProviderItem = {
-  provider: Provider;
-  model: string;
-};
+import { Provider, ProviderConfig, ProviderItem } from '../llm/types';
 
 const SERVICES = {
   embedding: 'embedding',
@@ -33,4 +23,5 @@ export type DebugLevel = (typeof DEBUG_LEVELS)[keyof typeof DEBUG_LEVELS];
 export type Config = {
   debugLevel: DebugLevel;
   llms: Record<Service, ProviderItem>;
+  providers: Record<Provider, ProviderConfig>;
 };

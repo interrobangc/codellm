@@ -1,4 +1,25 @@
 import { Config, Service } from '../config/types.js';
+import * as ollama from './provider/ollama/index.js';
+import * as openai from './provider/openai/index.js';
+
+export const PROVIDERS = {
+  ollama: 'ollama',
+  openai: 'openai',
+} as const;
+
+export const PROVIDER_MODULES = {
+  ollama,
+  openai,
+} as const;
+
+export type Provider = (typeof PROVIDERS)[keyof typeof PROVIDERS];
+
+export type ProviderItem = {
+  provider: Provider;
+  model: string;
+};
+
+export type ProviderConfig = ollama.OllamaConfig | openai.OpenaiConfig;
 
 const CHAT_MESSAGE_ROLES = {
   assistant: 'assistant',

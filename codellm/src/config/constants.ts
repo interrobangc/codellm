@@ -16,4 +16,12 @@ export const defaults: Config = {
       model: 'mixtral:8x7b',
     },
   },
+  providers: {
+    ollama: {
+      url: 'http://localhost:11434',
+    },
+    openai: {
+      apiKey: '',
+    },
+  },
 };
