@@ -1,4 +1,5 @@
 import { Ollama } from 'ollama'
+import {CodeLlmMessageList} from '../../types.js'
 import initModel from './initModel.js'
 
 
@@ -7,11 +8,10 @@ export const getClient = async (model: string, config = {
 }) => {
   const client = new Ollama(config)
 
-
   return {
     initModel: () => initModel(client, model),
-    chat: async (role:string, content: string) => {
-      const response = await client.chat({model, messages: [{role, content}]})
+    chat: async (messages: CodeLlmMessageList) => {
+      const response = await client.chat({model, messages})
       return response.message.content
     }
   }

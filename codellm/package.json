@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },

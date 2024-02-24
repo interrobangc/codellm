@@ -1,21 +1,17 @@
-import type { CodeLlmConfig } from '../config/types.js'
-import type { CodeLlmAgent, CodeLlmLlms } from './types.js'
-
+import type { CodeLlmConfig } from '../config/types'
 import { setConfig, getConfig } from '../config/index.js'
+import { initLlms } from '../llm/index.js'
+
 import chat from './chat.js'
-import { getClient } from '../llm/index.js'
+import type { CodeLlmAgent } from './types'
 
 export const getAgent = async (newConfig: CodeLlmConfig): Promise<CodeLlmAgent> => {
   setConfig(newConfig);
   const config = getConfig();
 
-  const llms: CodeLlmLlms = {
-    agent: await getClient({config, service: 'agent'})
-  }
+  console.log(config)
 
-  Object.entries(llms).map(async ([, client]) => {
-    await client.initModel();
-  });
+  const llms = await initLlms(config);
 
   return {
     chat: chat(llms)

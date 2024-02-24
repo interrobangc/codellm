@@ -1,3 +1,4 @@
+import {CodeLlmMessageList} from '../../types.js'
 // import OpenAI, {ClientOptions} from 'openai';
 
 
@@ -6,8 +7,8 @@ export const getClient = (model: string) => {
 
   return {
     initModel: async () => {},
-    chat: async (role: string, content: string) => {
-      return `OpenAI chat: ${role} ${content} ${model}`
+    chat: async (messages: CodeLlmMessageList) => {
+      return `OpenAI chat: ${messages} ${model}`
     }
   }
 }

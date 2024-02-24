@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { defaults } from './constants.js';
-import { CodeLlmConfig } from './types.js';
+import { CodeLlmConfig } from './types';
 
 let config: CodeLlmConfig;
 

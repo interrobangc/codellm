@@ -1,4 +1,4 @@
-import { CodeLlmConfig } from './types.js';
+import { CodeLlmConfig } from './types';
 
 export const defaults: CodeLlmConfig = {
   debugLevel: 'debug',
@@ -7,7 +7,7 @@ export const defaults: CodeLlmConfig = {
       provider: 'ollama',
       model: 'nomic-embed-text'
     },
-    toolSelection: {
+    summarization: {
       provider: 'ollama',
       model: 'mixtral:8x7b'
     },
