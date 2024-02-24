@@ -2,20 +2,20 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": [
     "@tsconfig/node20/tsconfig.json",
-    "@tsconfig/strictest/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
-    "target": "ES6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "ES2022",                                /* Specify what module code is generated. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+    "target": "ES6" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "module": "ES2022" /* Specify what module code is generated. */,
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
     "declaration": true,
     "declarationMap": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "lib": ["esnext"],
     "moduleResolution": "node",
-    "strict": true,                     /* Enable all strict type-checking options. */
-  },
+    "strict": true /* Enable all strict type-checking options. */
+  }
 }

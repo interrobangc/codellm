@@ -1,4 +1,4 @@
-import {CodeLlmService } from '../config/types.js';
+import { CodeLlmService } from '../config/types.js';
 
 const CHAT_MESSAGE_ROLES = {
   agent: 'agent',
@@ -6,7 +6,8 @@ const CHAT_MESSAGE_ROLES = {
   user: 'user',
 } as const;
 
-export type CodeLlmChatMessageRole = typeof CHAT_MESSAGE_ROLES[keyof typeof CHAT_MESSAGE_ROLES];
+export type CodeLlmChatMessageRole =
+  (typeof CHAT_MESSAGE_ROLES)[keyof typeof CHAT_MESSAGE_ROLES];
 
 export type CodeLlmChatMessage = {
   role: CodeLlmChatMessageRole;
@@ -20,4 +21,4 @@ export type CodeLlmClient = {
   chat: (messages: CodeLlmMessageList) => Promise<string>;
 };
 
-export type CodeLlmLlms = Record<CodeLlmService, CodeLlmClient>
+export type CodeLlmLlms = Record<CodeLlmService, CodeLlmClient>;

@@ -5,15 +5,15 @@ export const defaults: CodeLlmConfig = {
   llms: {
     embedding: {
       provider: 'ollama',
-      model: 'nomic-embed-text'
+      model: 'nomic-embed-text',
     },
     summarization: {
       provider: 'ollama',
-      model: 'mixtral:8x7b'
+      model: 'mixtral:8x7b',
     },
     agent: {
       provider: 'ollama',
-      model: 'mixtral:8x7b'
+      model: 'mixtral:8x7b',
     },
-  }
-}
+  },
+};

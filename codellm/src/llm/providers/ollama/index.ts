@@ -1,1 +1,1 @@
-export * from './getClient.js'
+export * from './getClient.js';

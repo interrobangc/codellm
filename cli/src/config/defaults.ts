@@ -3,9 +3,9 @@ export const DEFAULTS = {
   llms: {
     default: {
       provider: 'ollama',
-      model: 'mixtral:8x7b'
+      model: 'mixtral:8x7b',
     },
-  }
-} as const
+  },
+} as const;
 
 export default DEFAULTS;

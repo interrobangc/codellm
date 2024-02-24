@@ -1,1 +1,1 @@
-export * from './getAgent.js'
+export * from './getAgent.js';

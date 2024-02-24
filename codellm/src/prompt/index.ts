@@ -1,1 +1,1 @@
-export * from './getPrompt.js'
+export * from './getPrompt.js';

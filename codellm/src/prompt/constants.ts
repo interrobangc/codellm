@@ -1,5 +1,6 @@
 export const defaults = {
-  agent: "You are an assistant that answers question about a codebase. All of the user's questions should be about this particular codebase, and you will be given tools that you can use to help you answer questions about the codebase.",
+  agent:
+    "You are an assistant that answers question about a codebase. All of the user's questions should be about this particular codebase, and you will be given tools that you can use to help you answer questions about the codebase.",
 
   selectTool: `
     Your task is to address a question or command from a user in the Question section. You will do this in a step by step manner by choosing a single Tool and parameters necessary for this task. When you have the necessary data to complete your task, respond directly to the user with a summary of the steps taken. Do not ask the user for filepaths or filenames. You must use the tools available to you. Your answer must be in ONLY one of the following two formats. Avoid conversation and only provide the necessary information in json.
@@ -142,4 +143,4 @@ export const defaults = {
     codebase based on its documentation files. Be specific and provide detailed explanations.
   params: {}
   `,
-}
+};

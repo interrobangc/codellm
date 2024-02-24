@@ -1,1 +1,1 @@
-export * from './getConfig.js'
+export * from './getConfig.js';

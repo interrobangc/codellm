@@ -29,7 +29,7 @@
     "start:cli": "npm run -w cli start",
     "test": "run-p lint",
     "lint": "run-s lint:prettier lint:eslint",
-    "lint:prettier": "prettier .",
+    "lint:prettier": "prettier . --write",
     "lint:eslint": "eslint . --fix"
   }
 }

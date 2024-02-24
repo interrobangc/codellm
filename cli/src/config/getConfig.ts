@@ -1,7 +1,7 @@
-import { CodeLlmConfig } from '@interrobangc/codellm'
+import { CodeLlmConfig } from '@interrobangc/codellm';
 
-import parseFile from './parseFile.js'
-import DEFAULTS from './defaults.js'
+import parseFile from './parseFile.js';
+import DEFAULTS from './defaults.js';
 
 export const getConfig = (): CodeLlmConfig => {
   const configFilePath = DEFAULTS.configFile;
@@ -13,6 +13,6 @@ export const getConfig = (): CodeLlmConfig => {
   };
 
   return config;
-}
+};
 
 export default getConfig;
