@@ -1,5 +1,9 @@
 import OpenAI from 'openai';
-import { MessageList, ProviderGetClientParams } from '../../types.js';
+import {
+  MessageList,
+  PromptParams,
+  ProviderGetClientParams,
+} from '../../types.js';
 import { OpenaiConfig } from './types.js';
 
 export const getClient = ({ model, config }: ProviderGetClientParams) => {
@@ -14,6 +18,9 @@ export const getClient = ({ model, config }: ProviderGetClientParams) => {
       });
 
       return response.choices?.[0]?.message.content ?? '';
+    },
+    prompt: async ({ system, prompt }: PromptParams): Promise<string> => {
+      return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };
 };

@@ -6,13 +6,11 @@ import { getPrompt } from '../prompt/index.js';
 import chat from './chat.js';
 import type { Agent } from './types';
 
-export const getAgent = async (newConfig: Config): Promise<Agent> => {
-  setConfig(newConfig);
+export const getAgent = async (configParam: Config): Promise<Agent> => {
+  setConfig(configParam);
   const config = getConfig();
 
-  console.log(config);
-
-  const llms = await initLlms(config);
+  const llms = await initLlms(config, ['agent']);
 
   conversation.addMessages('agent', [
     {

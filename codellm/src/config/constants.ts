@@ -1,13 +1,16 @@
 import { Config } from './types';
 
 export const defaults: Config = {
+  path: '..',
+  include: ['**/*.ts'],
+  exclude: ['**/node_modules/**', '**/dist/**'],
   debugLevel: 'debug',
   llms: {
     embedding: {
       provider: 'ollama',
       model: 'nomic-embed-text',
     },
-    summarization: {
+    summarize: {
       provider: 'ollama',
       model: 'mixtral:8x7b',
     },

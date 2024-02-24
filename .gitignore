@@ -1,7 +1,11 @@
 # Visual Studio Code
+.vscode/*
 *.code-workspace
 .DS_Store
 .vscode/settings.json
 
 **/node_modules/
 **/dist/
+
+chromadb
+chroma.log

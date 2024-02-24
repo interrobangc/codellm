@@ -37,9 +37,15 @@ export type ChatMessage = {
 
 export type MessageList = ChatMessage[];
 
+export type PromptParams = {
+  system: string;
+  prompt: string;
+};
+
 export type ClientCommon = {
   initModel: () => Promise<void>;
   chat: (messages: MessageList) => Promise<string>;
+  prompt: (args: PromptParams) => Promise<string>;
 };
 
 export type Client = {

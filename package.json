@@ -27,6 +27,8 @@
     "build": "npm run build --workspaces --if-present",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
+    "start:import": "npm run -w cli start:import",
+    "start:chroma": "pip install chromadb && chroma run --path ./chromadb",
     "test": "run-p lint",
     "lint": "run-s lint:prettier lint:eslint",
     "lint:prettier": "prettier . --write",

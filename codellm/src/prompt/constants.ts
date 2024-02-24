@@ -43,6 +43,14 @@ export const defaults = {
     ### Question ###
   `,
 
+  summarizeCode: `
+  Your task is to generate a concise summary of the following code. Keep your summary to 5 sentences or less. Include in your summary:
+    - Dependencies
+    - Important functions, classes, and types
+    - Relevant information from comments and docs
+    - The language and framework used
+  `,
+
   // TODO: This should be generated dynamically from the available tools
   toolList: `
   tools:

@@ -4,6 +4,7 @@ import {
   GetClientParams,
   LlmClient,
   MessageList,
+  PromptParams,
   PROVIDER_MODULES,
 } from './types.js';
 
@@ -53,5 +54,6 @@ export const getClient = async ({
     service,
     initModel: () => initModel(client),
     chat: async (messages: MessageList) => chat(service, client, messages),
+    prompt: async (params: PromptParams) => client.prompt(params),
   };
 };

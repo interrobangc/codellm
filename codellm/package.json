@@ -11,6 +11,8 @@
     "build": "tsc"
   },
   "dependencies": {
+    "chromadb": "^1.8.1",
+    "globby": "^14.0.1",
     "lodash": "^4.17.21",
     "ollama": "^0.4.6",
     "openai": "^4.28.0"

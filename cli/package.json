@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli"
+    "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli",
+    "start:import": "node -r tsconfig-paths/register ./dist/bin/import"
   },
   "dependencies": {
     "@interrobangc/codellm": "^0.0.1",

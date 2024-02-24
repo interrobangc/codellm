@@ -2,7 +2,7 @@ import { Provider, ProviderConfig, ProviderItem } from '../llm/types';
 
 const SERVICES = {
   embedding: 'embedding',
-  summarization: 'summarization',
+  summarize: 'summarize',
   agent: 'agent',
 } as const;
 
@@ -21,6 +21,9 @@ const DEBUG_LEVELS = {
 export type DebugLevel = (typeof DEBUG_LEVELS)[keyof typeof DEBUG_LEVELS];
 
 export type Config = {
+  path: string;
+  include: string[];
+  exclude: string[];
   debugLevel: DebugLevel;
   llms: Record<Service, ProviderItem>;
   providers: Record<Provider, ProviderConfig>;
