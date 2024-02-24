@@ -1,3 +1,3 @@
-export type OpenaiConfig = {
-  apiKey: string;
-};
+import { ClientOptions } from 'openai';
+
+export type OpenaiConfig = ClientOptions;

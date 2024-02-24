@@ -57,5 +57,5 @@ export type GetClientParams = {
 
 export type ProviderGetClientParams = {
   model: string;
-  config?: Record<string, unknown>;
+  config: ProviderConfig;
 };

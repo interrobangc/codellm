@@ -18,7 +18,7 @@ export const defaults: Config = {
   },
   providers: {
     ollama: {
-      url: 'http://localhost:11434',
+      host: 'http://localhost:11434',
     },
     openai: {
       apiKey: '',

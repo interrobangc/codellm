@@ -9,3 +9,12 @@ llms:
   agent:
     provider: ollama
     model: mixtral:8x7b
+  # agent:
+  #   provider: openai
+  #   model: gpt-4-turbo-preview
+
+providers:
+  openai:
+    apiKey: ''
+  ollama:
+    host: 'http://localhost:11434'
