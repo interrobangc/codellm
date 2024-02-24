@@ -1,4 +1,4 @@
-import {getPrompt} from '../prompts/index.js'
+import {getPrompt} from '../prompt/index.js'
 import { CodeLlmClient, CodeLlmLlms, CodeLlmMessageList } from '../index.js';
 
 export const sendChat = async (llm: CodeLlmClient, messages: CodeLlmMessageList) => {
@@ -25,11 +25,11 @@ export const selectTool = async (llm: CodeLlmClient, message: string): Promise<s
     `,
   })
 
-  return await sendChat(llm, messages)
+  return sendChat(llm, messages)
 }
 
 export const chat = (llms: CodeLlmLlms) => async (message: string): Promise<string> => {
-  const toolSelectResponse = await selectTool(llms['agent'], message)
+  const toolSelectResponse = await selectTool(llms.agent, message)
 
   return toolSelectResponse
 }

@@ -6,6 +6,7 @@ module.exports = {
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
+        "airbnb-typescript/base",
         "prettier",
     ],
     "overrides": [
@@ -23,11 +24,13 @@ module.exports = {
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
+        "project": "./tsconfig.eslint.json",
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "import"
     ],
     "rules": {
     },
