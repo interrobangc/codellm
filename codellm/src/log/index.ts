@@ -19,7 +19,7 @@ export const getFormat = (format: string) => {
         winston.format.metadata(),
         winston.format.colorize(),
         winston.format.printf(function (info) {
-          return `${info.level}: ${info.message} ${info['metadata'] ? JSON.stringify(info['metadata'], null, 4) : ''}\n`;
+          return `${info.level}: ${info.message} ${info['metadata'] ? JSON.stringify(info['metadata'], null, 4) : ''}`;
         }),
       );
     default:

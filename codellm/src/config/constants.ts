@@ -19,6 +19,10 @@ export const defaults: Config = {
       provider: 'ollama',
       model: 'mixtral:8x7b',
     },
+    tool: {
+      provider: 'ollama',
+      model: 'mixtral:8x7b',
+    },
   },
   providers: {
     ollama: {

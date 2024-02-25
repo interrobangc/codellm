@@ -4,3 +4,5 @@ services:
     image: chromadb/chroma
     ports:
       - '8000:8000'
+    volumes:
+      - ./chromadb:/chroma/chroma

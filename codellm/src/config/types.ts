@@ -6,6 +6,7 @@ const SERVICES = {
   agent: 'agent',
   embedding: 'embedding',
   summarize: 'summarize',
+  tool: 'tool',
 } as const;
 
 export const services = Object.keys(SERVICES) as Service[];

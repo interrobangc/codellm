@@ -9,7 +9,7 @@ import { initLlms, LlmClient } from '../llm/index.js';
 import log from '../log/index.js';
 import { getPrompt } from '../prompt/index.js';
 import { newClient } from '../vectorDb/index.js';
-import type { VectorDbClient } from '../vectorDb/types.js';
+import type { AddDocumentsParams, VectorDbClient } from '../vectorDb/types.js';
 import type { Importer } from './types';
 
 export const summarizeCode = async (llm: LlmClient, code: string) => {
@@ -30,16 +30,31 @@ export const handleFile = async (
   path: string,
 ) => {
   log(`Processing ${path}`);
+
+  // TODO: dynamic for different passes in a single run
+  const id = `summary:${path}`;
+
+  const existingDocument = await dbClient.get({
+    collectionName: 'fileSummary',
+    ids: [id],
+  });
+
+  // @ts-expect-error - types aren't in place yet
+  if (existingDocument.documents.length > 0) {
+    log(`Document ${id} already exists, skipping`);
+    return;
+  }
+
   const content = await readFile(path, 'utf-8');
-  const response = await summarizeCode(llm, content);
+  const response = await summarizeCode(llm, `file: ${path}\n\n${content}`);
 
   // get md5 hash of content
   const hash = createHash('sha256').update(content).digest('hex');
-  const document = {
-    collectionName: 'codellm',
+  const document: AddDocumentsParams = {
+    collectionName: 'fileSummary',
     documents: [
       {
-        id: `${path}_summary`,
+        id,
         metadata: {
           path,
           hash,

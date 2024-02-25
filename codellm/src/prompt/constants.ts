@@ -44,15 +44,33 @@ export const defaults = {
   `,
 
   summarizeCode: `
-  Your task is to generate a concise summary of the following code. Keep your summary to 5 sentences or less. Include in your summary:
+  Your task is to generate an extremely concise summary with minimal prose of the following code file. Keep your summary to 5 sentences or less. Include in your summary:
+    - The filename with the path relevant to the project root
     - Dependencies
     - Important functions, classes, and types
     - Relevant information from comments and docs
-    - The language and framework used
+    - The language used
+    - The framework used if you can determine it reliably, if not, do not mention a framework
   `,
 
   // TODO: This should be generated dynamically from the available tools
+
   toolList: `
+  tools:
+    - name: general.codeQuery
+      description: This tool processes a user's prompt, queries the codebase, and then
+        uses a language model to generate a response.
+      base_prompt: Your task is to provide information from the codebase and answer the
+        user's question according to the query details. Be informative and precise in
+        your response.
+      params:
+        include_code:
+          description: A flag to determine if code should be included in the response.
+          type: bool
+          required: true
+  `,
+
+  toolListOld: `
   tools:
 - name: LintFileTool
   description: This tool takes a user_prompt and an inexact filepath, fuzzy matches
