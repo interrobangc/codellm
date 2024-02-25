@@ -24,11 +24,11 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "tsc -b --verbose",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
     "start:import": "npm run -w cli start:import",
-    "start:chroma": "pip install chromadb && chroma run --path ./chromadb",
+    "start:chroma": "docker compose up",
     "test": "run-p lint",
     "lint": "run-s lint:prettier lint:eslint",
     "lint:prettier": "prettier . --write",

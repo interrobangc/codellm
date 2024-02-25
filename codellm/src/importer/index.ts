@@ -1,11 +1,14 @@
 import { globby } from 'globby';
 import { resolve } from 'path';
 import { readFile } from 'fs/promises';
+import { createHash } from 'crypto';
 
 import type { Config } from '../config/types';
-import { setConfig, getConfig } from '../config/index.js';
+import { initConfig, getConfig } from '../config/index.js';
 import { initLlms, Client } from '../llm/index.js';
+import log from '../log/index.js';
 import { getPrompt } from '../prompt/index.js';
+import { getClient } from '../vectordb/db/chromadb/index.js';
 
 export type Importer = {
   import: () => Promise<void>;
@@ -21,6 +24,30 @@ export const summarizeCode = async (llm: Client, code: string) => {
   });
 
   return response;
+};
+
+export const handleFile = async (dbClient: any, llm: Client, path: string) => {
+  log(`Processing ${path}`);
+  const content = await readFile(path, 'utf-8');
+  const response = await summarizeCode(llm, content);
+
+  // get md5 hash of content
+  const hash = createHash('sha256').update(content).digest('hex');
+  const document = {
+    collectionName: 'codellm',
+    documents: [
+      {
+        id: `${path}_summary`,
+        metadata: {
+          path,
+          hash,
+        },
+        document: response,
+      },
+    ],
+  };
+
+  await dbClient.addDocuments(document);
 };
 
 /**
@@ -40,41 +67,27 @@ export const importPath = async (
     ...exclude.map((e) => `!${resolve(path)}/${e}`),
   ];
 
-  console.log({
-    path,
-    files,
-  });
-
   const paths = await globby(files, {
     //TODO: gitignore seems to be broken upstream
     // gitignore: true,
     // ignoreFiles: [`${resolve(path)}.gitignore`],
   });
 
-  console.log(paths);
+  log('importPaths', 'debug', { paths });
+
+  const dbClient = await getClient();
+  await dbClient.initClient();
 
   for (const p of paths) {
-    const content = await readFile(p, 'utf-8');
-    const response = await summarizeCode(llm, content);
-
-    console.log(response);
+    await handleFile(dbClient, llm, p);
   }
 };
 
 export const getImporter = async (configParam: Config): Promise<Importer> => {
-  setConfig(configParam);
+  initConfig(configParam);
   const config = getConfig();
 
   const llms = await initLlms(config, ['summarize']);
-
-  // conversation.addMessages('agent', [
-  //   {
-  //     role: 'system',
-  //     content: `
-  //       ${getPrompt('summarizeCode')}
-  //     `,
-  //   },
-  // ]);
 
   return {
     import: async () =>

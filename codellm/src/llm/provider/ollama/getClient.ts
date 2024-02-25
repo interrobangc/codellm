@@ -14,9 +14,7 @@ export const getClient = async ({ model, config }: ProviderGetClientParams) => {
       return response.message.content;
     },
     prompt: async ({ system, prompt }: PromptParams) => {
-      console.log('prompt', { model, system, prompt });
       const response = await client.generate({ model, system, prompt });
-      console.log('prompt response', response.response);
       return response.response;
     },
   };

@@ -1,4 +1,4 @@
-import { getImporter } from '@interrobangc/codellm';
+import { getImporter, log } from '@interrobangc/codellm';
 
 import { getConfig } from '../config/index.js';
 
@@ -7,7 +7,7 @@ const main = async () => {
   const importer = await getImporter(config);
   await importer.import();
 
-  console.log('Import complete');
+  log('Import complete');
 };
 
 main();

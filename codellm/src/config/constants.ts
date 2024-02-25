@@ -4,7 +4,8 @@ export const defaults: Config = {
   path: '..',
   include: ['**/*.ts'],
   exclude: ['**/node_modules/**', '**/dist/**'],
-  debugLevel: 'debug',
+  logLevel: 'info',
+  logFormat: 'cli',
   llms: {
     embedding: {
       provider: 'ollama',

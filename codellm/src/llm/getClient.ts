@@ -1,4 +1,5 @@
 import { Service } from '../config/types.js';
+import log from '../log/index.js';
 import {
   Client,
   GetClientParams,
@@ -22,7 +23,11 @@ export const chat = async (
   // We need to send the full conversation history to the provider
   // to ensure that the provider has all the context it needs to generate a response
   conversation.addMessages(service, messages);
-  console.log('chat', conversation.getHistory(service));
+
+  log('conversationHistoryBeforeChat', 'debug', {
+    history: conversation.getHistory(service),
+  });
+
   const response = await client.chat(conversation.getHistory(service));
 
   // We also need to add the response to the conversation history to ensure that
