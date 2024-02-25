@@ -1,4 +1,4 @@
-import { getClient } from '../llm/index.js';
+import { newClient } from '../llm/index.js';
 import { Config, Service } from '../config/types.js';
 import { Llms } from './types';
 
@@ -8,7 +8,7 @@ export const initLlms = async (
 ): Promise<Llms> => {
   const llmsMap = servicesToInit.map(async (service) => {
     return {
-      [service as Service]: await getClient({ config, service }),
+      [service as Service]: await newClient({ config, service }),
     };
   });
 

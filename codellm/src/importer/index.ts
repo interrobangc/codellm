@@ -8,7 +8,7 @@ import { initConfig, getConfig } from '../config/index.js';
 import { initLlms, Client } from '../llm/index.js';
 import log from '../log/index.js';
 import { getPrompt } from '../prompt/index.js';
-import { getClient } from '../vectordb/db/chromadb/index.js';
+import { newClient } from '../vectordb/db/chromadb/index.js';
 
 export type Importer = {
   import: () => Promise<void>;
@@ -75,8 +75,8 @@ export const importPath = async (
 
   log('importPaths', 'debug', { paths });
 
-  const dbClient = await getClient();
-  await dbClient.initClient();
+  const dbClient = await newClient();
+  await dbClient.init();
 
   for (const p of paths) {
     await handleFile(dbClient, llm, p);
