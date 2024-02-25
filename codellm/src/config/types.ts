@@ -1,6 +1,6 @@
 import type { Provider, ProviderConfig, ProviderItem } from '../llm/types';
 import type { LogFormat, LogLevel } from '../log/types';
-import type { VectorDb } from '../vectordb/types';
+import type { VectorDb } from '../vectordbtmp/types';
 
 const SERVICES = {
   agent: 'agent',

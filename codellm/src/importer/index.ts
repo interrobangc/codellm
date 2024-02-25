@@ -8,8 +8,8 @@ import { initConfig, getConfig } from '../config/index.js';
 import { initLlms, LlmClient } from '../llm/index.js';
 import log from '../log/index.js';
 import { getPrompt } from '../prompt/index.js';
-import { newClient } from '../vectordb/index.js';
-import type { VectorDbClient } from '../vectordb/types.js';
+import { newClient } from '../vectordbtmp/index.js';
+import type { VectorDbClient } from '../vectordbtmp/types.js';
 import type { Importer } from './types';
 
 export const summarizeCode = async (llm: LlmClient, code: string) => {
