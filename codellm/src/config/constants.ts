@@ -28,4 +28,5 @@ export const defaults: Config = {
       apiKey: '',
     },
   },
+  vectorDb: 'chromadb',
 };

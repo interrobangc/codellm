@@ -1,5 +1,6 @@
 import type { Provider, ProviderConfig, ProviderItem } from '../llm/types';
 import type { LogFormat, LogLevel } from '../log/types';
+import type { VectorDb } from '../vectordb/types';
 
 const SERVICES = {
   agent: 'agent',
@@ -19,4 +20,5 @@ export type Config = {
   logLevel: LogLevel;
   path: string;
   providers: Record<Provider, ProviderConfig>;
+  vectorDb: VectorDb;
 };

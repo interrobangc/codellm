@@ -42,19 +42,19 @@ export type PromptParams = {
   prompt: string;
 };
 
-export type ClientCommon = {
+export type LlmClientCommon = {
   initModel: () => Promise<void>;
   chat: (messages: MessageList) => Promise<string>;
   prompt: (args: PromptParams) => Promise<string>;
 };
 
-export type Client = {
+export type LlmClient = {
   service: Service;
-} & ClientCommon;
+} & LlmClientCommon;
 
-export type LlmClient = ClientCommon;
+export type LlmProviderClient = LlmClientCommon;
 
-export type Llms = Record<Service, Client>;
+export type Llms = Record<Service, LlmClient>;
 
 export type GetClientParams = {
   config: Config;

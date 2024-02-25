@@ -1,4 +1,15 @@
-import type { Embedding } from 'chromadb';
+import type { Embedding, QueryResponse } from 'chromadb';
+import * as chromadb from './db/chromadb/index.js';
+
+export const VECTOR_DBS = {
+  chromadb: 'chromadb',
+} as const;
+
+export type VectorDb = (typeof VECTOR_DBS)[keyof typeof VECTOR_DBS];
+
+export const VECTOR_DB_MODULES = {
+  chromadb,
+} as const;
 
 export type EmbeddingDocument = {
   id: string;
@@ -27,5 +38,5 @@ export type VectorDbQueryParams = {
 export type VectorDbClient = {
   init: () => Promise<void>;
   addDocuments: (params: AddDocumentsParams) => Promise<void>;
-  query: (params: VectorDbQueryParams) => Promise<EmbeddingDocumentList>;
+  query: (params: VectorDbQueryParams) => Promise<QueryResponse>;
 };

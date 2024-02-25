@@ -5,16 +5,14 @@ import { createHash } from 'crypto';
 
 import type { Config } from '../config/types';
 import { initConfig, getConfig } from '../config/index.js';
-import { initLlms, Client } from '../llm/index.js';
+import { initLlms, LlmClient } from '../llm/index.js';
 import log from '../log/index.js';
 import { getPrompt } from '../prompt/index.js';
-import { newClient } from '../vectordb/db/chromadb/index.js';
+import { newClient } from '../vectordb/index.js';
+import type { VectorDbClient } from '../vectordb/types.js';
+import type { Importer } from './types';
 
-export type Importer = {
-  import: () => Promise<void>;
-};
-
-export const summarizeCode = async (llm: Client, code: string) => {
+export const summarizeCode = async (llm: LlmClient, code: string) => {
   const response = await llm.prompt({
     system: '',
     prompt: `
@@ -26,7 +24,11 @@ export const summarizeCode = async (llm: Client, code: string) => {
   return response;
 };
 
-export const handleFile = async (dbClient: any, llm: Client, path: string) => {
+export const handleFile = async (
+  dbClient: VectorDbClient,
+  llm: LlmClient,
+  path: string,
+) => {
   log(`Processing ${path}`);
   const content = await readFile(path, 'utf-8');
   const response = await summarizeCode(llm, content);
@@ -57,7 +59,8 @@ export const handleFile = async (dbClient: any, llm: Client, path: string) => {
  * @param exclude
  */
 export const importPath = async (
-  llm: Client,
+  dbClient: VectorDbClient,
+  llm: LlmClient,
   path: string,
   include: string[],
   exclude: string[],
@@ -75,22 +78,28 @@ export const importPath = async (
 
   log('importPaths', 'debug', { paths });
 
-  const dbClient = await newClient();
-  await dbClient.init();
-
   for (const p of paths) {
     await handleFile(dbClient, llm, p);
   }
 };
 
-export const getImporter = async (configParam: Config): Promise<Importer> => {
+export const newImporter = async (configParam: Config): Promise<Importer> => {
   initConfig(configParam);
   const config = getConfig();
 
   const llms = await initLlms(config, ['summarize']);
 
+  const dbClient = await newClient(config);
+  await dbClient.init();
+
   return {
     import: async () =>
-      importPath(llms.summarize, config.path, config.include, config.exclude),
+      importPath(
+        dbClient,
+        llms.summarize,
+        config.path,
+        config.include,
+        config.exclude,
+      ),
   };
 };

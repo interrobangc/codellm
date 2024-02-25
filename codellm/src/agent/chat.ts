@@ -1,12 +1,12 @@
 import { getPrompt } from '../prompt/index.js';
-import { Client, Llms, MessageList } from '../index.js';
+import { LlmClient, Llms, MessageList } from '../index.js';
 
-export const sendChat = async (llm: Client, messages: MessageList) => {
+export const sendChat = async (llm: LlmClient, messages: MessageList) => {
   return llm.chat(messages);
 };
 
 export const selectTool = async (
-  llm: Client,
+  llm: LlmClient,
   message: string,
 ): Promise<string> => {
   const messages: MessageList = [];
