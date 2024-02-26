@@ -7,6 +7,6 @@
 **/node_modules/
 **/dist/
 
-chromadb
+.chromadb
 chroma.log
-cache
+.cache

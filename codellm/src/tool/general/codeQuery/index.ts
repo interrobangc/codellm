@@ -44,7 +44,25 @@ export const run = async ({
 
   log('qaTool dbResponse', 'debug', { dbResponse });
 
-  return { success: true, content: 'qaTool ran' };
+  // @ts-expect-error - types aren't in place yet
+  const contexts = dbResponse.map(
+    // @ts-expect-error - types aren't in place yet
+    (doc) => `filename: ${doc.metadata.path}\n\ncode:\n${doc.metadata.content}`,
+  );
+
+  const content = await llm.prompt({
+    system: '',
+    prompt: `
+      ${basePrompt}
+      ${userPrompt}
+      Use the following contexts to help answer the question:
+      ${contexts.join('\n\n')}
+    `,
+  });
+
+  log('qaTool Lresponse', 'debug', { content });
+
+  return { success: true, content };
 };
 
 export const newTool = async (config: Config): Promise<Tool> => {

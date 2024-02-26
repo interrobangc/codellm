@@ -56,8 +56,9 @@ export const handleFile = async (
       {
         id,
         metadata: {
-          path,
+          content,
           hash,
+          path,
         },
         document: response,
       },

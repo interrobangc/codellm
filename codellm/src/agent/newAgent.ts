@@ -11,7 +11,7 @@ export const newAgent = async (configParam: Config): Promise<Agent> => {
   initConfig(configParam);
   const config = getConfig();
 
-  const llms = await initLlms(config, ['agent']);
+  const llms = await initLlms(config, ['agent', 'tool']);
   log('newAgent LLMs', 'silly', { llms });
 
   const toolsMap = await Promise.all(

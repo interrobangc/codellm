@@ -12,7 +12,7 @@ export const interactiveLoop: InteractiveLoop = async (agent) => {
   const response = await agent.chat(question);
   spinner.stop();
 
-  console.log(`[bot] ${JSON.stringify(response)}`);
+  console.log(`[bot] ${response.content}`);
 
   return interactiveLoop(agent);
 };
