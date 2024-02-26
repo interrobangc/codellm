@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+
 import type { Config } from '@/.';
 
 export const defaults: Config = {
@@ -34,3 +36,5 @@ export const defaults: Config = {
   },
   vectorDb: 'chromadb',
 };
+
+/* eslint-enable sonarjs/no-duplicate-string */

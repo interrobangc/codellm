@@ -6,9 +6,7 @@ export const newTool = async (
   toolName: ToolName,
 ): Promise<Tool> => {
   const toolModule = TOOL_MODULES[toolName];
-  const tool = await toolModule.newTool(config);
-
-  return tool;
+  return toolModule.newTool(config);
 };
 
 export * from './types.js';

@@ -18,15 +18,13 @@ import { getPrompt } from '@/prompt/index.js';
 import { newClient } from '@/vectorDb/index.js';
 
 export const summarizeCode = async (llm: LlmClient, code: string) => {
-  const response = await llm.prompt({
+  return llm.prompt({
     system: '',
     prompt: `
     ${getPrompt('summarizeCode')}
     ${code}
   `,
   });
-
-  return response;
 };
 
 export const handleFile = async (
