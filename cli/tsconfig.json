@@ -4,8 +4,14 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      // eslint gets confused if there are alias collisions between projects
       "@cli/*": ["./src/*"]
     }
-  }
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/dist/**",
+    "**/node_modules/**",
+    "node_modules/**"
+  ]
 }

@@ -1,4 +1,4 @@
-import type { Agent, Config } from '@/.';
+import type { Agent, PartialConfig } from '@/.';
 import { getConfig, initConfig } from '@/config/index.js';
 import { conversation, initLlms } from '@/llm/index.js';
 import { log } from '@/log/index.js';
@@ -6,10 +6,8 @@ import { getPrompt } from '@/prompt/index.js';
 import { newTool, TOOLS } from '@/tool/index.js';
 import chat from './chat.js';
 
-export const newAgent = async (
-  configParam: Partial<Config>,
-): Promise<Agent> => {
-  initConfig(configParam as Config);
+export const newAgent = async (configParam: PartialConfig): Promise<Agent> => {
+  initConfig(configParam);
   const config = getConfig();
 
   const llms = await initLlms(config, ['agent', 'tool']);

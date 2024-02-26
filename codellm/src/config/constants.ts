@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
-import type { Config } from '@/.';
+import type { PartialConfig } from '@/.';
 
 export const SERVICES_TYPE = {
   agent: 'agent',
@@ -50,7 +50,7 @@ export const LLM_DEFAULTS = {
   },
 } as const;
 
-export const DEFAULTS: Partial<Config> = {
+export const DEFAULTS: PartialConfig = {
   path: '..',
   include: ['**/*.ts'],
   exclude: ['**/node_modules/**', '**/dist/**'],

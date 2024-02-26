@@ -1,13 +1,13 @@
 import merge from 'lodash/merge.js';
 
-import type { Config } from '@/.';
+import type { Config, PartialConfig } from '@/.';
 
 import log, { initLogger } from '@/log/index.js';
 import { DEFAULTS, LLM_DEFAULTS } from './constants.js';
 
 let config: Config;
 
-export const initConfig = (newConfig: Partial<Config>) => {
+export const initConfig = (newConfig: PartialConfig) => {
   config = merge({}, DEFAULTS, newConfig) as Config;
 
   config.llms = merge(

@@ -11,14 +11,22 @@ import type {
 
 export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
 
-export type Config = {
+export type ConfigCommon = {
   include: string[];
   exclude: string[];
-  llms: Record<Service, ProviderItem>;
   llmProvider: Provider;
   logFormat: LogFormat;
   logLevel: LogLevel;
   path: string;
-  providers: Record<Provider, ProviderConfig>;
   vectorDb: VectorDb;
+};
+
+export type Config = ConfigCommon & {
+  llms: Record<Service, ProviderItem>;
+  providers: Record<Provider, ProviderConfig>;
+};
+
+export type PartialConfig = Partial<ConfigCommon> & {
+  llms?: Partial<Record<Service, ProviderItem>>;
+  providers?: Partial<Record<Provider, ProviderConfig>>;
 };

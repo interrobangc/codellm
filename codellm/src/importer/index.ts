@@ -4,11 +4,11 @@ import { readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 
 import type {
-  Config,
   Importer,
   LlmClient,
   VectorDbAddDocumentsParams,
   VectorDbClient,
+  PartialConfig,
 } from '@/.';
 
 import { getConfig, initConfig } from '@/config/index.js';
@@ -109,7 +109,7 @@ export const importPath = async (
 };
 
 export const newImporter = async (
-  configParam: Partial<Config>,
+  configParam: PartialConfig,
 ): Promise<Importer> => {
   initConfig(configParam);
   const config = getConfig();
