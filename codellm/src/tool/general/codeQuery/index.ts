@@ -1,6 +1,7 @@
 import type {
   CodeQueryRunParams,
   Config,
+  MessageList,
   Tool,
   ToolRunParamsCommon,
   ToolRunReturn,
@@ -54,15 +55,22 @@ export const run = async ({
     (doc) => `filename: ${doc.metadata.path}\n\ncode:\n${doc.metadata.content}`,
   );
 
-  const content = await llm.prompt({
-    system: '',
-    prompt: `
-      ${basePrompt}
-      ${userPrompt}
-      Use the following contexts to help answer the question:
-      ${contexts.join('\n\n')}
-    `,
-  });
+  const messages: MessageList = [
+    {
+      role: 'system',
+      content: `
+        ${basePrompt}
+        Use the following contexts to help answer the question:
+        ${contexts.join('\n\n')}
+      `,
+    },
+    {
+      role: 'user',
+      content: userPrompt,
+    },
+  ];
+
+  const content = await llm.chat(messages);
 
   log('qaTool Lresponse', 'debug', { content });
 
