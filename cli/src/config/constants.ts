@@ -13,12 +13,14 @@ export const OPTIONS = {
     alias: 'lp',
     type: 'string',
     description: 'LLM provider',
+    options: ['ollama', 'openai'],
     default: process.env['CODELLM_LLM_PROVIDER'],
   },
   logLevel: {
     alias: 'l',
     type: 'string',
     description: 'Log level',
+    options: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
     default: process.env['CODELLM_LOG_LEVEL'],
   },
   path: {

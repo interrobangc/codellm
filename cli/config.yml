@@ -1,13 +1,22 @@
 path: ..
+
+# We default to only parsing .ts files, but you can change this to include other file types
 include:
   - '**/*.ts'
+
+# We default to excluding node_modules and dist folders, but you can change this to exclude other folders
 exclude:
   - '**/node_modules/**'
   - '**/dist/**'
-logLevel: info # error| info | warn | error | debug | silly
-llmProvider: ollama
 
-## Individual providers and models can be configured here
+logLevel: info # error| info | warn | error | debug | silly
+
+# The default provider to use for all commands
+llmProvider: ollama # openai | ollama
+
+## Individual providers and models for various parts of the system can be configured here
+## Available Ollama models can be found here: https://ollama.com/library/
+## Available Openai models can be found here: https://platform.openai.com/account/limits
 # llms:
 #   agent:
 #     provider: ollama
@@ -22,6 +31,8 @@ llmProvider: ollama
 #     provider: ollama
 #     model: mixtral:8x7b
 
+# The configuration for individual providers can be set here. You probably want to use
+# the OPEN_AI_API_KEY environment variable instead of hardcoding your key here
 providers:
   openai:
     apiKey: ''
