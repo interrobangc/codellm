@@ -10,11 +10,12 @@
     "build:ts": "tsc",
     "build:ts-alias": "tsc-alias -p tsconfig.json",
     "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli",
-    "start:import": "node -r tsconfig-paths/register ./dist/bin/import"
+    "start:import": "node -r tsconfig-paths/register ./dist/bin/codellm-cli import"
   },
   "dependencies": {
     "@interrobangc/codellm": "^0.0.1",
     "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "ora": "^5.4.1",
     "readline": "^1.3.0",
     "yargs": "^17.7.2"

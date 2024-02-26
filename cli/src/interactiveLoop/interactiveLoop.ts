@@ -12,6 +12,7 @@ export const interactiveLoop: InteractiveLoop = async (agent) => {
   const response = await agent.chat(question);
   spinner.stop();
 
+  // eslint-disable-next-line no-console
   console.log(`[bot] ${response.content}`);
 
   return interactiveLoop(agent);

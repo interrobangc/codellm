@@ -31,6 +31,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
+    'no-console': 'error',
     'sort-imports': [
       'error',
       {

@@ -37,22 +37,28 @@ export const handleFile = async (
   // TODO: dynamic for different passes in a single run
   const id = `summary:${path}`;
 
+  // TODO: track files that have been processed and check fo deletions
+
+  const content = await readFile(path, 'utf-8');
+  const hash = createHash('sha256').update(content).digest('hex');
+
   const existingDocument = await dbClient.get({
     collectionName: 'fileSummary',
     ids: [id],
   });
 
-  // @ts-expect-error - types aren't in place yet
-  if (existingDocument.documents.length > 0) {
-    log(`Document ${id} already exists, skipping`);
+  if (
+    // @ts-expect-error - types aren't in place yet
+    existingDocument.documents.length > 0 &&
+    // @ts-expect-error - types aren't in place yet
+    existingDocument.metadatas[0].hash === hash
+  ) {
+    log(`Document ${id} is already up to date, skipping`);
     return;
   }
 
-  const content = await readFile(path, 'utf-8');
   const response = await summarizeCode(llm, `file: ${path}\n\n${content}`);
 
-  // get md5 hash of content
-  const hash = createHash('sha256').update(content).digest('hex');
   const document: VectorDbAddDocumentsParams = {
     collectionName: 'fileSummary',
     documents: [
@@ -102,7 +108,9 @@ export const importPath = async (
   }
 };
 
-export const newImporter = async (configParam: Config): Promise<Importer> => {
+export const newImporter = async (
+  configParam: Partial<Config>,
+): Promise<Importer> => {
   initConfig(configParam);
   const config = getConfig();
 

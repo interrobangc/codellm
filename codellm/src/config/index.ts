@@ -7,10 +7,14 @@ import { DEFAULTS, LLM_DEFAULTS } from './constants.js';
 
 let config: Config;
 
-export const initConfig = (newConfig: Config) => {
-  config = _.merge({}, DEFAULTS, newConfig);
+export const initConfig = (newConfig: Partial<Config>) => {
+  config = _.merge({}, DEFAULTS, newConfig) as Config;
 
-  config.llms = _.merge({}, LLM_DEFAULTS[config.llmProvider], newConfig.llms);
+  config.llms = _.merge(
+    {},
+    LLM_DEFAULTS[config.llmProvider],
+    newConfig.llms,
+  ) as Config['llms'];
 
   initLogger(config);
   log('Config set', 'debug', config);

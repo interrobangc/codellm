@@ -84,7 +84,7 @@ export const addDocuments = async ({
     documents,
   });
   const collection = getCollection(collectionName);
-  await collection.add(convertDocuments(documents));
+  await collection.upsert(convertDocuments(documents));
 };
 
 export const newClient = async (): Promise<VectorDbClient> => {

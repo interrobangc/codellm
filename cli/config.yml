@@ -4,7 +4,7 @@ include:
 exclude:
   - '**/node_modules/**'
   - '**/dist/**'
-logLevel: error # error| info | warn | error | debug | silly
+logLevel: info # error| info | warn | error | debug | silly
 llmProvider: ollama
 
 ## Individual providers and models can be configured here

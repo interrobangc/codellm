@@ -6,8 +6,10 @@ import { getPrompt } from '@/prompt/index.js';
 import { newTool, TOOLS } from '@/tool/index.js';
 import chat from './chat.js';
 
-export const newAgent = async (configParam: Config): Promise<Agent> => {
-  initConfig(configParam);
+export const newAgent = async (
+  configParam: Partial<Config>,
+): Promise<Agent> => {
+  initConfig(configParam as Config);
   const config = getConfig();
 
   const llms = await initLlms(config, ['agent', 'tool']);
