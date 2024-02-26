@@ -1,5 +1,5 @@
 import type { Config, Tool, ToolName } from '@/.';
-import { TOOL_MODULES } from './types.js';
+import { TOOL_MODULES } from './constants.js';
 
 export const newTool = async (
   config: Config,
@@ -10,3 +10,4 @@ export const newTool = async (
 };
 
 export * from './types.js';
+export * from './constants.js';

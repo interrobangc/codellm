@@ -1,5 +1,5 @@
 import type { LlmClient, VectorDbCollection } from '@/.';
-import * as generalCodeQuery from './general/codeQuery/index.js';
+import type { TOOLS_TYPE } from './constants.js';
 
 export * from './general/codeQuery/types.js';
 
@@ -20,14 +20,6 @@ export type Tool = {
   run: (params: ToolRunParamsCommon) => Promise<ToolRunReturn>;
 };
 
-export const TOOLS = {
-  'general.codeQuery': 'general.codeQuery',
-} as const;
-
-export const TOOL_MODULES = {
-  'general.codeQuery': generalCodeQuery,
-};
-
-export type ToolName = (typeof TOOLS)[keyof typeof TOOLS];
+export type ToolName = (typeof TOOLS_TYPE)[keyof typeof TOOLS_TYPE];
 
 export type Tools = Record<ToolName, Tool>;

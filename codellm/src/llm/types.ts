@@ -1,38 +1,21 @@
-import type { Config, Service } from '@/.';
-import * as ollama from './provider/ollama/index.js';
-import * as openai from './provider/openai/index.js';
+import type { Config, OllamaConfig, OpenaiConfig, Service } from '@/.';
+import type { CHAT_MESSAGE_ROLES_TYPE, PROVIDERS_TYPE } from './constants';
 
 export * from './conversation/types.js';
 export * from './provider/ollama/types.js';
 export * from './provider/openai/types.js';
 
-export const PROVIDERS = {
-  ollama: 'ollama',
-  openai: 'openai',
-} as const;
-
-export const PROVIDER_MODULES = {
-  ollama,
-  openai,
-} as const;
-
-export type Provider = (typeof PROVIDERS)[keyof typeof PROVIDERS];
+export type Provider = (typeof PROVIDERS_TYPE)[keyof typeof PROVIDERS_TYPE];
 
 export type ProviderItem = {
   provider: Provider;
   model: string;
 };
 
-export type ProviderConfig = ollama.OllamaConfig | openai.OpenaiConfig;
-
-const CHAT_MESSAGE_ROLES = {
-  assistant: 'assistant',
-  system: 'system',
-  user: 'user',
-} as const;
+export type ProviderConfig = OllamaConfig | OpenaiConfig;
 
 export type ChatMessageRole =
-  (typeof CHAT_MESSAGE_ROLES)[keyof typeof CHAT_MESSAGE_ROLES];
+  (typeof CHAT_MESSAGE_ROLES_TYPE)[keyof typeof CHAT_MESSAGE_ROLES_TYPE];
 
 export type ChatMessage = {
   role: ChatMessageRole;

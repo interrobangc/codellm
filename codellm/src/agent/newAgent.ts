@@ -14,7 +14,7 @@ export const newAgent = async (configParam: Config): Promise<Agent> => {
   log('newAgent LLMs', 'silly', { llms });
 
   const toolsMap = await Promise.all(
-    Object.values(TOOLS).map(async (toolName) => {
+    TOOLS.map(async (toolName) => {
       return {
         [toolName]: await newTool(config, toolName),
       };

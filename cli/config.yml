@@ -4,20 +4,23 @@ include:
 exclude:
   - '**/node_modules/**'
   - '**/dist/**'
-logLevel: debug
-llms:
-  embedding:
-    provider: ollama
-    model: nomic-embed-text
-  summarize:
-    provider: ollama
-    model: mixtral:8x7b
-  agent:
-    provider: ollama
-    model: mixtral:8x7b
-  # agent:
-  #   provider: openai
-  #   model: gpt-4-turbo-preview
+logLevel: error # error| info | warn | error | debug | silly
+llmProvider: ollama
+
+## Individual providers and models can be configured here
+# llms:
+#   agent:
+#     provider: ollama
+#     model: mixtral:8x7b
+#   embedding:
+#     provider: ollama
+#     model: nomic-embed-text
+#   summarize:
+#     provider: ollama
+#     model: mixtral:8x7b
+#   tool:
+#     provider: ollama
+#     model: mixtral:8x7b
 
 providers:
   openai:

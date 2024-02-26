@@ -1,5 +1,6 @@
 import type { Logger } from 'winston';
 import winston from 'winston';
+import _ from 'lodash';
 
 import type { Config, LogLevel } from '@/.';
 
@@ -18,7 +19,7 @@ export const getFormat = (format: string) => {
         winston.format.metadata(),
         winston.format.colorize(),
         winston.format.printf(function (info) {
-          return `${info.level}: ${info.message} ${info['metadata'] ? JSON.stringify(info['metadata'], null, 4) : ''}`;
+          return `${info.level}: ${info.message} ${_.isEmpty(info['metadata']) ? '' : JSON.stringify(info['metadata'], null, 4)}`;
         }),
       );
     default:

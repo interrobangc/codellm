@@ -34,7 +34,7 @@
     "start:cli": "npm run -w cli start",
     "start:import": "npm run -w cli start:import",
     "start:chroma": "docker compose up",
-    "test": "run-p lint",
+    "test": "run-s lint build",
     "lint": "run-s lint:prettier lint:eslint",
     "lint:prettier": "prettier . --write",
     "lint:eslint": "eslint . --fix"

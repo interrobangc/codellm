@@ -9,15 +9,18 @@ export const sendChat = async (llm: LlmClient, messages: MessageList) => {
 };
 
 export const decodeResponse = (
-  response: string,
+  content: string,
 ): agentTypes.AgentSelectToolResponse => {
   try {
-    return JSON.parse(response);
+    return JSON.parse(content);
   } catch (e) {
-    log('Error parsing response', 'error', { response, e });
+    log(
+      'The agent model did not return valid json. The response is probably questionable.',
+      'error',
+    );
     return {
-      type: 'error',
-      content: 'Error parsing response',
+      type: 'response',
+      content,
     };
   }
 };

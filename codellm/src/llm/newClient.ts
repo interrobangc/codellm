@@ -8,7 +8,7 @@ import type {
 } from '@/.';
 
 import log from '@/log/index.js';
-import { PROVIDER_MODULES } from './types.js';
+import { PROVIDER_MODULES } from './constants.js';
 import * as conversation from './conversation/index.js';
 
 export const initModel = async (client: LlmProviderClient): Promise<void> => {

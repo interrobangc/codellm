@@ -1,3 +1,5 @@
+import type { SERVICES_TYPE } from './constants.js';
+
 import type {
   LogFormat,
   LogLevel,
@@ -7,21 +9,13 @@ import type {
   VectorDb,
 } from '@/.';
 
-const SERVICES = {
-  agent: 'agent',
-  embedding: 'embedding',
-  summarize: 'summarize',
-  tool: 'tool',
-} as const;
-
-export const services = Object.keys(SERVICES) as Service[];
-
-export type Service = (typeof SERVICES)[keyof typeof SERVICES];
+export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
 
 export type Config = {
   include: string[];
   exclude: string[];
   llms: Record<Service, ProviderItem>;
+  llmProvider: Provider;
   logFormat: LogFormat;
   logLevel: LogLevel;
   path: string;

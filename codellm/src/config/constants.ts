@@ -2,13 +2,17 @@
 
 import type { Config } from '@/.';
 
-export const defaults: Config = {
-  path: '..',
-  include: ['**/*.ts'],
-  exclude: ['**/node_modules/**', '**/dist/**'],
-  logLevel: 'info',
-  logFormat: 'cli',
-  llms: {
+export const SERVICES_TYPE = {
+  agent: 'agent',
+  embedding: 'embedding',
+  summarize: 'summarize',
+  tool: 'tool',
+} as const;
+
+export const SERVICES = Object.values(SERVICES_TYPE);
+
+export const LLM_DEFAULTS = {
+  ollama: {
     embedding: {
       provider: 'ollama',
       model: 'nomic-embed-text',
@@ -26,6 +30,33 @@ export const defaults: Config = {
       model: 'mixtral:8x7b',
     },
   },
+  openai: {
+    embedding: {
+      provider: 'openai',
+      model: 'text-davinci-003',
+    },
+    summarize: {
+      provider: 'openai',
+      model: 'gpt-4-turbo-preview',
+    },
+    agent: {
+      provider: 'openai',
+      model: 'gpt-4-turbo-preview',
+    },
+    tool: {
+      provider: 'openai',
+      model: 'gpt-4-turbo-preview',
+    },
+  },
+} as const;
+
+export const DEFAULTS: Partial<Config> = {
+  path: '..',
+  include: ['**/*.ts'],
+  exclude: ['**/node_modules/**', '**/dist/**'],
+  logLevel: 'info',
+  logFormat: 'cli',
+  llmProvider: 'ollama',
   providers: {
     ollama: {
       host: 'http://localhost:11434',
@@ -35,6 +66,6 @@ export const defaults: Config = {
     },
   },
   vectorDb: 'chromadb',
-};
+} as const;
 
 /* eslint-enable sonarjs/no-duplicate-string */
