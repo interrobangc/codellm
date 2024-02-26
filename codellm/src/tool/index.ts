@@ -1,5 +1,4 @@
-import type { Config } from '../config';
-import type { Tool, ToolName } from './types';
+import type { Config, Tool, ToolName } from '@/.';
 import { TOOL_MODULES } from './types.js';
 
 export const newTool = async (

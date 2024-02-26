@@ -1,7 +1,7 @@
-import { LlmClient } from '../llm/types';
-import type { VectorDbCollection } from '../vectorDb/types';
-
+import type { LlmClient, VectorDbCollection } from '@/.';
 import * as generalCodeQuery from './general/codeQuery/index.js';
+
+export * from './general/codeQuery/types.js';
 
 export type ToolRunParamsCommon = {
   basePrompt: string;

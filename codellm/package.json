@@ -8,7 +8,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "run-s build:ts build:ts-alias",
+    "build:ts": "tsc ",
+    "build:ts-alias": "tsc-alias -p tsconfig.json"
   },
   "dependencies": {
     "chromadb": "^1.8.1",
@@ -21,6 +23,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.202"
+    "@types/lodash": "^4.14.202",
+    "tsc-alias": "^1.8.8"
   }
 }

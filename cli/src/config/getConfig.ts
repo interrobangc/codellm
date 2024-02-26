@@ -1,4 +1,4 @@
-import { Config } from '@interrobangc/codellm';
+import type { Config } from '@interrobangc/codellm';
 
 import parseFile from './parseFile.js';
 import DEFAULTS from './defaults.js';

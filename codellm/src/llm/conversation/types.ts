@@ -1,4 +1,3 @@
-import { Service } from '../../config/types.js';
-import { MessageList } from '../types.js';
+import type { MessageList, Service } from '@/.';
 
 export type ConversationHistory = Record<Service, MessageList>;

@@ -1,8 +1,11 @@
 import { Ollama } from 'ollama';
-import { MessageList } from '../../types.js';
-import { ProviderGetClientParams, PromptParams } from '../../types.js';
+import type {
+  MessageList,
+  OllamaConfig,
+  PromptParams,
+  ProviderGetClientParams,
+} from '@/.';
 import initModel from './initModel.js';
-import { OllamaConfig } from './types.js';
 
 export const newClient = async ({ model, config }: ProviderGetClientParams) => {
   const client = new Ollama(config as OllamaConfig);

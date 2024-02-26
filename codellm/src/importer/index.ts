@@ -3,14 +3,19 @@ import { resolve } from 'path';
 import { readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 
-import type { Config } from '../config/types';
-import { initConfig, getConfig } from '../config/index.js';
-import { initLlms, LlmClient } from '../llm/index.js';
-import log from '../log/index.js';
-import { getPrompt } from '../prompt/index.js';
-import { newClient } from '../vectorDb/index.js';
-import type { AddDocumentsParams, VectorDbClient } from '../vectorDb/types.js';
-import type { Importer } from './types';
+import type {
+  Config,
+  Importer,
+  LlmClient,
+  VectorDbAddDocumentsParams,
+  VectorDbClient,
+} from '@/.';
+
+import { getConfig, initConfig } from '@/config/index.js';
+import { initLlms } from '@/llm/index.js';
+import log from '@/log/index.js';
+import { getPrompt } from '@/prompt/index.js';
+import { newClient } from '@/vectorDb/index.js';
 
 export const summarizeCode = async (llm: LlmClient, code: string) => {
   const response = await llm.prompt({
@@ -50,7 +55,7 @@ export const handleFile = async (
 
   // get md5 hash of content
   const hash = createHash('sha256').update(content).digest('hex');
-  const document: AddDocumentsParams = {
+  const document: VectorDbAddDocumentsParams = {
     collectionName: 'fileSummary',
     documents: [
       {
@@ -119,3 +124,5 @@ export const newImporter = async (configParam: Config): Promise<Importer> => {
       ),
   };
 };
+
+export * from './types.js';

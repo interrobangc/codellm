@@ -1,3 +1,3 @@
-import { ClientOptions } from 'openai';
+import type { ClientOptions } from 'openai';
 
 export type OpenaiConfig = ClientOptions;

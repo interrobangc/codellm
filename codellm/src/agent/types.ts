@@ -1,4 +1,4 @@
-import type { ToolName } from '../tool/types.js';
+import type { ToolName } from '@/.';
 
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;

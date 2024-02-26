@@ -1,10 +1,10 @@
 import OpenAI from 'openai';
-import {
+import type {
   MessageList,
+  OpenaiConfig,
   PromptParams,
   ProviderGetClientParams,
-} from '../../types.js';
-import { OpenaiConfig } from './types.js';
+} from '@/.';
 
 export const newClient = ({ model, config }: ProviderGetClientParams) => {
   const client = new OpenAI(config as OpenaiConfig);

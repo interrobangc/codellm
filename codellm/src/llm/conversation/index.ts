@@ -1,6 +1,5 @@
-import { Service, services } from '../../config/types.js';
-import { MessageList } from '../types.js';
-import { ConversationHistory } from './types.js';
+import type { ConversationHistory, MessageList, Service } from '@/.';
+import { services } from '@/config/types.js';
 
 const conversationHistory: ConversationHistory = services.reduce(
   (acc, service) => ({ ...acc, [service]: [] }),

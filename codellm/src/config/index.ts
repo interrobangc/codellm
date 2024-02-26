@@ -1,8 +1,9 @@
 import _ from 'lodash';
 
-import log, { initLogger } from '../log/index.js';
+import type { Config } from '@/.';
+
+import log, { initLogger } from '@/log/index.js';
 import { defaults } from './constants.js';
-import { Config } from './types';
 
 let config: Config;
 

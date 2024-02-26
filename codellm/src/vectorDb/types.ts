@@ -27,7 +27,7 @@ export type EmbeddingDocument = {
 
 export type EmbeddingDocumentList = EmbeddingDocument[];
 
-export type AddDocumentsParams = {
+export type VectorDbAddDocumentsParams = {
   collectionName: VectorDbCollection;
   documents: EmbeddingDocumentList;
 };
@@ -59,7 +59,7 @@ export type VectorDbGetResult = VectorDbGetResultItem[];
 
 export type VectorDbClient = {
   init: () => Promise<void>;
-  addDocuments: (params: AddDocumentsParams) => Promise<void>;
+  addDocuments: (params: VectorDbAddDocumentsParams) => Promise<void>;
   // query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
   // get: (params: VectorDbGetParams) => Promise<VectorDbGetResult>;
   query: (params: VectorDbQueryParams) => Promise<unknown>;

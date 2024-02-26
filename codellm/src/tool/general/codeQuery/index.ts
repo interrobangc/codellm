@@ -1,9 +1,13 @@
-import { newClient } from '../../../vectorDb/index.js';
-import log from '../../../log/index.js';
+import type {
+  CodeQueryRunParams,
+  Config,
+  Tool,
+  ToolRunParamsCommon,
+  ToolRunReturn,
+} from '@/.';
 
-import type { Config } from '../../../config';
-import type { Tool, ToolRunParamsCommon, ToolRunReturn } from '../../types';
-import type { CodeQueryRunParams } from './types';
+import { newClient } from '@/vectorDb/index.js';
+import log from '@/log/index.js';
 
 /**
  * The general.codeQuery tool queries a codebase and generates responses using

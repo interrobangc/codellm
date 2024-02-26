@@ -1,6 +1,5 @@
-import { newClient } from '../llm/index.js';
-import { Config, Service } from '../config/types.js';
-import { Llms } from './types';
+import type { Config, Llms, Service } from '@/.';
+import { newClient } from '@/llm/index.js';
 
 export const initLlms = async (
   config: Config,

@@ -16,6 +16,7 @@
     "sourceMap": true,
     "lib": ["esnext"],
     "moduleResolution": "node",
+    "removeComments": true,
     "strict": true /* Enable all strict type-checking options. */
   }
 }

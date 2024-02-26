@@ -1,19 +1,21 @@
-import {
+import type {
   AddParams,
-  ChromaClient,
-  Collection,
   CreateCollectionParams as ChromaCreateCollectionParams,
+  Collection,
+} from 'chromadb';
+import {
+  ChromaClient,
   // Embedding,
   IncludeEnum,
 } from 'chromadb';
 
 import log from '../../../log/index.js';
 import type {
-  AddDocumentsParams,
   EmbeddingDocumentList,
-  VectorDbQueryParams,
+  VectorDbAddDocumentsParams,
   VectorDbClient,
   VectorDbGetParams,
+  VectorDbQueryParams,
 } from '../../types';
 import { VECTOR_DB_COLLECTIONS } from '../../types.js';
 
@@ -77,7 +79,7 @@ export const convertDocuments = (
 export const addDocuments = async ({
   collectionName,
   documents,
-}: AddDocumentsParams) => {
+}: VectorDbAddDocumentsParams) => {
   log(`vectorDB.addDocuments: Adding documents to ${collectionName}`, 'debug', {
     documents,
   });

@@ -1,7 +1,7 @@
-import log from '../log/index.js';
-import { getPrompt } from '../prompt/index.js';
-import { Tools } from '../tool/index.js';
-import { LlmClient, Llms, MessageList } from '../index.js';
+import type { LlmClient, Llms, MessageList, Tools } from '@/.';
+
+import log from '@/log/index.js';
+import { getPrompt } from '@/prompt/index.js';
 import * as agentTypes from './types.js';
 
 export const sendChat = async (llm: LlmClient, messages: MessageList) => {

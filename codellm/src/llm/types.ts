@@ -1,6 +1,10 @@
-import { Config, Service } from '../config/types.js';
+import type { Config, Service } from '@/.';
 import * as ollama from './provider/ollama/index.js';
 import * as openai from './provider/openai/index.js';
+
+export * from './conversation/types.js';
+export * from './provider/ollama/types.js';
+export * from './provider/openai/types.js';
 
 export const PROVIDERS = {
   ollama: 'ollama',

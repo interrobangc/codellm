@@ -1,8 +1,7 @@
-import winston, { Logger } from 'winston';
+import type { Logger } from 'winston';
+import winston from 'winston';
 
-import type { Config } from '../config';
-
-import type { LogLevel } from './types';
+import type { Config, LogLevel } from '@/.';
 
 let logger: Logger;
 let level: LogLevel;
@@ -52,3 +51,5 @@ export const log = (
 };
 
 export default log;
+
+export * from './types.js';

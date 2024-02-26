@@ -1,5 +1,4 @@
-import type { VectorDbClient } from '../../../vectorDb/types';
-import type { ToolRunParamsCommon } from '../../types';
+import type { ToolRunParamsCommon, VectorDbClient } from '@/.';
 
 export type CodeQueryRunParams = ToolRunParamsCommon & {
   vectorDb: VectorDbClient;

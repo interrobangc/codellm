@@ -1,11 +1,10 @@
-import type { Config } from '../config/types';
-import { initConfig, getConfig } from '../config/index.js';
-import { conversation, initLlms } from '../llm/index.js';
-import { log } from '../log/index.js';
-import { getPrompt } from '../prompt/index.js';
-import { newTool, TOOLS } from '../tool/index.js';
+import type { Agent, Config } from '@/.';
+import { getConfig, initConfig } from '@/config/index.js';
+import { conversation, initLlms } from '@/llm/index.js';
+import { log } from '@/log/index.js';
+import { getPrompt } from '@/prompt/index.js';
+import { newTool, TOOLS } from '@/tool/index.js';
 import chat from './chat.js';
-import type { Agent } from './types';
 
 export const newAgent = async (configParam: Config): Promise<Agent> => {
   initConfig(configParam);

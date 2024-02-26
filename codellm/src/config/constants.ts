@@ -1,4 +1,4 @@
-import { Config } from './types';
+import type { Config } from '@/.';
 
 export const defaults: Config = {
   path: '..',

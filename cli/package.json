@@ -6,7 +6,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "run-s build:ts build:ts-alias",
+    "build:ts": "tsc",
+    "build:ts-alias": "tsc-alias -p tsconfig.json",
     "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli",
     "start:import": "node -r tsconfig-paths/register ./dist/bin/import"
   },
@@ -18,6 +20,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9"
+    "@types/js-yaml": "^4.0.9",
+    "tsc-alias": "^1.8.8"
   }
 }

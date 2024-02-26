@@ -4,7 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      // eslint gets confused if there are alias collisions between projects
+      "@cli/*": ["./src/*"]
     }
   }
 }

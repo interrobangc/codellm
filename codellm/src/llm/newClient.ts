@@ -1,14 +1,14 @@
-import { Service } from '../config/types.js';
-import log from '../log/index.js';
-import {
-  LlmClient,
+import type {
   GetClientParams,
+  LlmClient,
   LlmProviderClient,
   MessageList,
   PromptParams,
-  PROVIDER_MODULES,
-} from './types.js';
+  Service,
+} from '@/.';
 
+import log from '@/log/index.js';
+import { PROVIDER_MODULES } from './types.js';
 import * as conversation from './conversation/index.js';
 
 export const initModel = async (client: LlmProviderClient): Promise<void> => {

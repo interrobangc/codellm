@@ -27,7 +27,24 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint', 'import'],
-  rules: {},
+  rules: {
+    '@typescript-eslint/consistent-type-exports': 'error',
+    '@typescript-eslint/consistent-type-imports': 'error',
+    'sort-imports': [
+      'error',
+      {
+        ignoreCase: true,
+        ignoreDeclarationSort: true,
+      },
+    ],
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: ['cli/tsconfig.json', 'codellm/tsconfig.json'],
+      },
+    },
+  },
   ignorePatterns: [
     '**/dist/**',
     '**/coverage/**',
