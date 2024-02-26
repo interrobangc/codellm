@@ -11,16 +11,16 @@ import { newClient } from '@/vectorDb/index.js';
 import log from '@/log/index.js';
 
 /**
- * The general.codeQuery tool queries a codebase and generates responses using
- * an LLM. It is a general tool that can be used to query any codebase
+ * The general.codeQuery tool queries a codebase and provides context from a vectordb collection
+ * that contains summaries of code files and their contents to an LLM to help answer a user's question.
  *
- * @param param0
  * @param basePrompt - The base prompt to use for the Tool
  * @param collectionName - The collection in the vector db to use for the query
  * @param includeCode - Whether to include code in the response
- * @param userPrompt - The user's question or prompt
  * @param llm - The LLM to use for the query
+ * @param userPrompt - The user's question or prompt
  * @param vectorDb - The vector db to use for the query
+ *
  * @returns
  */
 export const run = async ({
@@ -77,6 +77,13 @@ export const run = async ({
   return { success: true, content };
 };
 
+/**
+ * Create a new general.codeQuery tool
+ *
+ * @param config - The configuration to use
+ *
+ * @returns - The new tool instance
+ */
 export const newTool = async (config: Config): Promise<Tool> => {
   const vectorDb = await newClient(config);
   await vectorDb.init();

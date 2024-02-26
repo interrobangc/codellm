@@ -24,7 +24,17 @@ export type CreateCollectionParams = {
   params: ChromaCreateCollectionParams;
 };
 
-export const createCollection = async ({
+/**
+ * Get a collection if it exists or create new collection if it doesn't in the VectorDb
+ *
+ * @param client - The ChromaClient instance.
+ * @param params - The parameters for creating the collection.
+ *
+ * @returns The new collection instance.
+ *
+ * @throws If there is an error creating the collection.
+ */
+export const getOrCreateCollection = async ({
   client,
   params,
 }: CreateCollectionParams) => {
@@ -42,6 +52,15 @@ export const createCollection = async ({
 
 const collections: Record<string, Collection> = {};
 
+/**
+ * Get a collection from the VectorDb
+ *
+ * @param collectionName - The name of the collection to get.
+ *
+ * @returns The collection instance.
+ *
+ * @throws If the collection does not exist.
+ */
 export const getCollection = (collectionName: string) => {
   const collection = collections[collectionName];
 
@@ -52,6 +71,13 @@ export const getCollection = (collectionName: string) => {
   return collection;
 };
 
+/**
+ * Convert a list of EmbeddingDocumentList to AddParams
+ *
+ * @param documentList - The list of EmbeddingDocumentList to convert.
+ *
+ * @returns The AddParams.
+ */
 export const convertDocuments = (
   documentList: EmbeddingDocumentList,
 ): AddParams => {
@@ -76,6 +102,16 @@ export const convertDocuments = (
   return ret;
 };
 
+/**
+ * Add documents to the VectorDb
+ *
+ * @param collectionName - The name of the collection to add the documents to.
+ * @param documents - The documents to add.
+ *
+ * @returns The response from the VectorDb.
+ *
+ * @throws If there is an error adding the documents.
+ */
 export const addDocuments = async ({
   collectionName,
   documents,
@@ -87,6 +123,11 @@ export const addDocuments = async ({
   await collection.upsert(convertDocuments(documents));
 };
 
+/**
+ * Create a new VectorDb client
+ *
+ * @returns The new VectorDb client.
+ */
 export const newClient = async (): Promise<VectorDbClient> => {
   const client = new ChromaClient();
 
@@ -95,7 +136,7 @@ export const newClient = async (): Promise<VectorDbClient> => {
       await Promise.all(
         Object.entries(VECTOR_DB_COLLECTIONS).map(
           async ([, collectionName]) => {
-            collections[collectionName] = await createCollection({
+            collections[collectionName] = await getOrCreateCollection({
               client,
               params: {
                 name: collectionName,

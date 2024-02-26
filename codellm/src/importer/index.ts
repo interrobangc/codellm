@@ -17,6 +17,16 @@ import log from '@/log/index.js';
 import { getPrompt } from '@/prompt/index.js';
 import { newClient } from '@/vectorDb/index.js';
 
+/**
+ * Summarize the code using the summarize LLM
+ *
+ * @param llm - The LLM to use for summarization
+ * @param code - The code to summarize
+ *
+ * @returns - The summary of the code
+ *
+ * @throws - If there is an error summarizing the code
+ */
 export const summarizeCode = async (llm: LlmClient, code: string) => {
   return llm.prompt({
     system: '',
@@ -27,6 +37,13 @@ export const summarizeCode = async (llm: LlmClient, code: string) => {
   });
 };
 
+/**
+ * Handle a single file by summarizing it and adding it to the database
+ *
+ * @param dbClient - The vector database client to use
+ * @param llm - The LLM to use for summarization
+ * @param path - The path to the file to handle
+ */
 export const handleFile = async (
   dbClient: VectorDbClient,
   llm: LlmClient,
@@ -79,9 +96,16 @@ export const handleFile = async (
 
 /**
  * Traverse all directories in the path and import all files that match the include pattern and do not match the exclude pattern.
- * @param path
- * @param include
- * @param exclude
+ *
+ * @param dbClient - The vector database client to use
+ * @param llm - The LLM to use for summarization
+ * @param path - The path to traverse
+ * @param include - The patterns to include
+ * @param exclude - The patterns to exclude
+ *
+ * @returns - The summary of the code
+ *
+ * @throws - If there is an error summarizing the code
  */
 export const importPath = async (
   dbClient: VectorDbClient,
@@ -108,6 +132,13 @@ export const importPath = async (
   }
 };
 
+/**
+ * Create a new importer which is the primary interface to import code into the vector database
+ *
+ * @param configParam - The configuration to use
+ *
+ * @returns - The new importer instance for use by a client
+ */
 export const newImporter = async (
   configParam: PartialConfig,
 ): Promise<Importer> => {

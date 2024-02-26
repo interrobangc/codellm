@@ -11,10 +11,28 @@ import log from '@/log/index.js';
 import { PROVIDER_MODULES } from './constants.js';
 import * as conversation from './conversation/index.js';
 
+/**
+ * Initialize the underlying provider/model for a given service
+ *
+ * @param client - The LLM provider client to use
+ *
+ * @throws - If there is an error initializing the model
+ */
 export const initModel = async (client: LlmProviderClient): Promise<void> => {
   await client.initModel();
 };
 
+/**
+ * Parent function for chat functionality handled by an individual provider
+ *
+ * @param service - The service to interact with
+ * @param client - The LLM provider client to use
+ * @param messages - The messages to send
+ *
+ * @returns - A normalized response from the provider
+ *
+ * @throws - If there is an error sending the message
+ */
 export const chat = async (
   service: Service,
   client: LlmProviderClient,
@@ -42,6 +60,16 @@ export const chat = async (
   return response;
 };
 
+/**
+ * Create a new client for a given service
+ *
+ * @param config - The configuration to use
+ * @param service - The service to use
+ *
+ * @returns - The new client
+ *
+ * @throws - If the provider is not found
+ */
 export const newClient = async ({
   config,
   service,
