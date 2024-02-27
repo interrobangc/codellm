@@ -1,17 +1,10 @@
-import type {
-  CodeQueryRunParams,
-  Config,
-  MessageList,
-  Tool,
-  ToolRunParamsCommon,
-  ToolRunReturn,
-} from '@/.';
+import type { MessageList, ToolRunReturn } from '@interrobangc/codellm';
+import type { CodeSummaryQueryRunParams } from './types';
 
-import { newClient } from '@/vectorDb/index.js';
-import log from '@/log/index.js';
+import { log } from '@interrobangc/codellm';
 
 /**
- * The general.codeQuery tool queries a codebase and provides context from a vectordb collection
+ * The codeSummaryQuery tool queries a codebase and provides context from a vectordb collection
  * that contains summaries of code files and their contents to an LLM to help answer a user's question.
  *
  * @param basePrompt - The base prompt to use for the Tool
@@ -30,7 +23,7 @@ export const run = async ({
   llm,
   userPrompt,
   vectorDb,
-}: CodeQueryRunParams): Promise<ToolRunReturn> => {
+}: CodeSummaryQueryRunParams): Promise<ToolRunReturn> => {
   log('qaTool running', 'debug', {
     basePrompt,
     collectionName,
@@ -77,18 +70,4 @@ export const run = async ({
   return { success: true, content };
 };
 
-/**
- * Create a new general.codeQuery tool
- *
- * @param config - The configuration to use
- *
- * @returns - The new tool instance
- */
-export const newTool = async (config: Config): Promise<Tool> => {
-  const vectorDb = await newClient(config);
-  await vectorDb.init();
-
-  return {
-    run: async (params: ToolRunParamsCommon) => run({ ...params, vectorDb }),
-  };
-};
+export default run;

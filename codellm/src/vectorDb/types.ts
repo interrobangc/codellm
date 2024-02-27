@@ -1,22 +1,11 @@
 import type { Document, Embedding, Metadata } from 'chromadb';
-import * as chromadb from './db/chromadb/index.js';
 
-export const VECTOR_DB_COLLECTIONS = {
-  fileSummary: 'fileSummary',
-} as const;
+import type { VECTOR_DB_COLLECTIONS, VECTOR_DBS } from './constants';
 
 export type VectorDbCollection =
   (typeof VECTOR_DB_COLLECTIONS)[keyof typeof VECTOR_DB_COLLECTIONS];
 
-export const VECTOR_DBS = {
-  chromadb: 'chromadb',
-} as const;
-
 export type VectorDb = (typeof VECTOR_DBS)[keyof typeof VECTOR_DBS];
-
-export const VECTOR_DB_MODULES = {
-  chromadb,
-} as const;
 
 export type EmbeddingDocument = {
   id: string;

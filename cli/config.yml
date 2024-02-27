@@ -1,18 +1,21 @@
 path: ..
 
-# We default to only parsing .ts files, but you can change this to include other file types
-include:
-  - '**/*.ts'
-
-# We default to excluding node_modules and dist folders, but you can change this to exclude other folders
-exclude:
-  - '**/node_modules/**'
-  - '**/dist/**'
-
 logLevel: info # error| info | warn | error | debug | silly
 
 # The default provider to use for all commands
 llmProvider: ollama # openai | ollama
+
+# tools:
+#   codeSummaryQuery:
+#     module: '@interrobangc/codellm-tool-code-summary-query'
+#     # We default to only parsing .ts files, but you can change this to include other file types
+#   include:
+#     - '**/*.ts'
+
+#   # We default to excluding node_modules and dist folders, but you can change this to exclude other folders
+#   exclude:
+#     - '**/node_modules/**'
+#     - '**/dist/**'
 
 ## Individual providers and models for various parts of the system can be configured here
 ## Available Ollama models can be found here: https://ollama.com/library/

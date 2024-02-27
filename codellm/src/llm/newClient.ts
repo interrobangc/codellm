@@ -4,6 +4,7 @@ import type {
   LlmProviderClient,
   MessageList,
   PromptParams,
+  Provider,
   Service,
 } from '@/.';
 
@@ -61,6 +62,22 @@ export const chat = async (
 };
 
 /**
+ * Import the provider module for a given provider
+ *
+ * @param provider - The provider to import
+ *
+ * @returns - The provider module
+ *
+ * @throws - If the provider is not found
+ */
+const importProvider = (provider: Provider) => {
+  const providerModule = PROVIDER_MODULES[provider];
+  if (!providerModule) throw new Error(`Provider not found: ${provider}`);
+
+  return import(providerModule);
+};
+
+/**
  * Create a new client for a given service
  *
  * @param config - The configuration to use
@@ -75,11 +92,9 @@ export const newClient = async ({
   service,
 }: GetClientParams): Promise<LlmClient> => {
   const { model, provider } = config.llms[service];
+  const pm = await importProvider(provider);
 
-  const providerModule = PROVIDER_MODULES[provider];
-  if (!providerModule) throw new Error(`Provider not found: ${provider}`);
-
-  const client = await providerModule.newClient({
+  const client = await pm.newClient({
     model,
     config: config.providers[provider],
   });

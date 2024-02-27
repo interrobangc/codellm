@@ -6,6 +6,7 @@ import type {
   Provider,
   ProviderConfig,
   ProviderItem,
+  ToolConfigItem,
   VectorDb,
 } from '@/.';
 
@@ -19,6 +20,7 @@ export type ConfigCommon = {
   logLevel: LogLevel;
   path: string;
   vectorDb: VectorDb;
+  tools?: ToolConfigItem[];
 };
 
 export type Config = ConfigCommon & {

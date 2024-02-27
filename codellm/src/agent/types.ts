@@ -1,5 +1,3 @@
-import type { ToolName } from '@/.';
-
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
 };
@@ -37,7 +35,7 @@ export const isAgentResponseResponse = (
 export type AgentToolResponse = {
   type: 'tool';
   reason: string;
-  name: ToolName;
+  name: string;
   query: string;
   parameters: Record<string, unknown>;
 };

@@ -3,21 +3,19 @@ import type {
   CreateCollectionParams as ChromaCreateCollectionParams,
   Collection,
 } from 'chromadb';
-import {
-  ChromaClient,
-  // Embedding,
-  IncludeEnum,
-} from 'chromadb';
+import { ChromaClient, IncludeEnum } from 'chromadb';
 
-import log from '../../../log/index.js';
 import type {
   EmbeddingDocumentList,
   VectorDbAddDocumentsParams,
   VectorDbClient,
   VectorDbGetParams,
   VectorDbQueryParams,
-} from '../../types';
-import { VECTOR_DB_COLLECTIONS } from '../../types.js';
+} from '@/.';
+
+import log from '@/log/index.js';
+
+import { VECTOR_DB_COLLECTIONS } from '@/vectorDb/index.js';
 
 export type CreateCollectionParams = {
   client: ChromaClient;

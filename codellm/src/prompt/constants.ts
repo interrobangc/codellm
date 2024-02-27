@@ -57,7 +57,7 @@ export const DEFAULTS = {
 
   toolList: `
   tools:
-    - name: general.codeQuery
+    - name: codeSummaryQuery
       description: This tool processes a user's prompt, queries the codebase, and then
         uses a language model to generate a response.
       base_prompt: Your task is to provide information from the codebase and answer the

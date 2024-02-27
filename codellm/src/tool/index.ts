@@ -1,5 +1,6 @@
-import type { Config, Tool, ToolName } from '@/.';
-import { TOOL_MODULES } from './constants.js';
+import type { Config, Tool } from '@/.';
+
+import isEmpty from 'lodash/isEmpty.js';
 
 /**
  * Create a new tool instance from the tool library
@@ -12,13 +13,17 @@ import { TOOL_MODULES } from './constants.js';
  * @throws If the tool is not found.
  * @throws If there is an error creating the tool.
  */
-export const newTool = async (
-  config: Config,
-  toolName: ToolName,
-): Promise<Tool> => {
-  const toolModule = TOOL_MODULES[toolName];
-  return toolModule.newTool(config);
-};
+export const initTools = async (config: Config) => {
+  if (isEmpty(config.tools)) return;
 
-export * from './types.js';
-export * from './constants.js';
+  const tools: Record<string, Tool> = {};
+
+  const toolInits = config.tools!.map(async (tool) => {
+    const toolModule = await import(tool.module);
+    tools[tool.name] = await toolModule.newTool(tool.name, config);
+  });
+
+  await Promise.all(toolInits);
+
+  return tools;
+};

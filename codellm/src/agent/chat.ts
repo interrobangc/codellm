@@ -27,7 +27,7 @@ export const decodeResponse = (
   content: string,
 ): agentTypes.AgentSelectToolResponse => {
   try {
-    return JSON.parse(content);
+    return JSON.parse(content.trim());
   } catch (e) {
     log(
       'The agent model did not return valid json. The response is probably questionable.',
@@ -76,7 +76,7 @@ export const selectTool = async (
  * @returns - The response from the agent model
  */
 export const chat =
-  (llms: Llms, tools: Tools) =>
+  (llms: Llms, tools: Tools | undefined) =>
   async (message: string): Promise<agentTypes.AgentResponse> => {
     const toolSelectResponse = await selectTool(llms.agent, message);
 
@@ -87,7 +87,17 @@ export const chat =
     log('Tools', 'debug', { tools });
     log('Tool select response', 'debug', { toolSelectResponse });
 
+    if (!tools) {
+      log('Tool select response', 'error', { toolSelectResponse });
+      throw new Error('No tools available');
+    }
+
     const tool = tools[toolSelectResponse.name];
+
+    if (!tool) {
+      log('Tool not found', 'error', { toolSelectResponse });
+      throw new Error('Tool not found');
+    }
 
     log('Selected tool', 'debug', { tool });
 

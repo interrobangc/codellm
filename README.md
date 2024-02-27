@@ -1,6 +1,6 @@
 # CodeLLM
 
-This is the start of a locally running LLM agent that can be used to analyze code with the context of your own codebase using LLM models. It is heavily inspired by the [groundcrew](https://github.com/prolego-team/groundcrew) project.
+CodeLLM is an extensible LLM agent pipeline framework that can be used to build a system of AI agents, tools, and datastores that interact to solve complex problems. It was initially inspired by the [groundcrew](https://github.com/prolego-team/groundcrew) project. It is initially focused on code and codebase analysis, but could be extended to other domains.
 
 ## Prerequisites
 

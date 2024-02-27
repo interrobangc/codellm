@@ -1,12 +1,13 @@
 {
   "name": "@interrobangc/codellm-repo",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Parent repo for code-llm",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "workspaces": [
     "cli",
-    "codellm"
+    "codellm",
+    "tools/*"
   ],
   "devDependencies": {
     "@jest/globals": "^29.7.0",

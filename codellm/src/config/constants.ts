@@ -11,15 +11,15 @@ export const SERVICES = Object.values(SERVICES_TYPE);
 
 export const LLM_DEFAULTS = {
   ollama: {
+    agent: {
+      provider: 'ollama',
+      model: 'mixtral:8x7b',
+    },
     embedding: {
       provider: 'ollama',
       model: 'nomic-embed-text',
     },
     summarize: {
-      provider: 'ollama',
-      model: 'mixtral:8x7b',
-    },
-    agent: {
       provider: 'ollama',
       model: 'mixtral:8x7b',
     },
@@ -29,15 +29,15 @@ export const LLM_DEFAULTS = {
     },
   },
   openai: {
+    agent: {
+      provider: 'openai',
+      model: 'gpt-4-turbo-preview',
+    },
     embedding: {
       provider: 'openai',
       model: 'text-davinci-003',
     },
     summarize: {
-      provider: 'openai',
-      model: 'gpt-4-turbo-preview',
-    },
-    agent: {
       provider: 'openai',
       model: 'gpt-4-turbo-preview',
     },
@@ -50,8 +50,6 @@ export const LLM_DEFAULTS = {
 
 export const DEFAULTS = {
   path: '..',
-  include: ['**/*.ts'],
-  exclude: ['**/node_modules/**', '**/dist/**'],
   logLevel: 'info',
   logFormat: 'cli',
   llmProvider: 'ollama',
@@ -63,6 +61,13 @@ export const DEFAULTS = {
       apiKey: '',
     },
   },
+  tools: [
+    {
+      name: 'codeSummaryQuery',
+      module: '@interrobangc/codellm-tool-code-summary-query',
+    },
+  ],
+
   vectorDb: 'chromadb',
 } as const;
 
