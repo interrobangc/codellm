@@ -24,6 +24,26 @@ nvm use
 npm ci
 ```
 
+### Datastore
+
+The first step is to start the vector db. This will currently start a local instance of chromadb that persists data to the `.chromadb` directory in the root of the project.
+
+```bash
+npm run start:datastore
+```
+
+To stop the datastore:
+
+```bash
+npm run stop:datastore
+```
+
+To view logs from the datastore:
+
+```bash
+npm run logs:datastore
+```
+
 ### Import embeddings
 
 The first step is to import the embeddings for your codebase. We use a locally running chromadb instance as a vector db. The initial import will take a while. It can be run again to update the embeddings and will only import updated and new files.

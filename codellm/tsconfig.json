@@ -4,7 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
     }
   },
   "include": ["./src/**/*.ts"],
@@ -12,7 +13,6 @@
     "**/*.test.ts",
     "**/dist/**",
     "**/node_modules/**",
-    "node_modules/**",
-    "jest.config.cjs"
+    "node_modules/**"
   ]
 }
