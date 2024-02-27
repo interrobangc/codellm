@@ -26,7 +26,7 @@ npm ci
 
 ### Datastore
 
-The first step is to start the vector db. This will currently start a local instance of chromadb that persists data to the `.chromadb` directory in the root of the project.
+The first step is to start the vector db. This will currently start a local instance of chromadb that listens on [http://localhost:8000](http://localhost:8000/api/v1/heartbeat) persists data to the `.chromadb` directory in the root of the project.
 
 ```bash
 npm run start:datastore
