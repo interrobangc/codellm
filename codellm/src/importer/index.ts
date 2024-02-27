@@ -18,16 +18,14 @@ export const newImporter = async (
   const config = getConfig();
 
   const tools = await initTools(config);
-  log('newAgent tools', 'silly', { tools });
-
-  log('config', 'silly', config);
+  log('newImporter tools', 'silly', { tools });
 
   return {
     import: async () => {
       if (tools == null) return;
       const toolImports = Object.values(tools).map((tool) => {
         if (tool.import == null) return;
-        tool.import();
+        return tool.import();
       });
 
       await Promise.all(toolImports);
