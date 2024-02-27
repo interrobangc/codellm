@@ -10,7 +10,8 @@
     "build:ts": "tsc",
     "build:ts-alias": "tsc-alias -p tsconfig.json",
     "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli",
-    "start:import": "node -r tsconfig-paths/register ./dist/bin/codellm-cli import"
+    "start:import": "node -r tsconfig-paths/register ./dist/bin/codellm-cli import",
+    "test:unit": "jest --coverage '.*\\.test\\.ts'"
   },
   "dependencies": {
     "@interrobangc/codellm": "^0.0.1",

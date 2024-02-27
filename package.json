@@ -38,8 +38,8 @@
     "start:cli": "npm run -w cli start",
     "start:import": "npm run build && npm run -w cli start:import",
     "start:chroma": "docker compose up",
-    "test": "run-s lint build test:jest",
-    "test:jest": "npm run --workspaces --if-present test:jest",
+    "test": "run-s lint build test:unit",
+    "test:unit": "npm run --workspaces --if-present test:unit",
     "lint": "run-s lint:prettier lint:eslint",
     "lint:prettier": "prettier . --write",
     "lint:eslint": "eslint . --fix"

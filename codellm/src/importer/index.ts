@@ -6,9 +6,9 @@ import { createHash } from 'crypto';
 import type {
   Importer,
   LlmClient,
+  PartialConfig,
   VectorDbAddDocumentsParams,
   VectorDbClient,
-  PartialConfig,
 } from '@/.';
 
 import { getConfig, initConfig } from '@/config/index.js';
