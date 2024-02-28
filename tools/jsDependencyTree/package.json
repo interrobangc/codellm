@@ -1,0 +1,18 @@
+{
+  "name": "@interrobangc/codellm-tool-js-dependency-tree",
+  "version": "0.0.1",
+  "description": "Parent repo for code-llm",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@interrobangc/codellm": "^0.0.1",
+    "crypto": "^1.0.1",
+    "globby": "^14.0.1"
+  }
+}

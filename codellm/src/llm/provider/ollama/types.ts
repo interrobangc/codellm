@@ -1,3 +1,3 @@
-import type { Config as OllamaNodeConfig } from 'ollama';
+import type { Config } from 'ollama';
 
-export type OllamaConfig = OllamaNodeConfig;
+export type OllamaConfig = Config;

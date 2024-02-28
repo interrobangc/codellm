@@ -1,7 +1,14 @@
-import type { Config, OllamaConfig, OpenaiConfig, Service } from '@/.';
+import type {
+  Config,
+  MistralConfig,
+  OllamaConfig,
+  OpenaiConfig,
+  Service,
+} from '@/.';
 import type { CHAT_MESSAGE_ROLES_TYPE, PROVIDERS_TYPE } from './constants';
 
 export * from './conversation/types.js';
+export * from './provider/mistral/types.js';
 export * from './provider/ollama/types.js';
 export * from './provider/openai/types.js';
 
@@ -12,7 +19,7 @@ export type ProviderItem = {
   model: string;
 };
 
-export type ProviderConfig = OllamaConfig | OpenaiConfig;
+export type ProviderConfig = MistralConfig | OllamaConfig | OpenaiConfig;
 
 export type ChatMessageRole =
   (typeof CHAT_MESSAGE_ROLES_TYPE)[keyof typeof CHAT_MESSAGE_ROLES_TYPE];

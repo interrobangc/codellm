@@ -131,6 +131,18 @@ export const importPath = async (
   }
 };
 
+/**
+ * Run the import for the codeSummaryQuery tool
+ *
+ * @param params Object - The parameters for the import
+ * @param params.config - The codellm configuration
+ * @param params.toolConfig - The tool configuration
+ * @param params.vectorDb - The vector database client to use
+ *
+ * @returns - The result of the import
+ *
+ * @throws - If there is an error running the import
+ */
 export const runImport = async ({
   config,
   toolConfig,

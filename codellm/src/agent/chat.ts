@@ -1,5 +1,6 @@
 import type { LlmClient, Llms, MessageList, Tools } from '@/.';
 
+import { conversation } from '@/llm/index.js';
 import log from '@/log/index.js';
 import { getPrompt } from '@/prompt/index.js';
 import * as agentTypes from './types.js';
@@ -40,29 +41,74 @@ export const decodeResponse = (
   }
 };
 
-/**
- * Sent a message to the agent model to select a tool to use for additional context
- *
- * @param llm - The LLM client to use
- * @param message - The message to send
- *
- * @returns - The response from the agent model
- */
-export const selectTool = async (
-  llm: LlmClient,
+export const getToolDescriptions = (tools: Tools = {}) => {
+  return JSON.stringify(Object.values(tools).map((tool) => tool.description));
+};
+
+export const handleMessage = async (
+  llms: Llms,
   message: string,
-): Promise<agentTypes.AgentSelectToolResponse> => {
+  tools: Tools | undefined,
+  depth: number = 0,
+): Promise<agentTypes.AgentResponse> => {
   const messages: MessageList = [];
 
   messages.push({
     role: 'user',
-    content: `
-      ${getPrompt('userQuestionStart')}
-      ${message}
-    `,
+    content: message,
   });
 
-  return decodeResponse(await sendChat(llm, messages));
+  const response = decodeResponse(await sendChat(llms.agent, messages));
+
+  log(`conversation.getHistory('agent')`, 'debug', {
+    history: conversation.getHistory('agent'),
+  });
+
+  if (
+    agentTypes.isAgentErrorResponse(response) ||
+    agentTypes.isAgentResponseResponse(response)
+  ) {
+    return response;
+  }
+
+  if (depth >= 5) {
+    return {
+      type: 'error',
+      content: 'The agent model has reached the maximum depth of recursion.',
+    };
+  }
+
+  const tool = tools?.[response.name];
+
+  if (!tool) {
+    log('Tool not found', 'debug', { response, tools });
+    const toolNotFoundMessage = `
+      ${message}
+
+      The ${response.name} tool was not found. Please select a different tool.
+    `;
+
+    return handleMessage(llms, toolNotFoundMessage, tools, depth + 1);
+  }
+
+  log('Selected tool', 'debug', { tool });
+
+  const toolResponse = await tool.run({
+    llm: llms.tool,
+    params: response.params,
+  });
+
+  const toolResponseMessage = `
+    ${message}
+    ${getPrompt('toolResponseStart')}
+
+    Tool: ${response.name}
+
+    Response:
+    ${toolResponse.content}
+  `;
+
+  return handleMessage(llms, toolResponseMessage, tools, depth + 1);
 };
 
 /**
@@ -77,47 +123,24 @@ export const selectTool = async (
  */
 export const chat =
   (llms: Llms, tools: Tools | undefined) =>
-  async (message: string): Promise<agentTypes.AgentResponse> => {
-    const toolSelectResponse = await selectTool(llms.agent, message);
-
-    if (!agentTypes.isAgentToolResponse(toolSelectResponse)) {
-      return toolSelectResponse;
-    }
-
-    log('Tools', 'debug', { tools });
-    log('Tool select response', 'debug', { toolSelectResponse });
-
-    if (!tools) {
-      log('Tool select response', 'error', { toolSelectResponse });
-      throw new Error('No tools available');
-    }
-
-    const tool = tools[toolSelectResponse.name];
-
-    if (!tool) {
-      log('Tool not found', 'error', { toolSelectResponse });
-      throw new Error('Tool not found');
-    }
-
-    log('Selected tool', 'debug', { tool });
-
-    const toolResponse = await tool.run({
-      userPrompt: toolSelectResponse.query,
-      llm: llms.tool,
-      params: toolSelectResponse.params,
-    });
-
-    const toolContextResponse = await sendChat(llms.agent, [
+  async (question: string): Promise<agentTypes.AgentResponse> => {
+    conversation.addMessages('agent', [
       {
-        role: 'user',
-        content: toolResponse.content,
+        role: 'system',
+        content: `
+          ${getPrompt('agent')}
+          ${getPrompt('selectTool')}
+          ${getToolDescriptions(tools)}
+        `,
       },
     ]);
 
-    return {
-      type: 'response',
-      content: toolContextResponse,
-    };
+    const message = `
+      ${getPrompt('userQuestionStart')}
+      ${question}
+    `;
+
+    return handleMessage(llms, message, tools);
   };
 
 export default chat;

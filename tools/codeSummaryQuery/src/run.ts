@@ -8,32 +8,32 @@ import { vectorDbCollectionName as collectionName } from './constants.js';
  * The codeSummaryQuery tool queries a codebase and provides context from a vectordb collection
  * that contains summaries of code files and their contents to an LLM to help answer a user's question.
  *
- * @param basePrompt - The base prompt to use for the Tool
- * @param collectionName - The collection in the vector db to use for the query
- * @param includeCode - Whether to include code in the response
- * @param llm - The LLM to use for the query
- * @param userPrompt - The user's question or prompt
- * @param vectorDb - The vector db to use for the query
+ * @param Object - The parameters for the run
+ * @param Object.llm - The LLM to use for summarization
+ * @param Object.params - The parameters for the run
+ * @param Object.vectorDb - The vector database client to use
  *
- * @returns
+ * @returns - The result of the run
+ *
+ * @throws - If there is an error running the tool
  */
 export const run = async ({
   llm,
   params,
-  userPrompt,
   vectorDb,
 }: RunParams): Promise<ToolRunReturn> => {
   log('codeSummaryTool running', 'debug', {
     collectionName,
     params,
     llm,
-    userPrompt,
   });
+
+  //TODO: Validate params
 
   const dbResponse = await vectorDb.query({
     collectionName,
     opts: {
-      query: userPrompt,
+      query: params['query'] as unknown as string,
       numResults: 5,
     },
   });

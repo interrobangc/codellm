@@ -10,6 +10,24 @@ export const SERVICES_TYPE = {
 export const SERVICES = Object.values(SERVICES_TYPE);
 
 export const LLM_DEFAULTS = {
+  mistral: {
+    agent: {
+      provider: 'mistral',
+      model: 'mistral-large-latest',
+    },
+    embedding: {
+      provider: 'mistral',
+      model: 'mistral-embed',
+    },
+    summarize: {
+      provider: 'mistral',
+      model: 'open-mixtral-8x7b',
+    },
+    tool: {
+      provider: 'mistral',
+      model: 'open-mixtral-8x7b',
+    },
+  },
   ollama: {
     agent: {
       provider: 'ollama',
@@ -54,6 +72,9 @@ export const DEFAULTS = {
   logFormat: 'cli',
   llmProvider: 'ollama',
   providers: {
+    mistral: {
+      apiKey: '',
+    },
     ollama: {
       host: 'http://localhost:11434',
     },

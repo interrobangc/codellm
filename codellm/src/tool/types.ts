@@ -9,7 +9,6 @@ export type ToolRunParamsParams = Record<string, ToolRunParamsParam>;
 
 export type ToolRunParamsCommon = {
   llm: LlmClient;
-  userPrompt: string;
   params: ToolRunParamsParams;
 };
 

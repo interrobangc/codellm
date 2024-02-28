@@ -29,7 +29,7 @@ export type AgentResponseResponse = {
 };
 
 export const isAgentResponseResponse = (
-  i: AgentResponseResponse,
+  i: AgentSelectToolResponse,
 ): i is AgentResponseResponse => {
   return i.type === 'response';
 };
