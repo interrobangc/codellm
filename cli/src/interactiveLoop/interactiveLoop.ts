@@ -1,5 +1,6 @@
 import type { Agent } from '@interrobangc/codellm';
 import ora from 'ora';
+import { log } from '@interrobangc/codellm';
 
 import { promptUser } from './promptUser.js';
 
@@ -11,6 +12,8 @@ export const interactiveLoop: InteractiveLoop = async (agent) => {
   const spinner = ora('Considering...').start();
   const response = await agent.chat(question);
   spinner.stop();
+
+  log('Agent response', 'debug', { response });
 
   // eslint-disable-next-line no-console
   console.log(`[bot] ${response.content}`);

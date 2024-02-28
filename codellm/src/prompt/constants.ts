@@ -30,7 +30,7 @@ export const DEFAULTS = {
 
     {
       "type": "response",
-      "text": "<Write the text of your response here. Your response should be limited to 3 sentences or less.>",
+      "content": "<Write the text of your response here. Your response should be limited to 3 sentences or less.>",
       "code": [
         {
           "code": "<If you include code in your response, us this object structure, if there is no code, the code property of the parent json should be an empty array>",
