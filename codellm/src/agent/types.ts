@@ -1,3 +1,5 @@
+import type { ToolRunParamsParams } from '@/.';
+
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
 };
@@ -37,7 +39,7 @@ export type AgentToolResponse = {
   reason: string;
   name: string;
   query: string;
-  parameters: Record<string, unknown>;
+  params: ToolRunParamsParams;
 };
 
 export const isAgentToolResponse = (

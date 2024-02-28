@@ -40,7 +40,7 @@ tools:
           if not applicable.
         type: str
         required: true
-  - name: CodebaseQATool
+  - name: CodebaseCodeSummaryTool
     description:
       This tool processes a user's prompt, queries the codebase, and then
       uses a language model to generate a response.

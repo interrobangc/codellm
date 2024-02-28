@@ -103,15 +103,20 @@ export const chat =
 
     const toolResponse = await tool.run({
       userPrompt: toolSelectResponse.query,
-      basePrompt: getPrompt('agent'),
       llm: llms.tool,
-      includeCode: true,
-      collectionName: 'fileSummary',
+      params: toolSelectResponse.params,
     });
+
+    const toolContextResponse = await sendChat(llms.agent, [
+      {
+        role: 'user',
+        content: toolResponse.content,
+      },
+    ]);
 
     return {
       type: 'response',
-      content: toolResponse.content,
+      content: toolContextResponse,
     };
   };
 

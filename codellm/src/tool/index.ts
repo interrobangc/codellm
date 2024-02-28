@@ -1,4 +1,4 @@
-import type { Config, Tool } from '@/.';
+import type { Config, Tools } from '@/.';
 
 import isEmpty from 'lodash/isEmpty.js';
 
@@ -13,10 +13,10 @@ import isEmpty from 'lodash/isEmpty.js';
  * @throws If the tool is not found.
  * @throws If there is an error creating the tool.
  */
-export const initTools = async (config: Config) => {
-  if (isEmpty(config.tools)) return;
+export const initTools = async (config: Config): Promise<Tools> => {
+  if (isEmpty(config.tools)) return {};
 
-  const tools: Record<string, Tool> = {};
+  const tools: Tools = {};
 
   const toolInits = config.tools!.map(async (tool) => {
     const toolModule = await import(tool.module);

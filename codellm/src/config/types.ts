@@ -13,8 +13,6 @@ import type {
 export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
 
 export type ConfigCommon = {
-  include: string[];
-  exclude: string[];
   llmProvider: Provider;
   logFormat: LogFormat;
   logLevel: LogLevel;

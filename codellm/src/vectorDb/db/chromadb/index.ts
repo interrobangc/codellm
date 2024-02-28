@@ -15,8 +15,6 @@ import type {
 
 import log from '@/log/index.js';
 
-import { VECTOR_DB_COLLECTIONS } from '@/vectorDb/index.js';
-
 export type CreateCollectionParams = {
   client: ChromaClient;
   params: ChromaCreateCollectionParams;
@@ -130,23 +128,21 @@ export const newClient = async (): Promise<VectorDbClient> => {
   const client = new ChromaClient();
 
   return {
-    init: async () => {
+    init: async (collectionNames: string[]) => {
       await Promise.all(
-        Object.entries(VECTOR_DB_COLLECTIONS).map(
-          async ([, collectionName]) => {
-            collections[collectionName] = await getOrCreateCollection({
-              client,
-              params: {
-                name: collectionName,
-              },
-            });
+        collectionNames.map(async (collectionName) => {
+          collections[collectionName] = await getOrCreateCollection({
+            client,
+            params: {
+              name: collectionName,
+            },
+          });
 
-            log(`vectorDB.init: Initialized ${collectionName}`, 'debug');
-            log(`vectorDB.init: Collection ${collectionName} Peek`, 'silly', {
-              peek: await collections[collectionName]?.peek(),
-            });
-          },
-        ),
+          log(`vectorDB.init: Initialized ${collectionName}`, 'debug');
+          log(`vectorDB.init: Collection ${collectionName} Peek`, 'silly', {
+            peek: await collections[collectionName]?.peek(),
+          });
+        }),
       );
     },
     addDocuments,

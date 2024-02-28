@@ -1,7 +1,8 @@
-import type { MessageList, ToolRunReturn } from '@interrobangc/codellm';
-import type { CodeSummaryQueryRunParams } from './types';
+import type { ToolRunReturn } from '@interrobangc/codellm';
+import type { RunParams } from './types';
 
 import { log } from '@interrobangc/codellm';
+import { vectorDbCollectionName as collectionName } from './constants.js';
 
 /**
  * The codeSummaryQuery tool queries a codebase and provides context from a vectordb collection
@@ -17,17 +18,14 @@ import { log } from '@interrobangc/codellm';
  * @returns
  */
 export const run = async ({
-  basePrompt,
-  collectionName,
-  includeCode,
   llm,
+  params,
   userPrompt,
   vectorDb,
-}: CodeSummaryQueryRunParams): Promise<ToolRunReturn> => {
-  log('qaTool running', 'debug', {
-    basePrompt,
+}: RunParams): Promise<ToolRunReturn> => {
+  log('codeSummaryTool running', 'debug', {
     collectionName,
-    includeCode,
+    params,
     llm,
     userPrompt,
   });
@@ -36,36 +34,21 @@ export const run = async ({
     collectionName,
     opts: {
       query: userPrompt,
-      numResults: 7,
+      numResults: 5,
     },
   });
 
-  log('qaTool dbResponse', 'debug', { dbResponse });
+  log('codeSummaryTool dbResponse', 'debug', { dbResponse });
 
-  // @ts-expect-error - types aren't in place yet
-  const contexts = dbResponse.map(
+  const content = JSON.stringify(
     // @ts-expect-error - types aren't in place yet
-    (doc) => `filename: ${doc.metadata.path}\n\ncode:\n${doc.metadata.content}`,
+    dbResponse.map((d) => ({
+      path: d.metadata.path,
+      summary: d.document,
+      code: params['includeCode'] ? d.metadata.content : undefined,
+      distance: d.distance,
+    })),
   );
-
-  const messages: MessageList = [
-    {
-      role: 'system',
-      content: `
-        ${basePrompt}
-        Use the following contexts to help answer the question:
-        ${contexts.join('\n\n')}
-      `,
-    },
-    {
-      role: 'user',
-      content: userPrompt,
-    },
-  ];
-
-  const content = await llm.chat(messages);
-
-  log('qaTool Lresponse', 'debug', { content });
 
   return { success: true, content };
 };

@@ -1,9 +1,6 @@
 import type { Document, Embedding, Metadata } from 'chromadb';
 
-import type { VECTOR_DB_COLLECTIONS, VECTOR_DBS } from './constants';
-
-export type VectorDbCollection =
-  (typeof VECTOR_DB_COLLECTIONS)[keyof typeof VECTOR_DB_COLLECTIONS];
+import type { VECTOR_DBS } from './constants';
 
 export type VectorDb = (typeof VECTOR_DBS)[keyof typeof VECTOR_DBS];
 
@@ -17,7 +14,7 @@ export type EmbeddingDocument = {
 export type EmbeddingDocumentList = EmbeddingDocument[];
 
 export type VectorDbAddDocumentsParams = {
-  collectionName: VectorDbCollection;
+  collectionName: string;
   documents: EmbeddingDocumentList;
 };
 
@@ -27,7 +24,7 @@ export type VectorDbQueryOpts = {
 };
 
 export type VectorDbQueryParams = {
-  collectionName: VectorDbCollection;
+  collectionName: string;
   opts: VectorDbQueryOpts;
 };
 
@@ -37,7 +34,7 @@ export type VectorDbQueryResultItem = EmbeddingDocument & {
 export type VectorDbQueryResult = VectorDbQueryResultItem[];
 
 export type VectorDbGetParams = {
-  collectionName: VectorDbCollection;
+  collectionName: string;
   ids: string[];
   limit?: number;
   offset?: number;
@@ -47,7 +44,7 @@ export type VectorDbGetResultItem = EmbeddingDocument;
 export type VectorDbGetResult = VectorDbGetResultItem[];
 
 export type VectorDbClient = {
-  init: () => Promise<void>;
+  init: (collectionNames: string[]) => Promise<void>;
   addDocuments: (params: VectorDbAddDocumentsParams) => Promise<void>;
   // query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
   // get: (params: VectorDbGetParams) => Promise<VectorDbGetResult>;

@@ -4,14 +4,17 @@ import { readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 
 import type {
-  Config,
   LlmClient,
   VectorDbAddDocumentsParams,
   VectorDbClient,
 } from '@interrobangc/codellm';
+import type { RunImportParams } from './types.js';
 
-import { DEFAULT_CONFIG } from './constants.js';
-import { llm as codeLlmLlm, log, prompt } from '@interrobangc/codellm';
+import { llm as codeLlmLlm, log } from '@interrobangc/codellm';
+import {
+  vectorDbCollectionName as collectionName,
+  summarizeCodeTaskPrompt,
+} from './constants.js';
 
 /**
  * Summarize the code using the summarize LLM
@@ -27,7 +30,7 @@ export const summarizeCode = async (llm: LlmClient, code: string) => {
   return llm.prompt({
     system: '',
     prompt: `
-    ${prompt.getPrompt('summarizeCode')}
+    ${summarizeCodeTaskPrompt}
     ${code}
   `,
   });
@@ -56,7 +59,7 @@ export const handleFile = async (
   const hash = createHash('sha256').update(content).digest('hex');
 
   const existingDocument = await dbClient.get({
-    collectionName: 'fileSummary',
+    collectionName,
     ids: [id],
   });
 
@@ -73,7 +76,7 @@ export const handleFile = async (
   const response = await summarizeCode(llm, `file: ${path}\n\n${content}`);
 
   const document: VectorDbAddDocumentsParams = {
-    collectionName: 'fileSummary',
+    collectionName,
     documents: [
       {
         id,
@@ -128,11 +131,11 @@ export const importPath = async (
   }
 };
 
-export const runImport = async (
-  toolName: string,
-  config: Config,
-  vectorDb: VectorDbClient,
-) => {
+export const runImport = async ({
+  config,
+  toolConfig,
+  vectorDb,
+}: RunImportParams) => {
   const llms = await codeLlmLlm.initLlms(config, ['summarize']);
   log('codeSummaryQuery runImport LLMs', 'silly', { llms });
   const llm = llms.summarize;
@@ -142,11 +145,6 @@ export const runImport = async (
   }
 
   const path = config.path;
-  const toolConfig = {
-    ...DEFAULT_CONFIG,
-    // @ts-expect-error - types aren't in place yet
-    ...config.tools?.[toolName]?.config,
-  };
   const { include, exclude } = toolConfig;
 
   await importPath(vectorDb, llm, path, include, exclude);
