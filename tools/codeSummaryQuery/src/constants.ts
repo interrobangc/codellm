@@ -5,13 +5,13 @@ export const vectorDbCollectionName = 'codeSummary' as const;
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.ts'],
   exclude: ['**/node_modules/**', '**/dist/**'],
-  vectorDbCollection: 'codeSummary',
+  vectorDbCollection: vectorDbCollectionName,
 } as const;
 
 export const taskPrompt = `Your task is to provide a summary of the code in the context provided to help answer the user's question. If requested, you should also provide relevant code.
 `;
 
-export const summarizeCodeTaskPrompt = `
+export const summarizeTaskPrompt = `
   Your task is to generate an extremely concise summary with minimal prose of the following code file. Keep your summary to 5 sentences or less. Include in your summary:
     - The filename with the path relevant to the project root
     - Dependencies

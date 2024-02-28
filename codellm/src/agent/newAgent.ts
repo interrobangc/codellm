@@ -8,7 +8,7 @@ import chat from './chat.js';
 /**
  * Create a new agent which is the primary interface to interact with the LLMs
  *
- * @param configParam - The configuration to use
+ * @param {PartialConfig} configParam - The configuration to use
  *
  * @returns - The new agent
  */

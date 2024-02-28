@@ -23,8 +23,10 @@ export const newImporter = async (
   return {
     import: async () => {
       if (tools == null) return;
-      const toolImports = Object.values(tools).map((tool) => {
+      const toolImports = Object.entries(tools).map(([toolName, tool]) => {
         if (tool.import == null) return;
+
+        log(`Starting import for ${toolName}`);
         return tool.import();
       });
 

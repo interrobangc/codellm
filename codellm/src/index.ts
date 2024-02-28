@@ -11,6 +11,9 @@ export { vectorDb };
 import * as prompt from './prompt/index.js';
 export { prompt };
 
+import * as toolUtils from './tool/utils/index.js';
+export { toolUtils };
+
 export * from './agent/types.js';
 export * from './config/types.js';
 export * from './importer/types.js';

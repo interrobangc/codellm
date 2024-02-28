@@ -1,5 +1,7 @@
 import type { LlmClient } from '@/.';
 
+export * from './utils/types.js';
+
 export type ToolRunParamsParam = Record<
   string,
   boolean | string | number | object | unknown[]

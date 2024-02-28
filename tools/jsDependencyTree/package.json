@@ -1,7 +1,7 @@
 {
   "name": "@interrobangc/codellm-tool-js-dependency-tree",
   "version": "0.0.1",
-  "description": "Parent repo for code-llm",
+  "description": "code-llm tool to generate a dependency tree for a given package.json file",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "type": "module",

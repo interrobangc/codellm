@@ -47,7 +47,7 @@ export const handleFile = async ({
   filePathHash,
 }: HandleFileParams) => {
   // TODO: dynamic for different passes in a single run
-  const id = `codeSummary:${filePath}`;
+  const id = `docSummary:${filePath}`;
 
   // TODO: track files that have been processed and check fo deletions
 
@@ -105,7 +105,7 @@ export const runImport = async ({
   vectorDb,
 }: RunImportParams) => {
   const llms = await codeLlmLlm.initLlms(config, ['summarize']);
-  log('codeSummaryQuery runImport LLMs', 'silly', { llms });
+  log('docSummaryQuery runImport LLMs', 'silly', { llms });
   const llm = llms.summarize;
 
   if (!llm) {
@@ -116,7 +116,7 @@ export const runImport = async ({
   const { include, exclude } = toolConfig;
 
   await toolUtils.processFiles({
-    toolName: 'codeSummaryQuery',
+    toolName: 'docSummaryQuery',
     path,
     include,
     exclude,

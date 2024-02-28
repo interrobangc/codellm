@@ -8,6 +8,8 @@ llmProvider: ollama # openai | ollama
 tools:
   - name: codeSummaryQuery
     module: '@interrobangc/codellm-tool-code-summary-query'
+  - name: docSummaryQuery
+    module: '@interrobangc/codellm-tool-doc-summary-query'
   - name: jsDependencyTree
     module: '@interrobangc/codellm-tool-js-dependency-tree'
 

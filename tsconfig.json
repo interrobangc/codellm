@@ -5,6 +5,7 @@
   "references": [
     { "path": "codellm" },
     { "path": "tools/codeSummaryQuery" },
+    { "path": "tools/docSummaryQuery" },
     { "path": "tools/jsDependencyTree" },
     { "path": "cli" }
   ]
