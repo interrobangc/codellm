@@ -30,7 +30,7 @@ export const DEFAULTS = {
 
     {
       "type": "response",
-      "content": "<Write the text of your response here. Your response should be limited to 3 sentences or less.>",
+      "content": "<Write the text of your response here. You may use json encoded line breaks in your response>",
       "code": [
         {
           "code": "<If you include code in your response, us this object structure, if there is no code, the code property of the parent json should be an empty array>",
@@ -45,6 +45,8 @@ export const DEFAULTS = {
   `,
 
   toolResponseStart: `
+    If the tool response does not contain the information you need, you can select another tool to help you refine your answer.
+
     ### Tool Response ###
   `,
 };

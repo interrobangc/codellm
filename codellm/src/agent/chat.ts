@@ -34,6 +34,16 @@ export const decodeResponse = (
       'The agent model did not return valid json. The response is probably questionable.',
       'error',
     );
+
+    conversation.addMessages('agent', [
+      {
+        role: 'user',
+        content: `
+          Be sure to use the correct json format in all further responses.
+        `,
+      },
+    ]);
+
     return {
       type: 'response',
       content,
@@ -137,17 +147,6 @@ export const handleToolResponse = async (
 export const chat =
   (llms: Llms, tools: Tools | undefined) =>
   async (question: string): Promise<agentTypes.AgentResponse> => {
-    conversation.addMessages('agent', [
-      {
-        role: 'system',
-        content: `
-          ${getPrompt('agent')}
-          ${getPrompt('selectTool')}
-          ${getToolDescriptions(tools)}
-        `,
-      },
-    ]);
-
     const message = `
       ${getPrompt('userQuestionStart')}
       ${question}
