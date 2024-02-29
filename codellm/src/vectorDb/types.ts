@@ -36,8 +36,9 @@ export type VectorDbQueryParams = {
 };
 
 export type VectorDbQueryResultItem = EmbeddingDocument & {
-  distances: number[][] | null;
+  distance: number | null;
 };
+
 export type VectorDbQueryResult = VectorDbQueryResultItem[];
 
 export type VectorDbGetParams = {
@@ -53,9 +54,7 @@ export type VectorDbGetResult = VectorDbGetResultItem[];
 export type VectorDbClient = {
   init: (collectionNames: string[]) => Promise<void>;
   addDocuments: (params: VectorDbAddDocumentsParams) => Promise<void>;
-  // query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
-  // get: (params: VectorDbGetParams) => Promise<VectorDbGetResult>;
-  query: (params: VectorDbQueryParams) => Promise<unknown>;
+  query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
   get: (params: VectorDbGetParams) => Promise<unknown>;
 };
 

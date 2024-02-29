@@ -2,14 +2,11 @@ import type {
   LlmClient,
   ProcessFileHandleParams,
   VectorDbAddDocumentsParams,
-} from '@interrobangc/codellm';
-import type { HandleFileParams, RunImportParams } from './types.js';
+  VectorizeFileParams,
+  VectorizeFilesParams,
+} from '@/.';
 
-import { llm as codeLlmLlm, log, toolUtils } from '@interrobangc/codellm';
-import {
-  vectorDbCollectionName as collectionName,
-  summarizeTaskPrompt,
-} from './constants.js';
+import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
 
 /**
  * Summarize the code using the summarize LLM
@@ -21,11 +18,15 @@ import {
  *
  * @throws - If there is an error summarizing the code
  */
-export const summarize = async (llm: LlmClient, code: string) => {
+export const summarize = async (
+  llm: LlmClient,
+  prompt: string,
+  code: string,
+) => {
   return llm.prompt({
     system: '',
     prompt: `
-    ${summarizeTaskPrompt}
+    ${prompt}
     ${code}
   `,
   });
@@ -38,14 +39,16 @@ export const summarize = async (llm: LlmClient, code: string) => {
  * @param llm - The LLM to use for summarization
  * @param path - The path to the file to handle
  */
-export const handleFile = async ({
+export const vectorizeFile = async ({
   dbClient,
   llm,
   fileContent,
   fileContentHash,
   filePath,
   filePathHash,
-}: HandleFileParams) => {
+  collectionName,
+  prompt,
+}: VectorizeFileParams) => {
   // TODO: dynamic for different passes in a single run
   const id = `codeSummary:${filePath}`;
 
@@ -66,7 +69,11 @@ export const handleFile = async ({
     return;
   }
 
-  const response = await summarize(llm, `file: ${filePath}\n\n${fileContent}`);
+  const response = await summarize(
+    llm,
+    prompt,
+    `file: ${filePath}\n\n${fileContent}`,
+  );
 
   const document: VectorDbAddDocumentsParams = {
     collectionName,
@@ -87,25 +94,15 @@ export const handleFile = async ({
   await dbClient.addDocuments(document);
 };
 
-/**
- * Run the import for the codeSummaryQuery tool
- *
- * @param params Object - The parameters for the import
- * @param params.config - The codellm configuration
- * @param params.toolConfig - The tool configuration
- * @param params.vectorDb - The vector database client to use
- *
- * @returns - The result of the import
- *
- * @throws - If there is an error running the import
- */
-export const runImport = async ({
+export const vectorizeFiles = async ({
   config,
-  toolConfig,
   dbClient,
-}: RunImportParams) => {
+  prompts,
+  toolConfig,
+  toolName,
+}: VectorizeFilesParams): Promise<void> => {
   const llms = await codeLlmLlm.initLlms(config, ['summarize']);
-  log('codeSummaryQuery runImport LLMs', 'silly', { llms });
+  log(`${toolName} runImport LLMs`, 'silly', { llms });
   const llm = llms.summarize;
 
   if (!llm) {
@@ -116,19 +113,17 @@ export const runImport = async ({
   const { include, exclude } = toolConfig;
 
   await toolUtils.processFiles({
-    toolName: 'codeSummaryQuery',
+    toolName,
     path,
     include,
     exclude,
     handle: (params: ProcessFileHandleParams) =>
-      handleFile({
+      vectorizeFile({
         dbClient,
         llm,
+        collectionName: toolConfig.vectorDbCollectionName,
+        prompt: prompts.summarize,
         ...params,
       }),
   });
-
-  return { success: true, content: 'success' };
 };
-
-export default runImport;
