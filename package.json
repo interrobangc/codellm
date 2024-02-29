@@ -42,11 +42,14 @@
     "start:datastore": "docker compose up -d",
     "stop:datastore": "docker compose down",
     "logs:datastore": "docker compose logs -f",
-    "test": "run-s lint test:tsc test:unit",
+    "test": "run-s lint:fix test:tsc test:unit",
     "test:unit": "npm run --workspaces --if-present test:unit",
-    "test:tsc": "tsc --verbose --noEmit",
+    "test:tsc": "tsc --noEmit",
     "lint": "run-s lint:prettier lint:eslint",
-    "lint:prettier": "prettier . --write",
-    "lint:eslint": "eslint . --fix"
+    "lint:fix": "run-s lint:prettier:fix lint:eslint:fix",
+    "lint:prettier": "prettier . --check",
+    "lint:prettier:fix": "prettier . --write",
+    "lint:eslint": "eslint .",
+    "lint:eslint:fix": "eslint . --fix"
   }
 }
