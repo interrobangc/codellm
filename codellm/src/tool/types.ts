@@ -24,7 +24,7 @@ export type ToolConfig = Record<string, unknown>;
 export type ToolConfigItem = {
   name: string;
   module: string;
-  config: Record<string, unknown>;
+  config: ToolConfig;
 };
 
 export type ToolDescriptionParamsType = 'bool' | 'string' | 'number';
