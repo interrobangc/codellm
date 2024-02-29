@@ -45,6 +45,7 @@ export const newTool = async (
       });
 
       const content = JSON.stringify(
+        // @ts-expect-error - types aren't in place yet
         dbResponse.map((d) => ({
           path: d.metadata['path'],
           summary: d.document,
