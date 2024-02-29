@@ -7,7 +7,8 @@ export const numResults = 15;
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.ts'],
   exclude: ['**/node_modules/**', '**/dist/**'],
-  vectorDbCollection: vectorDbCollectionName,
+  vectorDbCollectionName,
+  vectorDbName: 'chromadb',
 } as const;
 
 export const taskPrompt = `Your task is to provide a summary of the code in the context provided to help answer the user's question. If requested, you should also provide relevant code.

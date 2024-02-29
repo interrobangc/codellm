@@ -1,4 +1,5 @@
 import type { Config, Tool, ToolRunParamsCommon } from '@interrobangc/codellm';
+import type { ToolConfig } from './types';
 
 import { DEFAULT_CONFIG, description } from './constants.js';
 import run from './run.js';
@@ -16,9 +17,8 @@ export const newTool = async (
 ): Promise<Tool> => {
   const toolConfig = {
     ...DEFAULT_CONFIG,
-    // @ts-expect-error - types aren't in place yet
-    ...config.tools?.[toolName]?.config,
-  };
+    ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
+  } as ToolConfig;
 
   return {
     run: async (params: ToolRunParamsCommon) =>

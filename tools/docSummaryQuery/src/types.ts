@@ -5,19 +5,20 @@ import type {
   ProcessFilesToolConfig,
   ToolRunParamsCommon,
   VectorDbClient,
+  VectorDbToolConfig,
 } from '@interrobangc/codellm';
 
-export type ToolConfig = ProcessFilesToolConfig;
+export type ToolConfig = ProcessFilesToolConfig & VectorDbToolConfig;
 
 export type RunParams = ToolRunParamsCommon & {
+  dbClient: VectorDbClient;
   toolConfig: ToolConfig;
-  vectorDb: VectorDbClient;
 };
 
 export type RunImportParams = {
   config: Config;
+  dbClient: VectorDbClient;
   toolConfig: ToolConfig;
-  vectorDb: VectorDbClient;
 };
 
 export type HandleFileParams = ProcessFileHandleParams & {

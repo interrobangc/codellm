@@ -22,10 +22,11 @@ export type ToolRunReturn = {
 export type ToolConfig = Record<string, unknown>;
 
 export type ToolConfigItem = {
-  name: string;
   module: string;
   config: ToolConfig;
 };
+
+export type ToolConfigs = Record<string, ToolConfigItem>;
 
 export type ToolDescriptionParamsType = 'bool' | 'string' | 'number';
 
@@ -49,3 +50,8 @@ export type Tool = {
   description: ToolDescription;
 };
 export type Tools = Record<string, Tool>;
+
+export type VectorDbToolConfig = {
+  vectorDbName: string;
+  vectorDbCollectionName: string;
+};

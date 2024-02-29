@@ -102,7 +102,7 @@ export const handleFile = async ({
 export const runImport = async ({
   config,
   toolConfig,
-  vectorDb,
+  dbClient,
 }: RunImportParams) => {
   const llms = await codeLlmLlm.initLlms(config, ['summarize']);
   log('codeSummaryQuery runImport LLMs', 'silly', { llms });
@@ -122,7 +122,7 @@ export const runImport = async ({
     exclude,
     handle: (params: ProcessFileHandleParams) =>
       handleFile({
-        dbClient: vectorDb,
+        dbClient,
         llm,
         ...params,
       }),

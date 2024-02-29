@@ -1,19 +1,21 @@
-import type { Config, VectorDb, VectorDbClient } from '@/.';
-import { VECTOR_DB_MODULES } from './constants.js';
+import type { Config, VectorDb, VectorDbClient, VectorDbs } from '@/.';
+import log from '@/log/index.js';
+
+const vectorDbs: VectorDbs = {};
 
 /**
  * Import a VectorDb module from the vectorDb library
  *
- * @param dbName - The name of the VectorDb to import.
+ * @param {VectorDb} name - The name of the VectorDb to import.
+ * @param {VectorDbConfigItem} config - The configuration for the VectorDb.
  *
  * @returns The VectorDb module.
- *
- * @throws If the VectorDb is not found.
- * @throws If there is an error importing the VectorDb.
- */
-export const importVectorDb = async (dbName: VectorDb) => {
-  const dbModule = VECTOR_DB_MODULES[dbName];
-  if (!dbModule) throw new Error(`VectorDb not found: ${dbName}`);
+ **/
+export const importVectorDbModule = async (name: VectorDb, config: Config) => {
+  const dbConfig = config.vectorDbs[name];
+
+  if (!dbConfig) throw new Error(`VectorDb config not found: ${name}`);
+  const dbModule = dbConfig.module;
 
   return import(dbModule);
 };
@@ -21,14 +23,27 @@ export const importVectorDb = async (dbName: VectorDb) => {
 /**
  * Create a new VectorDbClient instance from the vectorDb library
  *
- * @param config - The configuration object.
+ * @param {VectorDb} name - The name of the VectorDb to get.
+ * @param {Config} config - The configuration object.
  *
  * @returns The new VectorDbClient instance.
  */
-export const newClient = async (config: Config): Promise<VectorDbClient> => {
-  const db = await importVectorDb(config.vectorDb);
-  return db.newClient();
+export const newClient = async (
+  name: VectorDb,
+  config: Config,
+): Promise<VectorDbClient> => {
+  log(`vectordb newClient: ${name}`, 'silly');
+
+  if (!vectorDbs[name]) {
+    const module = await importVectorDbModule(name, config);
+    vectorDbs[name] = module.newClient();
+  }
+
+  if (!vectorDbs[name]) {
+    throw new Error(`VectorDb not found: ${name}`);
+  }
+
+  return vectorDbs[name]!;
 };
 
 export * from './types.js';
-export * from './constants.js';

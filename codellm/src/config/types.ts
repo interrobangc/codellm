@@ -6,8 +6,8 @@ import type {
   Provider,
   ProviderConfigs,
   ProviderServiceItem,
-  ToolConfigItem,
-  VectorDb,
+  ToolConfigs,
+  VectorDbConfigs,
 } from '@/.';
 
 export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
@@ -17,16 +17,17 @@ export type ConfigCommon = {
   logFormat: LogFormat;
   logLevel: LogLevel;
   path: string;
-  vectorDb: VectorDb;
-  tools?: ToolConfigItem[];
+  tools?: ToolConfigs;
 };
 
 export type Config = ConfigCommon & {
   llms: Record<Service, ProviderServiceItem>;
   providers: ProviderConfigs;
+  vectorDbs: VectorDbConfigs;
 };
 
 export type PartialConfig = Partial<ConfigCommon> & {
   llms?: Partial<Record<Service, ProviderServiceItem>>;
   providers?: ProviderConfigs;
+  vectorDbs?: VectorDbConfigs;
 };

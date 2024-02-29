@@ -18,9 +18,9 @@ export const initTools = async (config: Config): Promise<Tools> => {
 
   const tools: Tools = {};
 
-  const toolInits = config.tools!.map(async (tool) => {
+  const toolInits = Object.entries(config.tools).map(async ([name, tool]) => {
     const toolModule = await import(tool.module);
-    tools[tool.name] = await toolModule.newTool(tool.name, config);
+    tools[name] = await toolModule.newTool(name, config);
   });
 
   await Promise.all(toolInits);
