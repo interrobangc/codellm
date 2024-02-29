@@ -39,6 +39,7 @@ module.exports = {
         ignoreDeclarationSort: true,
       },
     ],
+    '@typescript-eslint/dot-notation': 'ignore',
   },
   settings: {
     'import/resolver': {
