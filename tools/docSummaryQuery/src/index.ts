@@ -1,10 +1,17 @@
-import type { Config, Tool, ToolRunParamsCommon } from '@interrobangc/codellm';
+import type {
+  Config,
+  Tool,
+  ToolRunParamsCommon,
+  ToolRunReturn,
+} from '@interrobangc/codellm';
 import type { ToolConfig } from './types';
 
-import { vectorDb } from '@interrobangc/codellm';
-import { DEFAULT_CONFIG, description } from './constants.js';
-import run from './run.js';
-import runImport from './runImport.js';
+import { toolUtils } from '@interrobangc/codellm';
+import {
+  DEFAULT_CONFIG,
+  description,
+  summarizeTaskPrompt,
+} from './constants.js';
 
 /**
  * Create a new codeSummaryQuery tool
@@ -23,19 +30,37 @@ export const newTool = async (
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
   } as ToolConfig;
 
-  const { vectorDbCollectionName, vectorDbName } = toolConfig;
-
-  const dbClient = await vectorDb.newClient(vectorDbName, config);
-  await dbClient.init([vectorDbCollectionName]);
+  const vectorizeFilesClient = await toolUtils.vectorizeFiles.newClient(
+    toolName,
+    config,
+    toolConfig,
+  );
 
   return {
-    run: async (params: ToolRunParamsCommon) =>
-      run({
+    run: async (params: ToolRunParamsCommon): Promise<ToolRunReturn> => {
+      const dbResponse = await vectorizeFilesClient.query({
         ...params,
-        toolConfig,
-        dbClient,
-      }),
-    import: async () => runImport({ config, toolConfig, dbClient }),
+        toolName,
+      });
+
+      const content = JSON.stringify(
+        // @ts-expect-error - types aren't in place yet
+        dbResponse.map((d) => ({
+          path: d.metadata.path,
+          summary: d.document,
+          content: d.metadata.content,
+          distance: d.distance,
+        })),
+      );
+
+      return { success: true, content };
+    },
+    import: async () => {
+      await vectorizeFilesClient.vectorizeFiles({
+        summarize: summarizeTaskPrompt,
+      });
+      return { success: true, content: 'Import complete' };
+    },
     description,
   };
 };

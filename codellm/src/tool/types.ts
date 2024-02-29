@@ -50,8 +50,3 @@ export type Tool = {
   description: ToolDescription;
 };
 export type Tools = Record<string, Tool>;
-
-export type VectorDbToolConfig = {
-  vectorDbName: string;
-  vectorDbCollectionName: string;
-};

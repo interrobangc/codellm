@@ -2,13 +2,12 @@ import type {
   Config,
   LlmClient,
   ProcessFileHandleParams,
-  ProcessFilesToolConfig,
   ToolRunParamsCommon,
   VectorDbClient,
-  VectorDbToolConfig,
+  VectorizeFilesToolConfig,
 } from '@interrobangc/codellm';
 
-export type ToolConfig = ProcessFilesToolConfig & VectorDbToolConfig;
+export type ToolConfig = VectorizeFilesToolConfig;
 
 export type RunParams = ToolRunParamsCommon & {
   dbClient: VectorDbClient;

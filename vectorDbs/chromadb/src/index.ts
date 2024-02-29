@@ -11,6 +11,7 @@ import type {
   VectorDbClient,
   VectorDbGetParams,
   VectorDbQueryParams,
+  VectorDbQueryResult,
 } from '@interrobangc/codellm';
 
 import { log } from '@interrobangc/codellm';
@@ -150,7 +151,7 @@ export const newClient = async (): Promise<VectorDbClient> => {
     query: async ({
       collectionName,
       opts: { query, numResults },
-    }: VectorDbQueryParams) => {
+    }: VectorDbQueryParams): Promise<VectorDbQueryResult> => {
       log(`vectorDB.query: Querying ${collectionName}`, 'silly', {
         query,
         numResults,
@@ -163,12 +164,14 @@ export const newClient = async (): Promise<VectorDbClient> => {
 
       log(`vectorDB.query: Query response`, 'silly', { resp });
 
-      return resp.ids?.[0]?.map((id, i) => ({
-        id,
-        metadata: resp.metadatas?.[0]?.[i],
-        document: resp.documents?.[0]?.[i],
-        distance: resp.distances?.[0]?.[i] ?? 0,
-      }));
+      return (
+        resp.ids?.[0]?.map((id, i) => ({
+          id,
+          metadata: resp.metadatas?.[0]?.[i] ?? {},
+          document: resp.documents?.[0]?.[i] ?? '',
+          distance: resp.distances?.[0]?.[i] ?? null,
+        })) ?? []
+      );
     },
 
     get: async ({ collectionName, ids }: VectorDbGetParams) => {
