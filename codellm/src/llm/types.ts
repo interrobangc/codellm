@@ -1,25 +1,23 @@
-import type {
-  Config,
-  MistralConfig,
-  OllamaConfig,
-  OpenaiConfig,
-  Service,
-} from '@/.';
-import type { CHAT_MESSAGE_ROLES_TYPE, PROVIDERS_TYPE } from './constants';
+import type { Config, Service } from '@/.';
+import type { CHAT_MESSAGE_ROLES_TYPE } from './constants';
 
 export * from './conversation/types.js';
-export * from './provider/mistral/types.js';
-export * from './provider/ollama/types.js';
-export * from './provider/openai/types.js';
 
-export type Provider = (typeof PROVIDERS_TYPE)[keyof typeof PROVIDERS_TYPE];
+export type Provider = string;
 
-export type ProviderItem = {
+export type ProviderConfig = Record<string, unknown>;
+
+export type ProviderConfigItem = {
+  module: string;
+  config: ProviderConfig;
+};
+
+export type ProviderConfigs = Record<Provider, ProviderConfigItem>;
+
+export type ProviderServiceItem = {
   provider: Provider;
   model: string;
 };
-
-export type ProviderConfig = MistralConfig | OllamaConfig | OpenaiConfig;
 
 export type ChatMessageRole =
   (typeof CHAT_MESSAGE_ROLES_TYPE)[keyof typeof CHAT_MESSAGE_ROLES_TYPE];

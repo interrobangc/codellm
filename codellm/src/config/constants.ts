@@ -13,7 +13,7 @@ export const LLM_DEFAULTS = {
   mistral: {
     agent: {
       provider: 'mistral',
-      model: 'mistral-large-latest',
+      model: 'open-mixtral-8x7b',
     },
     embedding: {
       provider: 'mistral',
@@ -73,13 +73,23 @@ export const DEFAULTS = {
   llmProvider: 'ollama',
   providers: {
     mistral: {
-      apiKey: '',
+      module: '@interrobangc/codellm-provider-mistral',
+      config: {
+        apiKey: '',
+        endpoint: 'https://api.mistral.ai',
+      },
     },
     ollama: {
-      host: 'http://localhost:11434',
+      module: '@interrobangc/codellm-provider-ollama',
+      config: {
+        host: 'http://localhost:11434',
+      },
     },
     openai: {
-      apiKey: '',
+      module: '@interrobangc/codellm-provider-openai',
+      config: {
+        apiKey: '',
+      },
     },
   },
   tools: [

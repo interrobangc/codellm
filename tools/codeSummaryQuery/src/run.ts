@@ -2,7 +2,10 @@ import type { ToolRunReturn } from '@interrobangc/codellm';
 import type { RunParams } from './types';
 
 import { log } from '@interrobangc/codellm';
-import { vectorDbCollectionName as collectionName } from './constants.js';
+import {
+  vectorDbCollectionName as collectionName,
+  numResults,
+} from './constants.js';
 
 /**
  * The codeSummaryQuery tool queries a codebase and provides context from a vectordb collection
@@ -34,7 +37,7 @@ export const run = async ({
     collectionName,
     opts: {
       query: params['query'] as unknown as string,
-      numResults: 5,
+      numResults,
     },
   });
 

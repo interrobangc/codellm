@@ -1,12 +1,11 @@
-import MistralClient from '@mistralai/mistralai';
 import type {
   MessageList,
-  MistralConfig,
   PromptParams,
   ProviderGetClientParams,
-} from '@/.';
+} from '@interrobangc/codellm';
+import type { MistralConfig } from './types';
 
-// import log from '@/log/index.js';
+import MistralClient from '@mistralai/mistralai';
 
 export const newClient = async ({ model, config }: ProviderGetClientParams) => {
   const client = new MistralClient(

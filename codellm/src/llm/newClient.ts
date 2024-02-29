@@ -1,4 +1,5 @@
 import type {
+  Config,
   GetClientParams,
   LlmClient,
   LlmProviderClient,
@@ -9,7 +10,6 @@ import type {
 } from '@/.';
 
 import log from '@/log/index.js';
-import { PROVIDER_MODULES } from './constants.js';
 import * as conversation from './conversation/index.js';
 
 /**
@@ -70,11 +70,19 @@ export const chat = async (
  *
  * @throws - If the provider is not found
  */
-const importProvider = (provider: Provider) => {
-  const providerModule = PROVIDER_MODULES[provider];
-  if (!providerModule) throw new Error(`Provider not found: ${provider}`);
+const getClient = async (config: Config, provider: Provider) => {
+  const providerConfigItem = config.providers[provider];
 
-  return import(providerModule);
+  if (!providerConfigItem) {
+    throw new Error(`Provider not found: ${provider}`);
+  }
+
+  const { config: providerConfig, module } = providerConfigItem;
+
+  return {
+    providerModule: await import(module),
+    providerConfig,
+  };
 };
 
 /**
@@ -92,11 +100,12 @@ export const newClient = async ({
   service,
 }: GetClientParams): Promise<LlmClient> => {
   const { model, provider } = config.llms[service];
-  const pm = await importProvider(provider);
 
-  const client = await pm.newClient({
+  const { providerConfig, providerModule } = await getClient(config, provider);
+
+  const client = await providerModule.newClient({
+    config: providerConfig,
     model,
-    config: config.providers[provider],
   });
 
   return {

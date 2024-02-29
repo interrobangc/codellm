@@ -29,12 +29,12 @@ export const OPTIONS = {
     description: 'Path to search',
     default: process.env['CODELLM_PATH'],
   },
-  'providers.mistral.apiKey': {
+  'providers.mistral.config.apiKey': {
     type: 'string',
     description: 'Mistral API key',
     default: process.env['MISTRAL_API_KEY'],
   },
-  'providers.openai.apiKey': {
+  'providers.openai.config.apiKey': {
     type: 'string',
     description: 'OpenAI API key',
     default: process.env['OPENAI_API_KEY'],

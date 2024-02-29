@@ -2,6 +2,8 @@ import type { ToolConfig, ToolDescription } from '@interrobangc/codellm';
 
 export const vectorDbCollectionName = 'codeSummary' as const;
 
+export const numResults = 15;
+
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.ts'],
   exclude: ['**/node_modules/**', '**/dist/**'],

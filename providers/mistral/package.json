@@ -1,0 +1,17 @@
+{
+  "name": "@interrobangc/codellm-provider-mistral",
+  "version": "0.0.1",
+  "description": "code-llm provider for mistral",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@interrobangc/codellm": "^0.0.1",
+    "@mistralai/mistralai": "^0.1.3"
+  }
+}

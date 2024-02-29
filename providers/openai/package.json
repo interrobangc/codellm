@@ -1,0 +1,17 @@
+{
+  "name": "@interrobangc/codellm-provider-openai",
+  "version": "0.0.1",
+  "description": "code-llm provider for OpenAI",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@interrobangc/codellm": "^0.0.1",
+    "openai": "^4.28.4"
+  }
+}
