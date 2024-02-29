@@ -51,10 +51,6 @@ export const decodeResponse = (
   }
 };
 
-export const getToolDescriptions = (tools: Tools = {}) => {
-  return JSON.stringify(Object.values(tools).map((tool) => tool.description));
-};
-
 export const handleMessage = async (
   llms: Llms,
   message: string,

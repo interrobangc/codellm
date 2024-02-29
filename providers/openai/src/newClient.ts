@@ -1,10 +1,11 @@
-import OpenAI from 'openai';
 import type {
   MessageList,
-  OpenaiConfig,
   PromptParams,
   ProviderGetClientParams,
-} from '@/.';
+} from '@interrobangc/codellm';
+import type { OpenaiConfig } from './types';
+
+import OpenAI from 'openai';
 
 export const newClient = ({ model, config }: ProviderGetClientParams) => {
   const client = new OpenAI(config as OpenaiConfig);

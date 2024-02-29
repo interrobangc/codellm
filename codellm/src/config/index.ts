@@ -10,11 +10,10 @@ let config: Config;
 export const initConfig = (newConfig: PartialConfig) => {
   config = merge({}, DEFAULTS, newConfig) as Config;
 
-  config.llms = merge(
-    {},
-    LLM_DEFAULTS[config.llmProvider],
-    newConfig.llms,
-  ) as Config['llms'];
+  const llmDefaults =
+    LLM_DEFAULTS[config.llmProvider as keyof typeof LLM_DEFAULTS] || {};
+
+  config.llms = merge({}, llmDefaults, newConfig.llms) as Config['llms'];
 
   initLogger(config);
   log('Config set', 'debug', config);

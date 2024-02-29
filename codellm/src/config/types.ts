@@ -4,8 +4,8 @@ import type {
   LogFormat,
   LogLevel,
   Provider,
-  ProviderConfig,
-  ProviderItem,
+  ProviderConfigs,
+  ProviderServiceItem,
   ToolConfigItem,
   VectorDb,
 } from '@/.';
@@ -22,11 +22,11 @@ export type ConfigCommon = {
 };
 
 export type Config = ConfigCommon & {
-  llms: Record<Service, ProviderItem>;
-  providers: Record<Provider, ProviderConfig>;
+  llms: Record<Service, ProviderServiceItem>;
+  providers: ProviderConfigs;
 };
 
 export type PartialConfig = Partial<ConfigCommon> & {
-  llms?: Partial<Record<Service, ProviderItem>>;
-  providers?: Partial<Record<Provider, ProviderConfig>>;
+  llms?: Partial<Record<Service, ProviderServiceItem>>;
+  providers?: ProviderConfigs;
 };

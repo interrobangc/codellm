@@ -7,6 +7,9 @@
     { "path": "tools/codeSummaryQuery" },
     { "path": "tools/docSummaryQuery" },
     { "path": "tools/jsDependencyTree" },
+    { "path": "providers/ollama" },
+    { "path": "providers/openai" },
+    { "path": "providers/mistral" },
     { "path": "cli" }
   ]
 }

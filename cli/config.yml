@@ -34,8 +34,11 @@ tools:
 # the OPEN_AI_API_KEY or MISTRAL_API_KEY environment variable instead of hardcoding your key here
 providers:
   mistral:
-    apiKey: ''
+    config:
+      apiKey: ''
   openai:
-    apiKey: ''
+    config:
+      apiKey: ''
   ollama:
-    host: 'http://localhost:11434'
+    config:
+      host: 'http://localhost:11434'
