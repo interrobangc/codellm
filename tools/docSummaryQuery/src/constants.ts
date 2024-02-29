@@ -3,7 +3,7 @@ import type { ToolConfig, ToolDescription } from '@interrobangc/codellm';
 export const vectorDbCollectionName = 'docSummary' as const;
 
 export const DEFAULT_CONFIG: ToolConfig = {
-  include: ['**/*.ts', '**/*.md', '**/*.txt'],
+  include: ['**/*.md', '**/*.txt'],
   exclude: ['**/node_modules/**', '**/dist/**'],
   vectorDbCollection: vectorDbCollectionName,
 } as const;
