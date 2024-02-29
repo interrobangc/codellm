@@ -5,7 +5,8 @@ export const vectorDbCollectionName = 'docSummary' as const;
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.md', '**/*.txt'],
   exclude: ['**/node_modules/**', '**/dist/**'],
-  vectorDbCollection: vectorDbCollectionName,
+  vectorDbCollectionName,
+  vectorDbName: 'chromadb',
 } as const;
 
 export const taskPrompt = `Your task is to provide a summary of the documentation in the context provided to help answer the user's question.

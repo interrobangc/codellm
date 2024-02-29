@@ -11,9 +11,9 @@ import type {
   VectorDbClient,
   VectorDbGetParams,
   VectorDbQueryParams,
-} from '@/.';
+} from '@interrobangc/codellm';
 
-import log from '@/log/index.js';
+import { log } from '@interrobangc/codellm';
 
 export type CreateCollectionParams = {
   client: ChromaClient;

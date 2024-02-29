@@ -1,0 +1,17 @@
+{
+  "name": "@interrobangc/codellm-vectordb-chromadb",
+  "version": "0.0.1",
+  "description": "code-llm vectorDb client for chroma",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@interrobangc/codellm": "^0.0.1",
+    "chromadb": "^1.8.1"
+  }
+}

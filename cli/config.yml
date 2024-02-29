@@ -6,11 +6,15 @@ logLevel: info # error| info | warn | error | debug | silly
 llmProvider: ollama # openai | ollama
 
 tools:
-  - name: codeSummaryQuery
+  codeSummaryQuery:
     module: '@interrobangc/codellm-tool-code-summary-query'
-  - name: docSummaryQuery
+    config:
+      vectorDbName: chromadb
+  docSummaryQuery:
     module: '@interrobangc/codellm-tool-doc-summary-query'
-  - name: jsDependencyTree
+    config:
+      vectorDbName: chromadb
+  jsDependencyTree:
     module: '@interrobangc/codellm-tool-js-dependency-tree'
 
 # The configuration for individual providers can be set here. You probably want to use

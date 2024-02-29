@@ -1,6 +1,7 @@
 import type { Config, Tool, ToolRunParamsCommon } from '@interrobangc/codellm';
+import type { ToolConfig } from './types';
 
-import { vectorDb as codeLlmVectorDb } from '@interrobangc/codellm';
+import { vectorDb } from '@interrobangc/codellm';
 import {
   DEFAULT_CONFIG,
   description,
@@ -21,23 +22,24 @@ export const newTool = async (
   toolName: string,
   config: Config,
 ): Promise<Tool> => {
-  const vectorDb = await codeLlmVectorDb.newClient(config);
-  await vectorDb.init([vectorDbCollectionName]);
-
   const toolConfig = {
     ...DEFAULT_CONFIG,
-    // @ts-expect-error - types aren't in place yet
-    ...config.tools?.[toolName]?.config,
-  };
+    ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
+  } as ToolConfig;
+
+  const { vectorDbName } = toolConfig;
+
+  const dbClient = await vectorDb.newClient(vectorDbName, config);
+  await dbClient.init([vectorDbCollectionName]);
 
   return {
     run: async (params: ToolRunParamsCommon) =>
       run({
         ...params,
         toolConfig,
-        vectorDb,
+        dbClient,
       }),
-    import: async () => runImport({ config, toolConfig, vectorDb }),
+    import: async () => runImport({ config, toolConfig, dbClient }),
     description,
   };
 };

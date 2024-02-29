@@ -92,14 +92,20 @@ export const DEFAULTS = {
       },
     },
   },
-  tools: [
-    {
-      name: 'codeSummaryQuery',
+  tools: {
+    codeSummaryQuery: {
       module: '@interrobangc/codellm-tool-code-summary-query',
+      config: {
+        vectorDbName: 'chromadb',
+      },
     },
-  ],
+  },
 
-  vectorDb: 'chromadb',
+  vectorDbs: {
+    chromadb: {
+      module: '@interrobangc/codellm-vectordb-chromadb',
+    },
+  },
 } as const;
 
 /* eslint-enable sonarjs/no-duplicate-string */

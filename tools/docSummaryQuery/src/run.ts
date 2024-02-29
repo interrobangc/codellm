@@ -20,7 +20,7 @@ import { vectorDbCollectionName as collectionName } from './constants.js';
 export const run = async ({
   llm,
   params,
-  vectorDb,
+  dbClient,
 }: RunParams): Promise<ToolRunReturn> => {
   log('codeSummaryTool running', 'debug', {
     collectionName,
@@ -30,7 +30,7 @@ export const run = async ({
 
   //TODO: Validate params
 
-  const dbResponse = await vectorDb.query({
+  const dbResponse = await dbClient.query({
     collectionName,
     opts: {
       query: params['query'] as unknown as string,

@@ -14,11 +14,10 @@
     "test:unit": "jest --coverage '.*\\.test\\.ts'"
   },
   "dependencies": {
-    "chromadb": "^1.8.1",
+    "@langchain/core": "^0.1.40",
     "chromadb-default-embed": "^2.13.2",
     "crypto": "^1.0.1",
     "globby": "^14.0.1",
-    "langchain": "^0.1.24",
     "lodash": "^4.17.21",
     "winston": "^3.11.0"
   },

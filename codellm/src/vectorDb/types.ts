@@ -1,8 +1,15 @@
 import type { Document, Embedding, Metadata } from 'chromadb';
 
-import type { VECTOR_DBS } from './constants';
+export type VectorDb = string;
 
-export type VectorDb = (typeof VECTOR_DBS)[keyof typeof VECTOR_DBS];
+export type VectorDbClientConfig = Record<string, unknown>;
+
+export type VectorDbConfigItem = {
+  module: string;
+  config: VectorDbClientConfig;
+};
+
+export type VectorDbConfigs = Record<VectorDb, VectorDbConfigItem>;
 
 export type EmbeddingDocument = {
   id: string;
@@ -51,3 +58,5 @@ export type VectorDbClient = {
   query: (params: VectorDbQueryParams) => Promise<unknown>;
   get: (params: VectorDbGetParams) => Promise<unknown>;
 };
+
+export type VectorDbs = Record<VectorDb, VectorDbClient>;

@@ -17,6 +17,7 @@
     "@interrobangc/codellm": "^0.0.1",
     "@interrobangc/codellm-tool-code-summary-query": "^0.0.1",
     "@interrobangc/codellm-tool-js-dependency-tree": "^0.0.1",
+    "@interrobangc/codellm-vectordb-chromadb": "^0.0.1",
     "@langchain/openai": "^0.0.15",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
