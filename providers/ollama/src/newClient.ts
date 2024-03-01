@@ -2,7 +2,7 @@ import type {
   MessageList,
   PromptParams,
   ProviderGetClientParams,
-} from '@interrobangc/codellm';
+} from '@codellm/core';
 import type { OllamaConfig } from './types';
 
 import { Ollama } from 'ollama';

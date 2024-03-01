@@ -73,20 +73,20 @@ export const DEFAULTS = {
   llmProvider: 'ollama',
   providers: {
     mistral: {
-      module: '@interrobangc/codellm-provider-mistral',
+      module: '@codellm/codellm-provider-mistral',
       config: {
         apiKey: '',
         endpoint: 'https://api.mistral.ai',
       },
     },
     ollama: {
-      module: '@interrobangc/codellm-provider-ollama',
+      module: '@codellm/codellm-provider-ollama',
       config: {
         host: 'http://localhost:11434',
       },
     },
     openai: {
-      module: '@interrobangc/codellm-provider-openai',
+      module: '@codellm/codellm-provider-openai',
       config: {
         apiKey: '',
       },
@@ -94,7 +94,7 @@ export const DEFAULTS = {
   },
   tools: {
     codeSummaryQuery: {
-      module: '@interrobangc/codellm-tool-code-summary-query',
+      module: '@codellm/codellm-tool-code-summary-query',
       config: {
         vectorDbName: 'chromadb',
       },
@@ -103,7 +103,7 @@ export const DEFAULTS = {
 
   vectorDbs: {
     chromadb: {
-      module: '@interrobangc/codellm-vectordb-chromadb',
+      module: '@codellm/codellm-vectordb-chromadb',
     },
   },
 } as const;

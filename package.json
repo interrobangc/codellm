@@ -1,15 +1,15 @@
 {
-  "name": "@interrobangc/codellm-repo",
+  "name": "@codellm/codellm-repo",
   "version": "0.0.1",
   "description": "Parent repo for code-llm",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "workspaces": [
-    "cli",
-    "codellm",
+    "core",
     "providers/*",
     "tools/*",
-    "vectorDbs/*"
+    "vectorDbs/*",
+    "cli"
   ],
   "devDependencies": {
     "@jest/globals": "^29.7.0",

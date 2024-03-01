@@ -1,4 +1,4 @@
-import type { ToolRunParamsCommon } from '@interrobangc/codellm';
+import type { ToolRunParamsCommon } from '@codellm/core';
 
 export type ToolConfig = {
   filePath: string;

@@ -1,4 +1,4 @@
-import type { Config, Tool, ToolRunParamsCommon } from '@interrobangc/codellm';
+import type { Config, Tool, ToolRunParamsCommon } from '@codellm/core';
 import type { ToolConfig } from './types';
 
 import { DEFAULT_CONFIG, description } from './constants.js';

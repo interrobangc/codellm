@@ -2,7 +2,7 @@ import type {
   MessageList,
   PromptParams,
   ProviderGetClientParams,
-} from '@interrobangc/codellm';
+} from '@codellm/core';
 import type { LangchainConfig } from './types';
 import {
   AIMessage,
@@ -10,7 +10,7 @@ import {
   HumanMessage,
   SystemMessage,
 } from '@langchain/core/messages';
-import { log } from '@interrobangc/codellm';
+import { log } from '@codellm/core';
 
 export const getLangchainClient = async (
   model: string,

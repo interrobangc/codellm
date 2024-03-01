@@ -1,4 +1,4 @@
-import type { ToolConfig, ToolDescription } from '@interrobangc/codellm';
+import type { ToolConfig, ToolDescription } from '@codellm/core';
 
 export const vectorDbCollectionName = 'docSummary' as const;
 
