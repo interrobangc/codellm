@@ -2,7 +2,7 @@ import type { ToolConfig, ToolDescription } from '@codellm/core';
 
 export const vectorDbCollectionName = 'codeSummary' as const;
 
-export const numResults = 15;
+export const numResults = 8;
 
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.ts'],

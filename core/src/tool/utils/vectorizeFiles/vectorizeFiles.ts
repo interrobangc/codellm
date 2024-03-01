@@ -114,6 +114,8 @@ export const vectorizeFile = async ({
     ids: [id],
   });
 
+  log('vectorizeFile existingDocument', 'silly', { existingDocument });
+
   if (
     // @ts-expect-error - types aren't in place yet
     existingDocument.documents.length > 0 &&

@@ -51,6 +51,8 @@
     "lint:prettier": "prettier . --check",
     "lint:prettier:fix": "prettier . --write",
     "lint:eslint": "eslint .",
-    "lint:eslint:fix": "eslint . --fix"
+    "lint:eslint:fix": "eslint . --fix",
+    "reset:datastore": "run-s stop:datastore reset:datastore:deleteChromadb start:datastore",
+    "reset:datastore:deleteChromadb": "rm -fr ./.chromadb"
   }
 }

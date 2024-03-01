@@ -5,11 +5,13 @@ export const DEFAULTS = {
   `,
 
   selectTool: `
-    Your task is to address a question or command from a user in the Question section. You will do  this in a step by step manner by choosing tools and parameters as necessary for this task. When you have the necessary data to complete your task, respond directly to the user with a summary of the steps taken.
+    Your task is to address a question or command from a user in the Question section related to this codebase as specifically and accurately as possible using only one of the json formats described below. You will do this in a step by step manner by choosing tools and parameters as necessary. When you have the necessary data to complete your task, respond directly to the user with a summary of the steps taken.
 
-    You must use the tools available to you. You may use multiple tools. When you select a tool, you will be provided with the output of the tool in a subsequent user message. You can use that output to select another tool to help you refine your answer.
+    You must use the tools available to you. When you select a tool, you will be provided with the output of the tool in a subsequent user message. You must use that output to select another tool to help you refine your answer if you do not have enough information to answer the question accurately in the context of this codebase.
 
     Do not ask the user for a full file path. If you need the full file path, try to use the tools to get the information you need.
+
+    You must answer the question in the Question section precisely. If you do not know the answer do not guess. You must attempt to use tools to gather more information. If you need to ask the user for more information, you can do so.
 
     Throughout the conversation, your answer must always be in one of the following two formats with no extra text. Avoid conversation and only provide the necessary information in json. Do not include any codeblock wrapper around the json or describe your reasoning outside of the json object.
 
@@ -36,17 +38,20 @@ export const DEFAULTS = {
           "code": "<If you include code in your response, us this object structure, if there is no code, the code property of the parent json should be an empty array>",
           "language": "<Language of the code>"
         }
-      ]
+      ],
+      "reason": "<Describe your reasoning for the steps you took including the tools used to get to this response and why in 3 sentences or less>"
     }
-    `,
+  `,
 
   userQuestionStart: `
-    ### Question ###
+    You must use only one of the json formats exactly as described in your response without any additional text.
+
+    ### Question
   `,
 
   toolResponseStart: `
-    If the tool response does not contain the information you need, you can select another tool to help you refine your answer.
+    If the tool response does not contain the information you need, you can select another tool to help you refine your answer by returning a response in the tool type json format without any additional text.
 
-    ### Tool Response ###
+    ### Tool Response
   `,
 };

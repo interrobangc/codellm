@@ -3,6 +3,7 @@ import type {
   Tool,
   ToolRunParamsCommon,
   ToolRunReturn,
+  VectorDbQueryResultItem,
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
@@ -10,6 +11,7 @@ import { toolUtils } from '@codellm/core';
 import {
   DEFAULT_CONFIG,
   description,
+  numResults,
   summarizeTaskPrompt,
 } from './constants.js';
 
@@ -37,18 +39,17 @@ export const newTool = async (
   );
 
   return {
-    run: async (params: ToolRunParamsCommon): Promise<ToolRunReturn> => {
+    run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
       const dbResponse = await vectorizeFilesClient.query({
-        ...params,
-        toolName,
+        query: params['query'] as unknown as string,
+        numResults,
       });
 
       const content = JSON.stringify(
-        // @ts-expect-error - types aren't in place yet
-        dbResponse.map((d) => ({
-          path: d.metadata.path,
+        dbResponse.map((d: VectorDbQueryResultItem) => ({
+          path: d.metadata['path'],
           summary: d.document,
-          content: d.metadata.content,
+          content: d.metadata['content'],
           distance: d.distance,
         })),
       );
