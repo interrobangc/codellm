@@ -62,6 +62,7 @@ export type VectorDbClient = {
   get: (params: VectorDbGetParams) => Promise<unknown>;
   init: (collectionNames: string[]) => Promise<void>;
   query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
+  reset: () => Promise<void>;
 };
 
 export type VectorDbs = Record<VectorDb, VectorDbClient>;
