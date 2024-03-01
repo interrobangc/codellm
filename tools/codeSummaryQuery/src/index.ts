@@ -3,6 +3,7 @@ import type {
   Tool,
   ToolRunParamsCommon,
   ToolRunReturn,
+  VectorDbQueryResultItem,
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
@@ -45,12 +46,11 @@ export const newTool = async (
       });
 
       const content = JSON.stringify(
-        // @ts-expect-error - types aren't in place yet
-        dbResponse.map((d) => ({
+        dbResponse.map((d: VectorDbQueryResultItem) => ({
           path: d.metadata['path'],
           summary: d.document,
           code: params['includeCode'] ? d.metadata['content'] : undefined,
-          distances: d.distances,
+          distance: d.distance,
         })),
       );
 

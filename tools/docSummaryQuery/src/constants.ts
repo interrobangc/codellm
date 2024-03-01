@@ -2,6 +2,8 @@ import type { ToolConfig, ToolDescription } from '@codellm/core';
 
 export const vectorDbCollectionName = 'docSummary' as const;
 
+export const numResults = 8;
+
 export const DEFAULT_CONFIG: ToolConfig = {
   include: ['**/*.md', '**/*.txt'],
   exclude: ['**/node_modules/**', '**/dist/**'],

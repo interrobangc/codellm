@@ -141,8 +141,16 @@ export const newClient = async (): Promise<VectorDbClient> => {
 
           log(`vectorDB.init: Initialized ${collectionName}`, 'debug');
           log(`vectorDB.init: Collection ${collectionName} Peek`, 'silly', {
-            peek: await collections[collectionName]?.peek(),
+            peek: await collections[collectionName]?.peek({ limit: 10 }),
           });
+
+          log(
+            `vectorDB.init: Collection ${collectionName} embeddingFunction`,
+            'silly',
+            {
+              embeddingFunction: collections[collectionName]?.embeddingFunction,
+            },
+          );
         }),
       );
     },

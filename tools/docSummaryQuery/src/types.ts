@@ -1,7 +1,5 @@
 import type {
   Config,
-  LlmClient,
-  ProcessFileHandleParams,
   ToolRunParamsCommon,
   VectorDbClient,
   VectorizeFilesToolConfig,
@@ -18,9 +16,4 @@ export type RunImportParams = {
   config: Config;
   dbClient: VectorDbClient;
   toolConfig: ToolConfig;
-};
-
-export type HandleFileParams = ProcessFileHandleParams & {
-  dbClient: VectorDbClient;
-  llm: LlmClient;
 };
