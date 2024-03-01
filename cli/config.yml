@@ -5,6 +5,8 @@ logLevel: info # error| info | warn | error | debug | silly
 # The default provider to use for all commands
 llmProvider: ollama # openai | ollama
 
+cacheDir: ../.cache
+
 tools:
   codeSummaryQuery:
     module: '@interrobangc/codellm-tool-code-summary-query'

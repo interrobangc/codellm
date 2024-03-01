@@ -1,12 +1,16 @@
 import type {
   LlmClient,
   ProcessFileHandleParams,
+  RemoveMissingFilesParams,
+  UpdateTrackingCacheParams,
   VectorDbAddDocumentsParams,
   VectorizeFileParams,
   VectorizeFilesParams,
 } from '@/.';
 
 import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
+import { readFile, stat, writeFile } from 'fs/promises';
+import { resolve } from 'path';
 
 /**
  * Summarize the code using the summarize LLM
@@ -32,6 +36,46 @@ export const summarize = async (
   });
 };
 
+//TODO: dynamic prefix for different passes on a single file in one collection
+export const getId = (idPrefix: string, filePath: string) =>
+  `${idPrefix}':${filePath}`;
+
+export const getCacheFilePath = (
+  cacheDir: string,
+  toolName: string,
+  idPrefix: string,
+) => resolve(`${cacheDir}/${toolName}-${idPrefix}.json`);
+
+export const updateTrackingCache = async ({
+  cacheDir,
+  toolName,
+  idPrefix,
+  filePath,
+  action,
+}: UpdateTrackingCacheParams) => {
+  const trackingCache = new Set();
+  const cacheFilePath = getCacheFilePath(cacheDir, toolName, idPrefix);
+
+  try {
+    const trackingCacheFile = await readFile(cacheFilePath, 'utf-8');
+    JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
+  } catch (e) {
+    log(
+      `Error parsing trackingCache from ${cacheFilePath}. If this is not the first run, files that have been deleted will not be cleaned`,
+      'error',
+    );
+  }
+
+  trackingCache[action](filePath);
+
+  log('trackingCache', 'silly', { trackingCache });
+
+  log(`writing trackingCache to ${cacheFilePath}`, 'debug');
+  await writeFile(cacheFilePath, JSON.stringify([...trackingCache]), {
+    encoding: 'utf8',
+  });
+};
+
 /**
  * Handle a single file by summarizing it and adding it to the database
  *
@@ -40,7 +84,9 @@ export const summarize = async (
  * @param path - The path to the file to handle
  */
 export const vectorizeFile = async ({
+  cacheDir,
   dbClient,
+  idPrefix,
   llm,
   fileContent,
   fileContentHash,
@@ -48,9 +94,18 @@ export const vectorizeFile = async ({
   filePathHash,
   collectionName,
   prompt,
+  toolName,
 }: VectorizeFileParams) => {
   // TODO: dynamic for different passes in a single run
-  const id = `codeSummary:${filePath}`;
+  const id = getId(idPrefix, filePath);
+
+  await updateTrackingCache({
+    cacheDir,
+    toolName,
+    idPrefix,
+    filePath,
+    action: 'add',
+  });
 
   // TODO: track files that have been processed and check fo deletions
 
@@ -94,6 +149,48 @@ export const vectorizeFile = async ({
   await dbClient.addDocuments(document);
 };
 
+export const removeMissingFiles = async ({
+  cacheDir,
+  collectionName,
+  dbClient,
+  idPrefix,
+  toolName,
+}: RemoveMissingFilesParams) => {
+  const cacheFilePath = getCacheFilePath(cacheDir, toolName, idPrefix);
+  const trackingCache = new Set();
+
+  try {
+    const trackingCacheFile = await readFile(cacheFilePath, 'utf-8');
+    JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
+  } catch (e) {
+    log(
+      `Error parsing trackingCache from ${cacheFilePath}. Files that have been deleted will not be cleaned`,
+    );
+  }
+
+  Promise.all(
+    [...trackingCache].map(async (p) => {
+      const filePath = p as string;
+      try {
+        await stat(filePath);
+      } catch (e) {
+        log(`File ${filePath} has been deleted, removing from database`);
+        await dbClient.deleteDocuments({
+          collectionName,
+          ids: [getId(idPrefix, filePath)],
+        });
+        await updateTrackingCache({
+          cacheDir,
+          toolName,
+          idPrefix,
+          filePath,
+          action: 'delete',
+        });
+      }
+    }),
+  );
+};
+
 export const vectorizeFiles = async ({
   config,
   dbClient,
@@ -109,21 +206,39 @@ export const vectorizeFiles = async ({
     throw new Error('No summarize LLM found');
   }
 
-  const path = config.path;
-  const { include, exclude } = toolConfig;
+  const { cacheDir, path } = config;
+  const {
+    include,
+    exclude,
+    vectorDbCollectionName: collectionName,
+  } = toolConfig;
+
+  const idPrefix = 'summary';
 
   await toolUtils.processFiles({
     toolName,
     path,
     include,
     exclude,
-    handle: (params: ProcessFileHandleParams) =>
-      vectorizeFile({
+    handle: async (params: ProcessFileHandleParams) => {
+      await vectorizeFile({
+        cacheDir,
+        collectionName,
         dbClient,
+        idPrefix,
         llm,
-        collectionName: toolConfig.vectorDbCollectionName,
         prompt: prompts.summarize,
+        toolName,
         ...params,
-      }),
+      });
+    },
+  });
+
+  await removeMissingFiles({
+    cacheDir,
+    collectionName,
+    dbClient,
+    idPrefix,
+    toolName,
   });
 };
