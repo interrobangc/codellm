@@ -3,10 +3,10 @@ import type {
   Tool,
   ToolRunParamsCommon,
   ToolRunReturn,
-} from '@interrobangc/codellm';
+} from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { toolUtils } from '@interrobangc/codellm';
+import { toolUtils } from '@codellm/core';
 import {
   DEFAULT_CONFIG,
   description,

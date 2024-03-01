@@ -40,6 +40,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/dot-notation': 'off',
+    'import/extensions': 'off',
   },
   settings: {
     'import/resolver': {

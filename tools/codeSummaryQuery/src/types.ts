@@ -3,7 +3,7 @@ import type {
   ToolRunParamsCommon,
   VectorDbClient,
   VectorizeFilesToolConfig,
-} from '@interrobangc/codellm';
+} from '@codellm/core';
 
 export type ToolConfig = VectorizeFilesToolConfig;
 

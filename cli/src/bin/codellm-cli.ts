@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { log, newAgent, newImporter } from '@interrobangc/codellm';
+import { log, newAgent, newImporter } from '@codellm/core';
 
 import { addCliOptions, getConfig } from '@cli/config/index.js';
 import { interactiveLoop } from '@cli/interactiveLoop/index.js';

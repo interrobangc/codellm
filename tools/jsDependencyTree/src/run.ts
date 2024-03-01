@@ -1,7 +1,7 @@
-import type { ToolRunReturn } from '@interrobangc/codellm';
+import type { ToolRunReturn } from '@codellm/core';
 import type { RunParams } from './types';
 
-import { log } from '@interrobangc/codellm';
+import { log } from '@codellm/core';
 
 /**
  * The codeSummaryQuery tool queries a codebase and provides context from a vectordb collection

@@ -12,9 +12,9 @@ import type {
   VectorDbGetParams,
   VectorDbQueryParams,
   VectorDbQueryResult,
-} from '@interrobangc/codellm';
+} from '@codellm/core';
 
-import { log } from '@interrobangc/codellm';
+import { log } from '@codellm/core';
 
 export type CreateCollectionParams = {
   client: ChromaClient;

@@ -1,4 +1,4 @@
-import type { PartialConfig } from '@interrobangc/codellm';
+import type { PartialConfig } from '@codellm/core';
 import pick from 'lodash/pick.js';
 import merge from 'lodash/merge.js';
 

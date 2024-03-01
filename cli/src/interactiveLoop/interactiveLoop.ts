@@ -1,6 +1,6 @@
-import type { Agent } from '@interrobangc/codellm';
+import type { Agent } from '@codellm/core';
 import ora from 'ora';
-import { log } from '@interrobangc/codellm';
+import { log } from '@codellm/core';
 
 import { promptUser } from './promptUser.js';
 

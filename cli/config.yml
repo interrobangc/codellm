@@ -9,15 +9,15 @@ cacheDir: ../.cache
 
 tools:
   codeSummaryQuery:
-    module: '@interrobangc/codellm-tool-code-summary-query'
+    module: '@codellm/codellm-tool-code-summary-query'
     config:
       vectorDbName: chromadb
   docSummaryQuery:
-    module: '@interrobangc/codellm-tool-doc-summary-query'
+    module: '@codellm/codellm-tool-doc-summary-query'
     config:
       vectorDbName: chromadb
   jsDependencyTree:
-    module: '@interrobangc/codellm-tool-js-dependency-tree'
+    module: '@codellm/codellm-tool-js-dependency-tree'
 
 # The configuration for individual providers can be set here. You probably want to use
 # the OPEN_AI_API_KEY or MISTRAL_API_KEY environment variable instead of hardcoding your key here

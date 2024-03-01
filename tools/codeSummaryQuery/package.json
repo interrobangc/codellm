@@ -1,5 +1,5 @@
 {
-  "name": "@interrobangc/codellm-tool-code-summary-query",
+  "name": "@codellm/codellm-tool-code-summary-query",
   "version": "0.0.1",
   "description": "code-llm tool to query code summary data",
   "author": "bo@interrobang.consulting",
@@ -11,6 +11,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@interrobangc/codellm": "^0.0.1"
+    "@codellm/core": "^0.0.1"
   }
 }
