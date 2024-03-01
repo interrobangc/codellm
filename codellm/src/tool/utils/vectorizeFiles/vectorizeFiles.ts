@@ -44,7 +44,7 @@ export const getCacheFilePath = (
   cacheDir: string,
   toolName: string,
   idPrefix: string,
-) => resolve(`${cacheDir}/${toolName}-${idPrefix}.json`);
+) => resolve(`${cacheDir}/vectorizeFiles-${toolName}-${idPrefix}.json`);
 
 export const updateTrackingCache = async ({
   cacheDir,
@@ -156,6 +156,7 @@ export const removeMissingFiles = async ({
   idPrefix,
   toolName,
 }: RemoveMissingFilesParams) => {
+  log('Removing missing files from database');
   const cacheFilePath = getCacheFilePath(cacheDir, toolName, idPrefix);
   const trackingCache = new Set();
 
@@ -165,6 +166,7 @@ export const removeMissingFiles = async ({
   } catch (e) {
     log(
       `Error parsing trackingCache from ${cacheFilePath}. Files that have been deleted will not be cleaned`,
+      'error',
     );
   }
 

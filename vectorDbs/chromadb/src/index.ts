@@ -146,6 +146,7 @@ export const newClient = async (): Promise<VectorDbClient> => {
         }),
       );
     },
+
     addDocuments,
     deleteDocuments: async ({ collectionName, ids }) => {
       log(
@@ -157,6 +158,20 @@ export const newClient = async (): Promise<VectorDbClient> => {
       );
       const collection = getCollection(collectionName);
       await collection.delete({ ids });
+    },
+
+    get: async ({ collectionName, ids }: VectorDbGetParams) => {
+      log(`vectorDB.get: Getting documents from ${collectionName}`, 'silly', {
+        ids,
+      });
+      const collection = getCollection(collectionName);
+
+      return collection.get({
+        ids,
+        limit: 5,
+        offset: 0,
+        include: [IncludeEnum.Documents, IncludeEnum.Metadatas],
+      });
     },
 
     query: async ({
@@ -185,18 +200,9 @@ export const newClient = async (): Promise<VectorDbClient> => {
       );
     },
 
-    get: async ({ collectionName, ids }: VectorDbGetParams) => {
-      log(`vectorDB.get: Getting documents from ${collectionName}`, 'silly', {
-        ids,
-      });
-      const collection = getCollection(collectionName);
-
-      return collection.get({
-        ids,
-        limit: 5,
-        offset: 0,
-        include: [IncludeEnum.Documents, IncludeEnum.Metadatas],
-      });
+    reset: async () => {
+      log('vectorDB.close: Closing VectorDb client', 'debug');
+      await client.reset();
     },
   };
 };
