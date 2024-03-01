@@ -147,6 +147,17 @@ export const newClient = async (): Promise<VectorDbClient> => {
       );
     },
     addDocuments,
+    deleteDocuments: async ({ collectionName, ids }) => {
+      log(
+        `vectorDB.deleteDocuments: Deleting documents from ${collectionName}`,
+        'debug',
+        {
+          ids,
+        },
+      );
+      const collection = getCollection(collectionName);
+      await collection.delete({ ids });
+    },
 
     query: async ({
       collectionName,

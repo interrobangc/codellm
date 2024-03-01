@@ -17,6 +17,7 @@ export type ConfigCommon = {
   logFormat: LogFormat;
   logLevel: LogLevel;
   path: string;
+  cacheDir: string;
   tools?: ToolConfigs;
 };
 

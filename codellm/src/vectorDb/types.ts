@@ -48,14 +48,20 @@ export type VectorDbGetParams = {
   offset?: number;
 };
 
+export type VectorDbDeleteParams = {
+  collectionName: string;
+  ids: string[];
+};
+
 export type VectorDbGetResultItem = EmbeddingDocument;
 export type VectorDbGetResult = VectorDbGetResultItem[];
 
 export type VectorDbClient = {
-  init: (collectionNames: string[]) => Promise<void>;
   addDocuments: (params: VectorDbAddDocumentsParams) => Promise<void>;
-  query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
+  deleteDocuments: (params: VectorDbDeleteParams) => Promise<void>;
   get: (params: VectorDbGetParams) => Promise<unknown>;
+  init: (collectionNames: string[]) => Promise<void>;
+  query: (params: VectorDbQueryParams) => Promise<VectorDbQueryResult>;
 };
 
 export type VectorDbs = Record<VectorDb, VectorDbClient>;
