@@ -1,4 +1,5 @@
 import { describe, expect, it, jest } from '@jest/globals';
+import { dump as dumpYaml } from 'js-yaml';
 
 import { decodeResponse } from './chat';
 
@@ -7,10 +8,16 @@ jest.mock('@/log/index.js');
 describe('decodeResponse', () => {
   it('should decode a valid response', () => {
     const response = {
-      type: 'response',
-      content: 'some content',
+      type: 'tool',
+      reason:
+        'To provide context for answering user questions, we can use the `codeSummaryQuery` tool, which searches relevant code snippets and summaries in the vector database. This tool will help us understand the codebase better.',
+      name: 'codeSummaryQuery',
+      params: {
+        includeCode: true,
+        query: 'parseFiles',
+      },
     };
-    const encodedResponse = JSON.stringify(response);
+    const encodedResponse = dumpYaml(response);
     expect(decodeResponse(encodedResponse)).toEqual(response);
   });
 
@@ -28,7 +35,7 @@ describe('decodeResponse', () => {
       text: 'some content',
     };
 
-    const encodedResponse = JSON.stringify(response);
+    const encodedResponse = dumpYaml(response);
     expect(decodeResponse(encodedResponse)).toEqual({
       type: 'error',
       content: encodedResponse,

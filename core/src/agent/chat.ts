@@ -1,9 +1,12 @@
 import type { LlmClient, Llms, MessageList, Tools } from '@/.';
 
+import { load as loadYaml } from 'js-yaml';
 import { conversation } from '@/llm/index.js';
 import log from '@/log/index.js';
-import { getPrompt } from '@/prompt/index.js';
+import { newPrompt } from '@/prompt/index.js';
 import * as agentTypes from './types.js';
+
+const prompt = newPrompt();
 
 /**
  * Send a chat message to the LLM
@@ -28,7 +31,7 @@ export const decodeResponse = (
   content: string,
 ): agentTypes.AgentSelectToolResponse => {
   try {
-    return agentTypes.agentLlmResponseSchema.parse(JSON.parse(content.trim()));
+    return agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim()));
   } catch (e) {
     log('Error decoding response', 'debug', { content, e });
     return {
@@ -38,17 +41,74 @@ export const decodeResponse = (
   }
 };
 
-export const handleMessage = async (
-  llms: Llms,
-  message: string,
-  tools: Tools | undefined,
-  depth: number = 0,
-): Promise<agentTypes.AgentResponse> => {
+export const getToolResponses = (
+  toolResponses: agentTypes.AgentToolResponses,
+) => {
+  return Object.entries(toolResponses)
+    .map(
+      ([tool, response]) => `####${tool}:
+    ${response}
+  `,
+    )
+    .join('\n');
+};
+
+export const handleToolResponse = async ({
+  llms,
+  response,
+  toolResponses,
+  tools,
+}: agentTypes.AgentHandleToolResponseParams): Promise<agentTypes.AgentToolResponses> => {
+  if (!agentTypes.isAgentToolResponse(response)) return toolResponses || {};
+  const toolName = response.name;
+
+  const tool = tools?.[toolName];
+
+  if (!tool) {
+    log('Tool not found', 'error', { toolName, tools });
+    return {
+      ...toolResponses,
+      [toolName]: 'Tool not found',
+    };
+  }
+
+  log(`Running the ${response.name} tool`);
+
+  let toolResponse;
+  try {
+    toolResponse = await tool.run({
+      llm: llms.tool,
+      params: response.params,
+    });
+  } catch (e) {
+    log('Error running tool', 'error', { toolName, e });
+    return {
+      ...toolResponses,
+      [toolName]: 'Error running tool: ' + e,
+    };
+  }
+
+  return {
+    ...toolResponses,
+    [toolName]: toolResponse.content,
+  };
+};
+
+export const handleQuestion = async ({
+  llms,
+  question,
+  toolResponses = {},
+  tools,
+  depth = 0,
+}: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const messages: MessageList = [];
 
   messages.push({
     role: 'user',
-    content: message,
+    content: await prompt.get('agentQuestion', {
+      question,
+      toolResponses: getToolResponses(toolResponses),
+    }),
   });
 
   const response = decodeResponse(await sendChat(llms.agent, messages));
@@ -58,15 +118,22 @@ export const handleMessage = async (
   });
 
   if (agentTypes.isAgentErrorResponse(response)) {
-    conversation.addMessages('agent', [
-      {
-        role: 'user',
-        content: `
-          Be sure to use the correct json format in all further responses.
-        `,
-      },
-    ]);
-    return handleMessage(llms, message, tools, depth + 1);
+    // conversation.addMessages('agent', [
+    //   {
+    //     role: 'user',
+    //     content: `
+    //       Be sure to use the correct yaml format in all further responses.
+    //       ${prompt.get('selectToolFormats')}
+    //     `,
+    //   },
+    // ]);
+    return handleQuestion({
+      llms,
+      question,
+      toolResponses,
+      tools,
+      depth: depth + 1,
+    });
   }
 
   if (agentTypes.isAgentResponseResponse(response)) {
@@ -81,49 +148,18 @@ export const handleMessage = async (
   }
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
-  return handleToolResponse(llms, message, response, tools, depth);
-};
-
-export const handleToolResponse = async (
-  llms: Llms,
-  message: string,
-  response: agentTypes.AgentSelectToolResponse,
-  tools: Tools | undefined,
-  depth: number = 0,
-) => {
-  if (!agentTypes.isAgentToolResponse(response)) return response;
-
-  const tool = tools?.[response.name];
-
-  if (!tool) {
-    log('Tool not found', 'debug', { response, tools });
-    const toolNotFoundMessage = `
-      ${message}
-
-      The ${response.name} tool was not found. Please select a different tool.
-    `;
-
-    return handleMessage(llms, toolNotFoundMessage, tools, depth + 1);
-  }
-
-  log(`Running the ${response.name} tool`);
-
-  const toolResponse = await tool.run({
-    llm: llms.tool,
-    params: response.params,
+  return handleQuestion({
+    llms,
+    question,
+    toolResponses: await handleToolResponse({
+      llms,
+      response,
+      toolResponses,
+      tools,
+    }),
+    tools,
+    depth: depth + 1,
   });
-
-  const toolResponseMessage = `
-    ${message}
-    ${getPrompt('toolResponseStart')}
-
-    Tool: ${response.name}
-
-    Response:
-    ${toolResponse.content}
-  `;
-
-  return handleMessage(llms, toolResponseMessage, tools, depth + 1);
 };
 
 /**
@@ -139,12 +175,12 @@ export const handleToolResponse = async (
 export const chat =
   (llms: Llms, tools: Tools | undefined) =>
   async (question: string): Promise<agentTypes.AgentResponse> => {
-    const message = `
-      ${getPrompt('userQuestionStart')}
-      ${question}
-    `;
-
-    return handleMessage(llms, message, tools);
+    log('chat', 'debug', { question });
+    return handleQuestion({
+      llms,
+      question,
+      tools,
+    });
   };
 
 export default chat;

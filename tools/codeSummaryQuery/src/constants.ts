@@ -37,7 +37,7 @@ export const description: ToolDescription = {
     },
     {
       name: 'query',
-      description: `The query to use to find relevant code and code summaries to help you answer the user's question.`,
+      description: `The query to use to find relevant code and code summaries to help you answer the user's question. The query should be concise and include functions, classes, or files you want information about.`,
       type: 'string',
       required: true,
     },

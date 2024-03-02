@@ -1,14 +1,10 @@
-import type { Agent, PartialConfig, Tools } from '@/.';
+import type { Agent, PartialConfig } from '@/.';
 import { getConfig, initConfig } from '@/config/index.js';
 import { conversation, initLlms } from '@/llm/index.js';
 import { log } from '@/log/index.js';
-import { getPrompt } from '@/prompt/index.js';
+import { initPrompts } from '@/prompt/index.js';
 import { initTools } from '@/tool/index.js';
 import chat from './chat.js';
-
-export const getToolDescriptions = (tools: Tools = {}) => {
-  return JSON.stringify(Object.values(tools).map((tool) => tool.description));
-};
 
 /**
  * Create a new agent which is the primary interface to interact with the LLMs
@@ -27,14 +23,12 @@ export const newAgent = async (configParam: PartialConfig): Promise<Agent> => {
   const tools = await initTools(config);
   log('newAgent tools', 'silly', { tools });
 
+  const prompt = initPrompts({ tools });
+
   conversation.addMessages('agent', [
     {
       role: 'system',
-      content: `
-        ${getPrompt('agent')}
-        ${getPrompt('selectTool')}
-        ${getToolDescriptions(tools)}
-      `,
+      content: await prompt.get('agentSystem'),
     },
   ]);
 
