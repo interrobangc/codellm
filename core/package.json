@@ -18,7 +18,8 @@
     "crypto": "^1.0.1",
     "globby": "^14.0.1",
     "lodash": "^4.17.21",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.202",

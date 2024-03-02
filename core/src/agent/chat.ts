@@ -28,24 +28,11 @@ export const decodeResponse = (
   content: string,
 ): agentTypes.AgentSelectToolResponse => {
   try {
-    return JSON.parse(content.trim());
+    return agentTypes.agentLlmResponseSchema.parse(JSON.parse(content.trim()));
   } catch (e) {
-    log(
-      'The agent model did not return valid json. The response is probably questionable.',
-      'error',
-    );
-
-    conversation.addMessages('agent', [
-      {
-        role: 'user',
-        content: `
-          Be sure to use the correct json format in all further responses.
-        `,
-      },
-    ]);
-
+    log('Error decoding response', 'debug', { content, e });
     return {
-      type: 'response',
+      type: 'error',
       content,
     };
   }
@@ -70,10 +57,19 @@ export const handleMessage = async (
     history: conversation.getHistory('agent'),
   });
 
-  if (
-    agentTypes.isAgentErrorResponse(response) ||
-    agentTypes.isAgentResponseResponse(response)
-  ) {
+  if (agentTypes.isAgentErrorResponse(response)) {
+    conversation.addMessages('agent', [
+      {
+        role: 'user',
+        content: `
+          Be sure to use the correct json format in all further responses.
+        `,
+      },
+    ]);
+    return handleMessage(llms, message, tools, depth + 1);
+  }
+
+  if (agentTypes.isAgentResponseResponse(response)) {
     return response;
   }
 
