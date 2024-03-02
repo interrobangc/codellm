@@ -1,13 +1,20 @@
 import type { LlmClient } from '@/.';
 
+import { z } from 'zod';
+
 export * from './utils/types.js';
 
-export type ToolRunParamsParam = Record<
-  string,
-  boolean | string | number | object | unknown[]
->;
+export const toolRunParamsParamSchema = z.record(
+  z.union([
+    z.boolean(),
+    z.string(),
+    z.number(),
+    z.object({}),
+    z.array(z.unknown()),
+  ]),
+);
 
-export type ToolRunParamsParams = Record<string, ToolRunParamsParam>;
+export type ToolRunParamsParams = z.infer<typeof toolRunParamsParamSchema>;
 
 export type ToolRunParamsCommon = {
   llm: LlmClient;
