@@ -15,15 +15,31 @@ export type VectorizeFilesPrompts = {
   summarize: string;
 };
 
-export type VectorizeFilesParams = {
+export type VectorizeFilesMetadata = {
+  fileContent: string;
+  fileContentHash: string;
+  filePath: string;
+  filePathHash: string;
+};
+
+export type VectorizeFilesAdditionalMetadataFn = (
+  params: VectorizeFilesMetadata,
+) => Promise<Record<string, unknown>>;
+
+export type VectorizeFilesNewClientParams = {
   config: Config;
-  dbClient: VectorDbClient;
-  prompts: VectorizeFilesPrompts;
   toolConfig: VectorizeFilesToolConfig;
   toolName: string;
 };
 
+export type VectorizeFilesParams = VectorizeFilesNewClientParams & {
+  additionalMetadataFn: VectorizeFilesAdditionalMetadataFn | undefined;
+  dbClient: VectorDbClient;
+  prompts: VectorizeFilesPrompts;
+};
+
 export type VectorizeFileParams = ProcessFileHandleParams & {
+  additionalMetadataFn: VectorizeFilesAdditionalMetadataFn | undefined;
   cacheDir: string;
   collectionName: string;
   dbClient: VectorDbClient;

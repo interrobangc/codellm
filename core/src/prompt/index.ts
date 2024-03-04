@@ -1,10 +1,17 @@
-import type { PromptConfig, PromptConfigItem, Prompts, Tools } from '@/.';
+import type {
+  Config,
+  PromptConfig,
+  PromptConfigItem,
+  Prompts,
+  Tools,
+} from '@/.';
 
 import {
   PipelinePromptTemplate,
   PromptTemplate,
 } from '@langchain/core/prompts';
 import { dump as dumpYaml } from 'js-yaml';
+import isArray from 'lodash/isArray.js';
 import isString from 'lodash/isString.js';
 
 import log from '@/log/index.js';
@@ -45,7 +52,13 @@ export const newPrompt = () => {
   };
 };
 
-export const initPrompts = ({ tools }: { tools: Tools }) => {
+export const initPrompts = ({
+  config,
+  tools,
+}: {
+  config: Config;
+  tools: Tools;
+}) => {
   const configPrompts: PromptConfig = DEFAULT_PROMPTS;
   const availableTools = getToolDescriptions(tools);
   baseParams['availableTools'] = availableTools;
@@ -65,14 +78,20 @@ export const initPrompts = ({ tools }: { tools: Tools }) => {
   Object.entries(configPrompts).forEach(
     ([name, prompt]: [string, PromptConfigItem]) => {
       if (!isPromptPipeline(prompt)) return;
+      const pipelinePromptItems = isArray(prompt.pipeline)
+        ? prompt.pipeline
+        : prompt.pipeline(config);
+
+      const pipelinePrompts = pipelinePromptItems.map((step) => ({
+        name: step,
+        prompt: prompts[step],
+      }));
+
       prompts[name] = new PipelinePromptTemplate<PromptTemplate>({
         // @ts-expect-error - fix types later
         finalPrompt: prompts[prompt.final],
         // @ts-expect-error - fix types later
-        pipelinePrompts: prompt.pipeline.map((step) => ({
-          name: step,
-          prompt: prompts[step],
-        })),
+        pipelinePrompts,
       });
     },
   );

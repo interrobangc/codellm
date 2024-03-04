@@ -23,7 +23,7 @@ export const newAgent = async (configParam: PartialConfig): Promise<Agent> => {
   const tools = await initTools(config);
   log('newAgent tools', 'silly', { tools });
 
-  const prompt = initPrompts({ tools });
+  const prompt = initPrompts({ config, tools });
 
   conversation.addMessages('agent', [
     {

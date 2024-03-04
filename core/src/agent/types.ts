@@ -78,11 +78,12 @@ export type AgentResponse = AgentErrorResponse | AgentResponseResponse;
 export type AgentToolResponses = Record<string, string>;
 
 export type AgentHandleQuestionParams = {
+  depth?: number;
+  error?: string | null;
   llms: Llms;
   question: string;
   toolResponses?: AgentToolResponses;
   tools: Tools | undefined;
-  depth?: number;
 };
 
 export type AgentHandleToolResponseParams = {

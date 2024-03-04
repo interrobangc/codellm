@@ -33,10 +33,10 @@ export const decodeResponse = (
   try {
     return agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim()));
   } catch (e) {
-    log('Error decoding response', 'debug', { content, e });
+    log('Error decoding response', 'error', { content, e });
     return {
       type: 'error',
-      content,
+      content: String(e),
     };
   }
 };
@@ -95,17 +95,19 @@ export const handleToolResponse = async ({
 };
 
 export const handleQuestion = async ({
+  depth = 0,
+  error = null,
   llms,
   question,
   toolResponses = {},
   tools,
-  depth = 0,
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const messages: MessageList = [];
 
   messages.push({
     role: 'user',
     content: await prompt.get('agentQuestion', {
+      error,
       question,
       toolResponses: getToolResponses(toolResponses),
     }),
@@ -118,21 +120,13 @@ export const handleQuestion = async ({
   });
 
   if (agentTypes.isAgentErrorResponse(response)) {
-    // conversation.addMessages('agent', [
-    //   {
-    //     role: 'user',
-    //     content: `
-    //       Be sure to use the correct yaml format in all further responses.
-    //       ${prompt.get('selectToolFormats')}
-    //     `,
-    //   },
-    // ]);
     return handleQuestion({
+      depth: depth + 1,
+      error: response.content,
       llms,
       question,
       toolResponses,
       tools,
-      depth: depth + 1,
     });
   }
 
@@ -149,6 +143,7 @@ export const handleQuestion = async ({
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
   return handleQuestion({
+    depth: depth + 1,
     llms,
     question,
     toolResponses: await handleToolResponse({
@@ -158,7 +153,6 @@ export const handleQuestion = async ({
       tools,
     }),
     tools,
-    depth: depth + 1,
   });
 };
 

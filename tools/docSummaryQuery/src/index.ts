@@ -8,6 +8,7 @@ import type {
 import type { ToolConfig } from './types';
 
 import { toolUtils } from '@codellm/core';
+import { dump as dumpYaml } from 'js-yaml';
 import {
   DEFAULT_CONFIG,
   description,
@@ -32,11 +33,11 @@ export const newTool = async (
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
   } as ToolConfig;
 
-  const vectorizeFilesClient = await toolUtils.vectorizeFiles.newClient(
+  const vectorizeFilesClient = await toolUtils.vectorizeFiles.newClient({
     toolName,
     config,
     toolConfig,
-  );
+  });
 
   return {
     run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
@@ -45,12 +46,12 @@ export const newTool = async (
         numResults,
       });
 
-      const content = JSON.stringify(
+      const content = dumpYaml(
         dbResponse.map((d: VectorDbQueryResultItem) => ({
-          path: d.metadata['path'],
-          summary: d.document,
-          content: d.metadata['content'],
           distance: d.distance,
+          filePath: d.metadata['filePath'],
+          fileContent: d.metadata['fileContent'],
+          summary: d.document,
         })),
       );
 

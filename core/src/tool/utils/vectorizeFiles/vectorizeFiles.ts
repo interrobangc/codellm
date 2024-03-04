@@ -84,6 +84,7 @@ export const updateTrackingCache = async ({
  * @param path - The path to the file to handle
  */
 export const vectorizeFile = async ({
+  additionalMetadataFn,
   cacheDir,
   dbClient,
   idPrefix,
@@ -132,17 +133,28 @@ export const vectorizeFile = async ({
     `file: ${filePath}\n\n${fileContent}`,
   );
 
+  const baseMetadata = {
+    fileContent,
+    fileContentHash,
+    filePath,
+    filePathHash,
+  };
+
+  const additionalMetadata = additionalMetadataFn
+    ? await additionalMetadataFn(baseMetadata)
+    : {};
+
+  const metadata = {
+    ...baseMetadata,
+    ...additionalMetadata,
+  };
+
   const document: VectorDbAddDocumentsParams = {
     collectionName,
     documents: [
       {
         id,
-        metadata: {
-          fileContent,
-          fileContentHash,
-          filePath,
-          filePathHash,
-        },
+        metadata,
         document: response,
       },
     ],
@@ -196,6 +208,7 @@ export const removeMissingFiles = async ({
 };
 
 export const vectorizeFiles = async ({
+  additionalMetadataFn,
   config,
   dbClient,
   prompts,
@@ -226,6 +239,7 @@ export const vectorizeFiles = async ({
     exclude,
     handle: async (params: ProcessFileHandleParams) => {
       await vectorizeFile({
+        additionalMetadataFn,
         cacheDir,
         collectionName,
         dbClient,

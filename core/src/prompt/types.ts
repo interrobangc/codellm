@@ -2,13 +2,18 @@ import type {
   PipelinePromptTemplate,
   PromptTemplate,
 } from '@langchain/core/prompts';
+import type { Config } from '@/.';
 
 export type Prompt = PromptTemplate | PipelinePromptTemplate<PromptTemplate>;
 export type Prompts = Record<string, Prompt>;
 
+export type PromptPipelineConfigPipeline =
+  | string[]
+  | ((config: Config) => string[]);
+
 export type PromptPipelineConfig = {
   final: string;
-  pipeline: string[];
+  pipeline: PromptPipelineConfigPipeline;
 };
 
 export type PromptConfigItem = string | PromptPipelineConfig | PromptTemplate;
