@@ -13,7 +13,7 @@ export const LLM_DEFAULTS = {
   mistral: {
     agent: {
       provider: 'mistral',
-      model: 'open-mixtral-8x7b',
+      model: 'mistral-large-latest',
     },
     embedding: {
       provider: 'mistral',
@@ -70,6 +70,7 @@ export const DEFAULTS = {
   path: '..',
   logLevel: 'info',
   logFormat: 'cli',
+  formatInUserMessage: true,
   llmProvider: 'ollama',
   providers: {
     mistral: {

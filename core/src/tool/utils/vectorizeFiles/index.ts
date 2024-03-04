@@ -1,25 +1,31 @@
 import type {
-  Config,
   VectorDbQueryOpts,
+  VectorizeFilesAdditionalMetadataFn,
+  VectorizeFilesNewClientParams,
   VectorizeFilesPrompts,
-  VectorizeFilesToolConfig,
 } from '@/.';
 
 import { log, vectorDb } from '@/index.js';
 import { vectorizeFiles } from './vectorizeFiles.js';
 
-export const newClient = async (
-  toolName: string,
-  config: Config,
-  toolConfig: VectorizeFilesToolConfig,
-) => {
+export const newClient = async ({
+  config,
+  toolConfig,
+  toolName,
+}: VectorizeFilesNewClientParams) => {
   const { vectorDbName, vectorDbCollectionName } = toolConfig;
   const dbClient = await vectorDb.newClient(vectorDbName, config);
   await dbClient.init([vectorDbCollectionName]);
 
   return {
-    vectorizeFiles: (prompts: VectorizeFilesPrompts) => {
+    vectorizeFiles: (
+      prompts: VectorizeFilesPrompts,
+      additionalMetadataFn:
+        | VectorizeFilesAdditionalMetadataFn
+        | undefined = undefined,
+    ) => {
       return vectorizeFiles({
+        additionalMetadataFn,
         config,
         dbClient,
         prompts,
@@ -28,7 +34,7 @@ export const newClient = async (
       });
     },
     query: (opts: VectorDbQueryOpts) => {
-      log(`${toolName} running`, 'debug', {
+      log(`${toolName} running vectorizeFiles query`, 'debug', {
         vectorDbCollectionName,
         opts,
       });

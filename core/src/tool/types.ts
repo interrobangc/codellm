@@ -24,6 +24,7 @@ export type ToolRunParamsCommon = {
 export type ToolRunReturn = {
   success: boolean;
   content: string;
+  additionalPrompt?: string;
 };
 
 export type ToolConfig = Record<string, unknown>;
@@ -47,7 +48,6 @@ export type ToolDescriptionParams = {
 export type ToolDescription = {
   name: string;
   description: string;
-  taskPrompt: string;
   params: ToolDescriptionParams[];
 };
 

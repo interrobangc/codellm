@@ -1,7 +1,7 @@
 {
-  "name": "@codellm/codellm-tool-code-summary-query",
+  "name": "@codellm/codellm-tool-code-elements-query",
   "version": "0.0.1",
-  "description": "code-llm tool to query code summary data",
+  "description": "code-llm tool to query code elements data",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "type": "module",

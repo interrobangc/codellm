@@ -1,3 +1,5 @@
+import type { Llms, Tools } from '@/.';
+
 import { z } from 'zod';
 
 import { toolRunParamsParamSchema } from '@/tool/types.js';
@@ -28,7 +30,6 @@ export const agentToolResponseSchema = z.object({
   type: z.literal('tool'),
   reason: z.string(),
   name: z.string(),
-  query: z.string(),
   params: toolRunParamsParamSchema,
 });
 
@@ -73,3 +74,21 @@ export type AgentSelectToolResponse =
   | AgentToolResponse;
 
 export type AgentResponse = AgentErrorResponse | AgentResponseResponse;
+
+export type AgentToolResponses = Record<string, string>;
+
+export type AgentHandleQuestionParams = {
+  depth?: number;
+  error?: string | null;
+  llms: Llms;
+  question: string;
+  toolResponses?: AgentToolResponses;
+  tools: Tools | undefined;
+};
+
+export type AgentHandleToolResponseParams = {
+  llms: Llms;
+  response: AgentSelectToolResponse;
+  toolResponses: AgentToolResponses;
+  tools: Tools | undefined;
+};
