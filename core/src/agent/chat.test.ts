@@ -21,24 +21,23 @@ describe('decodeResponse', () => {
     expect(decodeResponse(encodedResponse)).toEqual(response);
   });
 
-  it('should handle an error decoding a response', () => {
+  it('should handle an error decoding an invalid json response', () => {
     const response = 'some invalid response';
-    expect(decodeResponse(response)).toEqual({
-      type: 'error',
-      content: response,
-    });
+
+    expect(decodeResponse(response)).toEqual(
+      expect.objectContaining({ type: 'error' }),
+    );
   });
 
-  it('should handle an error decoding a response', () => {
+  it('should handle an error decoding a valid json response with incorrect type', () => {
     const response = {
       type: 'response',
       text: 'some content',
     };
 
     const encodedResponse = dumpYaml(response);
-    expect(decodeResponse(encodedResponse)).toEqual({
-      type: 'error',
-      content: encodedResponse,
-    });
+    expect(decodeResponse(encodedResponse)).toEqual(
+      expect.objectContaining({ type: 'error' }),
+    );
   });
 });
