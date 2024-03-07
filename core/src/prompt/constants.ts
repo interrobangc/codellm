@@ -48,7 +48,7 @@ Your task is to address a question or command from a user in the Question sectio
 
   responseFormatBlock: `
 ### Response Format
-Your answer must be in one of the following two formats with no extra text. Do not include any codeblock wrapper around the {responseFormat} or describe your reasoning outside of the {responseFormat} object. You MUST escape any special characters in your response.
+Your answer must be in one of the following two formats with no extra text. Do not include any codeblock wrapper or \`\`\` around the {responseFormat} or describe your reasoning outside of the {responseFormat} object. You MUST escape any special characters in your response.
 
 (1) If you are choosing the correct Tool and parameters, return valid and properly escaped {responseFormat} using the following example. Do not use references to parameter values, you must put the value being passed in the Parameter value section If passing in code, do not include backticks. The type should be the exact string "tool".
 
