@@ -14,7 +14,7 @@ import type {
   VectorDbQueryResult,
 } from '@codellm/core';
 
-import { log } from '@codellm/core';
+import { getConfig, log } from '@codellm/core';
 
 export type CreateCollectionParams = {
   client: ChromaClient;
@@ -120,6 +120,12 @@ export const addDocuments = async ({
   await collection.upsert(convertDocuments(documents));
 };
 
+// TODO: abstract collection name setting away to core
+export const getFullCollectionName = (
+  projectName: string,
+  collectionName: string,
+) => `${projectName}.${collectionName}`;
+
 /**
  * Create a new VectorDb client
  *
@@ -127,52 +133,80 @@ export const addDocuments = async ({
  */
 export const newClient = async (): Promise<VectorDbClient> => {
   const client = new ChromaClient();
+  const config = getConfig();
 
   return {
     init: async (collectionNames: string[]) => {
       await Promise.all(
         collectionNames.map(async (collectionName) => {
-          collections[collectionName] = await getOrCreateCollection({
+          const fullCollectionName = getFullCollectionName(
+            config.project.name,
+            collectionName,
+          );
+          collections[fullCollectionName] = await getOrCreateCollection({
             client,
             params: {
-              name: collectionName,
+              name: fullCollectionName,
             },
           });
 
-          log(`vectorDB.init: Initialized ${collectionName}`, 'debug');
-          log(`vectorDB.init: Collection ${collectionName} Peek`, 'silly', {
-            peek: await collections[collectionName]?.peek({ limit: 10 }),
+          log(`vectorDB.init: Initialized ${fullCollectionName}`, 'debug');
+          log(`vectorDB.init: Collection ${fullCollectionName} Peek`, 'silly', {
+            peek: await collections[fullCollectionName]?.peek({ limit: 10 }),
           });
 
           log(
-            `vectorDB.init: Collection ${collectionName} embeddingFunction`,
+            `vectorDB.init: Collection ${fullCollectionName} embeddingFunction`,
             'silly',
             {
-              embeddingFunction: collections[collectionName]?.embeddingFunction,
+              embeddingFunction:
+                collections[fullCollectionName]?.embeddingFunction,
             },
           );
         }),
       );
     },
 
-    addDocuments,
+    addDocuments: async ({
+      collectionName,
+      ...params
+    }: VectorDbAddDocumentsParams) => {
+      const fullCollectionName = getFullCollectionName(
+        config.project.name,
+        collectionName,
+      );
+      await addDocuments({ collectionName: fullCollectionName, ...params });
+    },
+
     deleteDocuments: async ({ collectionName, ids }) => {
+      const fullCollectionName = getFullCollectionName(
+        config.project.name,
+        collectionName,
+      );
       log(
-        `vectorDB.deleteDocuments: Deleting documents from ${collectionName}`,
+        `vectorDB.deleteDocuments: Deleting documents from ${fullCollectionName}`,
         'debug',
         {
           ids,
         },
       );
-      const collection = getCollection(collectionName);
+      const collection = getCollection(fullCollectionName);
       await collection.delete({ ids });
     },
 
     get: async ({ collectionName, ids }: VectorDbGetParams) => {
-      log(`vectorDB.get: Getting documents from ${collectionName}`, 'silly', {
-        ids,
-      });
-      const collection = getCollection(collectionName);
+      const fullCollectionName = getFullCollectionName(
+        config.project.name,
+        collectionName,
+      );
+      log(
+        `vectorDB.get: Getting documents from ${fullCollectionName}`,
+        'silly',
+        {
+          ids,
+        },
+      );
+      const collection = getCollection(fullCollectionName);
 
       return collection.get({
         ids,
@@ -186,11 +220,15 @@ export const newClient = async (): Promise<VectorDbClient> => {
       collectionName,
       opts: { query, numResults },
     }: VectorDbQueryParams): Promise<VectorDbQueryResult> => {
-      log(`vectorDB.query: Querying ${collectionName}`, 'silly', {
+      const fullCollectionName = getFullCollectionName(
+        config.project.name,
+        collectionName,
+      );
+      log(`vectorDB.query: Querying ${fullCollectionName}`, 'silly', {
         query,
         numResults,
       });
-      const collection = getCollection(collectionName);
+      const collection = getCollection(fullCollectionName);
       const resp = await collection.query({
         queryTexts: query,
         nResults: numResults,

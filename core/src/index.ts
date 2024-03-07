@@ -1,4 +1,5 @@
 export * from './agent/index.js';
+export * from './config/index.js';
 export * from './importer/index.js';
 export * from './log/index.js';
 
@@ -13,6 +14,9 @@ export { prompt };
 
 import * as toolUtils from './tool/utils/index.js';
 export { toolUtils };
+
+import * as fs from './fs/index.js';
+export { fs };
 
 export * from './agent/types.js';
 export * from './config/types.js';

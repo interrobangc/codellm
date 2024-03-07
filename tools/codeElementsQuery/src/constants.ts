@@ -38,7 +38,12 @@ export const DEFAULT_CONFIG: ToolConfig = {
     '**/*.wsc',
     '**/*.wsh',
   ],
-  exclude: ['**/node_modules/**', '**/coverage/**', '**/dist/**'],
+  exclude: [
+    '**/node_modules/**',
+    '**/cdk.out/**',
+    '**/coverage/**',
+    '**/dist/**',
+  ],
   vectorDbCollectionName,
   vectorDbName: 'chromadb',
 } as const;

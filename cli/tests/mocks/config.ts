@@ -3,7 +3,10 @@ import merge from 'lodash/merge.js';
 import { DEFAULTS } from '@cli/config/constants.js';
 
 export const configFileData = {
-  path: 'some/path',
+  project: {
+    name: 'someProject',
+    path: 'some/path',
+  },
   logLevel: 'info',
   llmProvider: 'ollama',
 };

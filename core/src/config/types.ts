@@ -1,4 +1,4 @@
-import type { SERVICES_TYPE } from './constants.js';
+import type { REQUIRED_PATHS, SERVICES_TYPE } from './constants.js';
 
 import type {
   LogFormat,
@@ -12,13 +12,22 @@ import type {
 
 export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
 
+export type ConfigRequiredPaths = (typeof REQUIRED_PATHS)[number];
+
+export type ConfigPaths = Record<ConfigRequiredPaths, string>;
+
+export type ConfigProject = {
+  name: string;
+};
+
 export type ConfigCommon = {
+  cacheDir: string;
+  formatInUserMessage: boolean;
   llmProvider: Provider;
   logFormat: LogFormat;
   logLevel: LogLevel;
-  path: string;
-  cacheDir: string;
-  formatInUserMessage: boolean;
+  paths: ConfigPaths;
+  project: ConfigProject;
   tools?: ToolConfigs;
 };
 
