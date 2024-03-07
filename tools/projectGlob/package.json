@@ -1,7 +1,7 @@
 {
-  "name": "@codellm/provider-langchain",
+  "name": "@codellm/tool-project-glob",
   "version": "0.0.1",
-  "description": "code-llm provider wrapper for langchain chat models",
+  "description": "code-llm tool to glob the project for a list of files based on a pattern",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "type": "module",
@@ -11,7 +11,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@codellm/core": "^0.0.1",
-    "@langchain/core": "^0.1.40"
+    "@codellm/core": "^0.0.1"
   }
 }

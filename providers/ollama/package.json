@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-provider-ollama",
+  "name": "@codellm/provider-ollama",
   "version": "0.0.1",
   "description": "code-llm provider for OLLAMA",
   "author": "bo@interrobang.consulting",

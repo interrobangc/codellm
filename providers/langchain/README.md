@@ -11,7 +11,7 @@ Example CodeLLM cli configuration:
 ```yaml
 providers:
   langchain-openai:
-    module: '@codellm/codellm-provider-langchain'
+    module: '@codellm/provider-langchain'
     config:
       module: '@langchain/openai'
       chatClass: ChatOpenAI

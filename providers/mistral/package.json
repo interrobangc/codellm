@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-provider-mistral",
+  "name": "@codellm/provider-mistral",
   "version": "0.0.1",
   "description": "code-llm provider for mistral",
   "author": "bo@interrobang.consulting",

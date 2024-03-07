@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-tool-code-summary-query",
+  "name": "@codellm/tool-code-summary-query",
   "version": "0.0.1",
   "description": "code-llm tool to query code summary data",
   "author": "bo@interrobang.consulting",

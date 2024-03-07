@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-provider-openai",
+  "name": "@codellm/provider-openai",
   "version": "0.0.1",
   "description": "code-llm provider for OpenAI",
   "author": "bo@interrobang.consulting",

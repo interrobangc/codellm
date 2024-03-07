@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-vectordb-chromadb",
+  "name": "@codellm/vectordb-chromadb",
   "version": "0.0.1",
   "description": "code-llm vectorDb client for chroma",
   "author": "bo@interrobang.consulting",

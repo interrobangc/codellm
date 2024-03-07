@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-tool-js-dependency-tree",
+  "name": "@codellm/tool-js-dependency-tree",
   "version": "0.0.1",
   "description": "code-llm tool to generate a dependency tree for a given package.json file",
   "author": "bo@interrobang.consulting",

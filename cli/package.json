@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-cli",
+  "name": "@codellm/cli",
   "version": "0.0.1",
   "description": "cli interface for code-llm",
   "author": "bo@interrobang.consulting",
@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@codellm/core": "^0.0.1",
-    "@codellm/codellm-tool-code-summary-query": "^0.0.1",
-    "@codellm/codellm-tool-js-dependency-tree": "^0.0.1",
-    "@codellm/codellm-vectordb-chromadb": "^0.0.1",
+    "@codellm/tool-code-summary-query": "^0.0.1",
+    "@codellm/tool-file-reader": "^0.0.1",
+    "@codellm/tool-js-dependency-tree": "^0.0.1",
+    "@codellm/tool-project-glob": "^0.0.1",
+    "@codellm/vectordb-chromadb": "^0.0.1",
     "@langchain/openai": "^0.0.15",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
