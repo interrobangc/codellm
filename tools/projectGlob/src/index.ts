@@ -1,5 +1,6 @@
 import type {
   Config,
+  ProcessFileHandleParams,
   Tool,
   ToolRunParamsCommon,
   ToolRunReturn,
@@ -49,7 +50,7 @@ export const newTool = async (
           path: projectPath,
           include: globPatterns as string[],
           exclude: toolConfig.exclude,
-          handle: async ({ filePath }) => {
+          handle: async ({ filePath }: ProcessFileHandleParams) => {
             filePaths.push(filePath);
           },
         });
