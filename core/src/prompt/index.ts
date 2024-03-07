@@ -22,7 +22,10 @@ const prompts: Prompts = {};
 const baseParams: Record<string, string> = {};
 
 export const getToolDescriptions = (tools: Tools = {}) => {
-  return dumpYaml(Object.values(tools).map((tool) => tool.description));
+  const descriptions = Object.values(tools).map((tool) => tool.description);
+
+  log('getToolDescriptions', 'debug', { descriptions });
+  return dumpYaml(descriptions);
 };
 
 export const newPrompt = () => {
@@ -60,8 +63,7 @@ export const initPrompts = ({
   tools: Tools;
 }) => {
   const configPrompts: PromptConfig = DEFAULT_PROMPTS;
-  const availableTools = getToolDescriptions(tools);
-  baseParams['availableTools'] = availableTools;
+  baseParams['availableTools'] = getToolDescriptions(tools);
 
   Object.entries(DEFAULTS).forEach(([key, value]) => {
     baseParams[key] = value;

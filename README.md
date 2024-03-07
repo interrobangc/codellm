@@ -4,6 +4,16 @@ CodeLLM is an extensible LLM agent pipeline framework that can be used to build 
 
 It is still very much a POC and is not ready for use beyond experimentation.
 
+## Architecture
+
+The system is composed of a few main components. It is designed to be extensible and pluggable. The main components are:
+
+- [CLI](cli/README.md): A simple command line interface to interact with the system.
+- Core: The core of the system. It is responsible for orchestrating the agents and tools.
+- Providers: These are a standard interface for various LLM providers.
+- Tools: These are the tools that the agent uses to gather data. They are responsible for taking a query and returning data. They are not responsible for making the query to the provider.
+- VectorDbs: A vector database that stores embeddings of code files and other data. It is currently implemented using [chromadb](https://github.com/chroma-core/chroma)
+
 ## Prerequisites
 
 ### Code
