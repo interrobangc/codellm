@@ -40,6 +40,10 @@ export const newTool = async (
         };
       }
 
+      globPatterns.forEach((pattern, i) => {
+        globPatterns[i] = pattern.replace(/^\.\//g, '').trim();
+      });
+
       log('Running projectGlob tool', 'debug', { globPatterns });
 
       const filePaths: string[] = [];
@@ -63,7 +67,11 @@ export const newTool = async (
 
       log('projectGlob tool finished', 'debug', { filePaths });
 
-      const content = filePaths.join('\n');
+      const content = `
+#### Count of files that match ${globPatterns.join(', ')} in this project: ${filePaths.length}
+#### All file paths that match ${globPatterns.join(', ')} in this project:
+${filePaths.join('\n')};
+`;
 
       return { success: true, content };
     },

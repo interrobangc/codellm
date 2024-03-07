@@ -12,7 +12,7 @@ export const DEFAULT_CONFIG: ToolConfig = {
 
 export const description: ToolDescription = {
   name: 'projectGlob',
-  description: `This tool accepts an array of glob patterns and returns the files that match the patterns from within the project's base path.`,
+  description: `This tool accepts an array of glob patterns and returns all of the file paths that match the patterns from within the project's base path.`,
   params: [
     {
       name: 'globPatterns',

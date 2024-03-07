@@ -10,7 +10,7 @@ export const description: ToolDescription = {
   params: [
     {
       name: 'filePaths',
-      description: `The reletaive or full paths of the files to read. The paths must be within the projects base path.`,
+      description: `The relative or full paths of the files to read. The paths must be within the projects base path. This does NOT support glob patterns.`,
       type: 'array',
       required: true,
     },

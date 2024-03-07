@@ -21,7 +21,7 @@ export const processFile = async ({
   filePath,
   handle,
 }: ProcessFileParams): Promise<void> => {
-  log(`${toolName} - Processing ${filePath}`);
+  log(`${toolName} - Processing ${filePath}`, 'debug');
 
   const fileContent = await readFile(filePath);
   const fileContentHash = createHash('sha256')
@@ -60,13 +60,21 @@ export const processFiles = async ({
     ...exclude.map((e) => `!${resolve(path)}/${e}`),
   ];
 
+  log('processFiles config', 'debug', {
+    toolName,
+    path,
+    include,
+    exclude,
+    files,
+  });
+
   const paths = await globby(files, {
     //TODO: gitignore seems to be broken upstream
     // gitignore: true,
     // ignoreFiles: [`${resolve(path)}.gitignore`],
   });
 
-  log('importPaths', 'debug', { paths });
+  log('processFiles paths', 'debug', { paths });
 
   for (const filePath of paths) {
     await processFile({
