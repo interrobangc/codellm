@@ -1,7 +1,7 @@
 {
-  "name": "@codellm/provider-langchain",
+  "name": "@codellm/tool-file-reader",
   "version": "0.0.1",
-  "description": "code-llm provider wrapper for langchain chat models",
+  "description": "code-llm tool to get the content of a file within a codellm project",
   "author": "bo@interrobang.consulting",
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@codellm/core": "^0.0.1",
-    "@langchain/core": "^0.1.40"
+    "@types/js-yaml": "^4.0.9",
+    "js-yaml": "^4.1.0"
   }
 }

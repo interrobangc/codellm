@@ -1,5 +1,5 @@
 {
-  "name": "@codellm/codellm-tool-code-elements-query",
+  "name": "@codellm/tool-code-elements-query",
   "version": "0.0.1",
   "description": "code-llm tool to query code elements data",
   "author": "bo@interrobang.consulting",

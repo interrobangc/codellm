@@ -36,7 +36,7 @@ export type ToolConfigItem = {
 
 export type ToolConfigs = Record<string, ToolConfigItem>;
 
-export type ToolDescriptionParamsType = 'bool' | 'string' | 'number';
+export type ToolDescriptionParamsType = 'array' | 'bool' | 'string' | 'number';
 
 export type ToolDescriptionParams = {
   name: string;
