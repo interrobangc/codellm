@@ -14,7 +14,7 @@ export const OPTIONS = {
     type: 'string',
     description: 'LLM provider',
     options: ['ollama', 'openai'],
-    default: process.env['CODELLM_LLM_PROVIDER'],
+    default: process.env['CODELLM_PROVIDER'],
   },
   logLevel: {
     alias: 'l',
@@ -34,6 +34,11 @@ export const OPTIONS = {
     type: 'string',
     description: 'Name of the project',
     default: process.env['CODELLM_PROJECT_NAME'],
+  },
+  'providers.anthropic.config.apiKey': {
+    type: 'string',
+    description: 'Anthropic API key',
+    default: process.env['ANTHROPIC_API_KEY'],
   },
   'providers.mistral.config.apiKey': {
     type: 'string',

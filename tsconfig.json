@@ -10,6 +10,7 @@
     { "path": "tools/fileReader" },
     { "path": "tools/jsDependencyTree" },
     { "path": "tools/projectGlob" },
+    { "path": "providers/anthropic" },
     { "path": "providers/langchain" },
     { "path": "providers/mistral" },
     { "path": "providers/ollama" },

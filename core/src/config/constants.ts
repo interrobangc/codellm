@@ -17,6 +17,24 @@ export const SERVICES_TYPE = {
 export const SERVICES = Object.values(SERVICES_TYPE);
 
 export const LLM_DEFAULTS = {
+  anthropic: {
+    agent: {
+      provider: 'anthropic',
+      model: 'claude-3-opus-20240229',
+    },
+    embedding: {
+      provider: 'anthropic',
+      model: 'davinci-codex',
+    },
+    summarize: {
+      provider: 'anthropic',
+      model: 'claude-3-opus-20240229',
+    },
+    tool: {
+      provider: 'anthropic',
+      model: 'claude-3-opus-20240229',
+    },
+  },
   mistral: {
     agent: {
       provider: 'mistral',
@@ -79,6 +97,12 @@ export const DEFAULTS = {
   formatInUserMessage: true,
   llmProvider: 'ollama',
   providers: {
+    anthropic: {
+      module: '@codellm/provider-anthropic',
+      config: {
+        apiKey: '',
+      },
+    },
     mistral: {
       module: '@codellm/provider-mistral',
       config: {
