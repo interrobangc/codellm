@@ -23,11 +23,17 @@ export const OPTIONS = {
     options: ['error', 'warn', 'info', 'verbose', 'debug', 'silly'],
     default: process.env['CODELLM_LOG_LEVEL'],
   },
-  path: {
+  'project.path': {
     alias: 'p',
     type: 'string',
     description: 'Path to search',
-    default: process.env['CODELLM_PATH'],
+    default: process.env['CODELLM_PROJECT_PATH'],
+  },
+  'project.name': {
+    alias: 'n',
+    type: 'string',
+    description: 'Name of the project',
+    default: process.env['CODELLM_PROJECT_NAME'],
   },
   'providers.mistral.config.apiKey': {
     type: 'string',

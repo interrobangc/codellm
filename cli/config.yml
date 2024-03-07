@@ -1,11 +1,14 @@
-path: ..
+project:
+  name: 'codellm'
+
+paths:
+  project: ..
+  cache: ../.cache
 
 logLevel: info # error| info | warn | error | debug | silly
 
 # The default provider to use for all commands
 llmProvider: ollama # openai | ollama
-
-cacheDir: ../.cache
 
 # The format to use for the output of LLM messages so that the agent can understand it
 # is sent to the LLM in the initial system message and all subsequent user messages

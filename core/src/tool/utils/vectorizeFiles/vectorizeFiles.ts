@@ -9,8 +9,8 @@ import type {
 } from '@/.';
 
 import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
-import { readFile, stat, writeFile } from 'fs/promises';
-import { resolve } from 'path';
+import { mkdir, readFile, stat, writeFile } from '@/fs/index.js';
+import { dirname, resolve } from 'path';
 
 /**
  * Summarize the code using the summarize LLM
@@ -40,24 +40,20 @@ export const summarize = async (
 export const getId = (idPrefix: string, filePath: string) =>
   `${idPrefix}':${filePath}`;
 
-export const getCacheFilePath = (
-  cacheDir: string,
-  toolName: string,
-  idPrefix: string,
-) => resolve(`${cacheDir}/vectorizeFiles-${toolName}-${idPrefix}.json`);
+export const getCacheFilePath = (cacheDir: string, idPrefix: string) =>
+  resolve(`${cacheDir}/vectorizeFiles-${idPrefix}.json`);
 
 export const updateTrackingCache = async ({
   cacheDir,
-  toolName,
   idPrefix,
   filePath,
   action,
 }: UpdateTrackingCacheParams) => {
   const trackingCache = new Set();
-  const cacheFilePath = getCacheFilePath(cacheDir, toolName, idPrefix);
+  const cacheFilePath = getCacheFilePath(cacheDir, idPrefix);
 
   try {
-    const trackingCacheFile = await readFile(cacheFilePath, 'utf-8');
+    const trackingCacheFile = await readFile(cacheFilePath);
     JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
   } catch (e) {
     log(
@@ -70,10 +66,10 @@ export const updateTrackingCache = async ({
 
   log('trackingCache', 'silly', { trackingCache });
 
+  const dir = dirname(cacheFilePath);
+  await mkdir(dir);
   log(`writing trackingCache to ${cacheFilePath}`, 'debug');
-  await writeFile(cacheFilePath, JSON.stringify([...trackingCache]), {
-    encoding: 'utf8',
-  });
+  await writeFile(cacheFilePath, JSON.stringify([...trackingCache]));
 };
 
 /**
@@ -85,6 +81,7 @@ export const updateTrackingCache = async ({
  */
 export const vectorizeFile = async ({
   additionalMetadataFn,
+  basePath,
   cacheDir,
   dbClient,
   idPrefix,
@@ -95,14 +92,12 @@ export const vectorizeFile = async ({
   filePathHash,
   collectionName,
   prompt,
-  toolName,
 }: VectorizeFileParams) => {
   // TODO: dynamic for different passes in a single run
   const id = getId(idPrefix, filePath);
 
   await updateTrackingCache({
     cacheDir,
-    toolName,
     idPrefix,
     filePath,
     action: 'add',
@@ -127,16 +122,20 @@ export const vectorizeFile = async ({
     return;
   }
 
+  // We want to use the full path for ids to prevent overlap if different projects have the same structure,
+  // but only deal with relative paths for the rest of the metadata and document
+  const relativeFilePath = filePath.replace(resolve(basePath), '.');
+
   const response = await summarize(
     llm,
     prompt,
-    `file: ${filePath}\n\n${fileContent}`,
+    `file: ${relativeFilePath}\n\n${fileContent}`,
   );
 
   const baseMetadata = {
     fileContent,
     fileContentHash,
-    filePath,
+    filePath: relativeFilePath,
     filePathHash,
   };
 
@@ -160,6 +159,8 @@ export const vectorizeFile = async ({
     ],
   };
 
+  log('vectorizeFile document', 'debug', { document });
+
   await dbClient.addDocuments(document);
 };
 
@@ -168,14 +169,13 @@ export const removeMissingFiles = async ({
   collectionName,
   dbClient,
   idPrefix,
-  toolName,
 }: RemoveMissingFilesParams) => {
   log('Removing missing files from database');
-  const cacheFilePath = getCacheFilePath(cacheDir, toolName, idPrefix);
+  const cacheFilePath = getCacheFilePath(cacheDir, idPrefix);
   const trackingCache = new Set();
 
   try {
-    const trackingCacheFile = await readFile(cacheFilePath, 'utf-8');
+    const trackingCacheFile = await readFile(cacheFilePath);
     JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
   } catch (e) {
     log(
@@ -187,6 +187,7 @@ export const removeMissingFiles = async ({
   Promise.all(
     [...trackingCache].map(async (p) => {
       const filePath = p as string;
+      log(`Checking file ${filePath} for deletion`, 'debug');
       try {
         await stat(filePath);
       } catch (e) {
@@ -197,7 +198,6 @@ export const removeMissingFiles = async ({
         });
         await updateTrackingCache({
           cacheDir,
-          toolName,
           idPrefix,
           filePath,
           action: 'delete',
@@ -223,7 +223,10 @@ export const vectorizeFiles = async ({
     throw new Error('No summarize LLM found');
   }
 
-  const { cacheDir, path } = config;
+  const {
+    project: { name: projectName },
+    paths: { cache: rootCacheDir, project: path },
+  } = config;
   const {
     include,
     exclude,
@@ -231,6 +234,7 @@ export const vectorizeFiles = async ({
   } = toolConfig;
 
   const idPrefix = 'summary';
+  const cacheDir = `${rootCacheDir}/${projectName}/${toolName}`;
 
   await toolUtils.processFiles({
     toolName,
@@ -240,13 +244,13 @@ export const vectorizeFiles = async ({
     handle: async (params: ProcessFileHandleParams) => {
       await vectorizeFile({
         additionalMetadataFn,
+        basePath: path,
         cacheDir,
         collectionName,
         dbClient,
         idPrefix,
         llm,
         prompt: prompts.summarize,
-        toolName,
         ...params,
       });
     },
@@ -257,6 +261,5 @@ export const vectorizeFiles = async ({
     collectionName,
     dbClient,
     idPrefix,
-    toolName,
   });
 };

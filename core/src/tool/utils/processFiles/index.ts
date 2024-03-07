@@ -1,11 +1,11 @@
 import { globby } from 'globby';
 import { resolve } from 'path';
-import { readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 
 import type { ProcessFileParams, ProcessFilesParams } from '@/.';
 
 import log from '@/log/index.js';
+import { readFile } from '@/fs/index.js';
 
 /**
  * Process a single file using a given handle function
@@ -23,7 +23,7 @@ export const processFile = async ({
 }: ProcessFileParams): Promise<void> => {
   log(`${toolName} - Processing ${filePath}`);
 
-  const fileContent = await readFile(filePath, 'utf-8');
+  const fileContent = await readFile(filePath);
   const fileContentHash = createHash('sha256')
     .update(fileContent)
     .digest('hex');

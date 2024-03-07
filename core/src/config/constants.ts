@@ -1,5 +1,12 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
+export const REQUIRED_PATHS = ['cache', 'project'] as const;
+
+export const REQUIRED_KEYS = [
+  ...REQUIRED_PATHS.map((path) => `paths.${path}`),
+  'project.name',
+];
+
 export const SERVICES_TYPE = {
   agent: 'agent',
   embedding: 'embedding',
@@ -67,7 +74,6 @@ export const LLM_DEFAULTS = {
 } as const;
 
 export const DEFAULTS = {
-  path: '..',
   logLevel: 'info',
   logFormat: 'cli',
   formatInUserMessage: true,
