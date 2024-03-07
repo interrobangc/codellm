@@ -1,0 +1,17 @@
+{
+  "name": "@codellm/provider-anthropic",
+  "version": "0.0.1",
+  "description": "code-llm provider for anthropic",
+  "author": "bo@interrobang.consulting",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.17.1",
+    "@codellm/core": "^0.0.1"
+  }
+}

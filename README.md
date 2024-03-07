@@ -74,6 +74,22 @@ This assumes you have ollama running locally on the default port.
 npm start
 ```
 
+### Anthropic (Claude)
+
+This assumes you have an API key for anthropic set as an environment variable: `ANTHROPIC_API_KEY`.
+
+```bash
+CODELLM_PROVIDER=anthropic npm start
+```
+
+### Mistral
+
+This assumes you have an API key for mistral set as an environment variable: `MISTRAL_API_KEY`.
+
+```bash
+CODELLM_PROVIDER=mistral npm start
+```
+
 ### OpenAI
 
 This assumes you have an API key for openai set as an environment variable: `OPENAI_API_KEY`.
