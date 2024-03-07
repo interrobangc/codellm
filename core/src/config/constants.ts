@@ -20,7 +20,8 @@ export const LLM_DEFAULTS = {
   anthropic: {
     agent: {
       provider: 'anthropic',
-      model: 'claude-3-opus-20240229',
+      // model: 'claude-3-opus-20240229',
+      model: 'claude-3-sonnet-20240229',
     },
     embedding: {
       provider: 'anthropic',
@@ -28,11 +29,13 @@ export const LLM_DEFAULTS = {
     },
     summarize: {
       provider: 'anthropic',
-      model: 'claude-3-opus-20240229',
+      // model: 'claude-3-opus-20240229',
+      model: 'claude-3-sonnet-20240229',
     },
     tool: {
       provider: 'anthropic',
-      model: 'claude-3-opus-20240229',
+      // model: 'claude-3-opus-20240229',
+      model: 'claude-3-sonnet-20240229',
     },
   },
   mistral: {
