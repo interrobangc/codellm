@@ -1,6 +1,6 @@
-import type { CONFIG_ERRORS, LOG_ERRORS } from '@/.';
+import type { ERRORS } from './constants';
 
-export type ErrorCode = keyof typeof CONFIG_ERRORS | keyof typeof LOG_ERRORS;
+export type ErrorCode = keyof typeof ERRORS;
 
 export type ErrorConstItem = {
   message: string;

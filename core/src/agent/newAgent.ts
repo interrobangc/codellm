@@ -22,6 +22,10 @@ export const newAgent = async (configParam: PartialConfig) => {
   const config = getConfig();
 
   const llms = await initLlms(config, ['agent', 'tool']);
+  if (isError(llms)) {
+    return llms;
+  }
+
   log('newAgent LLMs', 'silly', { llms });
 
   const tools = await initTools(config);
@@ -37,7 +41,7 @@ export const newAgent = async (configParam: PartialConfig) => {
   ]);
 
   return {
-    chat: chat(llms, tools),
+    chat: chat(tools),
   } as Agent;
 };
 

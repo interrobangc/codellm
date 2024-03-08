@@ -46,7 +46,7 @@ export type LlmClient = {
 
 export type LlmProviderClient = LlmClientCommon;
 
-export type Llms = Record<Service, LlmClient>;
+export type Llms = Map<Service, LlmClient>;
 
 export type GetClientParams = {
   config: Config;

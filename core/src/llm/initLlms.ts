@@ -10,14 +10,8 @@ import { newClient } from '@/llm/index.js';
  *
  * @returns - The initialized LLM Clients
  *
- * @throws - If the service is not found
- * @throws - If there is an error initializing the client
- * @throws - If there is an error initializing the model
  */
-export const initLlms = async (
-  config: Config,
-  servicesToInit: Service[],
-): Promise<Llms> => {
+export const initLlms = async (config: Config, servicesToInit: Service[]) => {
   const llmsMap = servicesToInit.map(async (service) => {
     return {
       [service as Service]: await newClient({ config, service }),

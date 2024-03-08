@@ -1,4 +1,5 @@
 import type {
+  CodeLlmError,
   LlmClient,
   ProcessFileHandleParams,
   RemoveMissingFilesParams,
@@ -8,9 +9,10 @@ import type {
   VectorizeFilesParams,
 } from '@/.';
 
-import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
-import { mkdir, readFile, stat, writeFile } from '@/fs/index.js';
 import { dirname, resolve } from 'path';
+import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
+import { isError } from '@/error/index.js';
+import { mkdir, readFile, stat, writeFile } from '@/fs/index.js';
 
 /**
  * Summarize the code using the summarize LLM
@@ -214,13 +216,13 @@ export const vectorizeFiles = async ({
   prompts,
   toolConfig,
   toolName,
-}: VectorizeFilesParams): Promise<void> => {
+}: VectorizeFilesParams): Promise<void | CodeLlmError> => {
   const llms = await codeLlmLlm.initLlms(config, ['summarize']);
   log(`${toolName} runImport LLMs`, 'silly', { llms });
-  const llm = llms.summarize;
+  const llm = codeLlmLlm.getLlm('summarize');
 
-  if (!llm) {
-    throw new Error('No summarize LLM found');
+  if (isError(llm)) {
+    return llm;
   }
 
   const {

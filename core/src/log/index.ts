@@ -3,7 +3,7 @@ import type { Config, LogLevel } from '@/.';
 import winston from 'winston';
 import isEmpty from 'lodash/isEmpty.js';
 
-import { CodeLlmError } from '@/index.js';
+import { CodeLlmError } from '@/error/index.js';
 
 let logger: Logger;
 let level: LogLevel;
@@ -56,7 +56,7 @@ export const initLogger = (config: Config) => {
     });
   } catch (e) {
     return new CodeLlmError({
-      code: 'log:initError',
+      code: 'log:init',
       cause: e,
     });
   }

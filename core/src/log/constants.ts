@@ -1,7 +1,5 @@
-import type { ErrorConsts } from '@/.';
-
-export const LOG_ERRORS: ErrorConsts = {
-  'log:initError': {
+export const LOG_ERRORS = {
+  'log:init': {
     message: 'Log initialization error',
   },
 } as const;

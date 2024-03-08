@@ -1,9 +1,9 @@
-import type { CodeLlmErrorParams, ErrorCode } from '@/.';
+import type { CodeLlmErrorParams } from '@/.';
 
 import { ERRORS } from './constants.js';
 
 export class CodeLlmError extends Error {
-  code: ErrorCode;
+  code: CodeLlmErrorParams['code'];
 
   override message: string;
 

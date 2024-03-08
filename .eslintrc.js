@@ -30,7 +30,6 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'sonarjs'],
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
-    '@typescript-eslint/consistent-type-imports': 'error',
     'no-console': 'error',
     'sort-imports': [
       'error',
@@ -41,6 +40,18 @@ module.exports = {
     ],
     '@typescript-eslint/dot-notation': 'off',
     'import/extensions': 'off',
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          '**/tests/**',
+          '**/*.test.{ts,tsx}',
+          '**/jest.config.js',
+          '**/.eslintrc.js',
+        ],
+        optionalDependencies: false,
+      },
+    ],
   },
   settings: {
     'import/resolver': {
@@ -54,8 +65,5 @@ module.exports = {
     '**/coverage/**',
     'node_modules/**',
     '**/node_modules/**',
-    '**/test/**',
-    '**/*.test.ts',
-    'jest.config.js',
   ],
 };

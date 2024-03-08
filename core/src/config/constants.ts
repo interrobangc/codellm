@@ -1,8 +1,6 @@
-import type { ErrorConsts } from '@/.';
-
 /* eslint-disable sonarjs/no-duplicate-string */
 
-export const CONFIG_ERRORS: ErrorConsts = {
+export const CONFIG_ERRORS = {
   'config:ValidationError': {
     message: 'Config validation error',
   },

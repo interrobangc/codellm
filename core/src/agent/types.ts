@@ -1,4 +1,4 @@
-import type { Llms, Tools } from '@/.';
+import type { CodeLlmError, Tools } from '@/.';
 
 import { z } from 'zod';
 
@@ -57,37 +57,21 @@ export type AgentResponseCodeItem = {
 
 export type AgentResponseCodeItemList = AgentResponseCodeItem[];
 
-export type AgentErrorResponse = {
-  type: 'error';
-  content: string;
-};
+export type AgentSelectToolResponse = AgentResponseResponse | AgentToolResponse;
 
-export const isAgentErrorResponse = (
-  i: AgentSelectToolResponse,
-): i is AgentErrorResponse => {
-  return i.type === 'error';
-};
-
-export type AgentSelectToolResponse =
-  | AgentErrorResponse
-  | AgentResponseResponse
-  | AgentToolResponse;
-
-export type AgentResponse = AgentErrorResponse | AgentResponseResponse;
+export type AgentResponse = CodeLlmError | AgentResponseResponse;
 
 export type AgentToolResponses = Record<string, string>;
 
 export type AgentHandleQuestionParams = {
   depth?: number;
   error?: string | null;
-  llms: Llms;
   question: string;
   toolResponses?: AgentToolResponses;
   tools: Tools | undefined;
 };
 
 export type AgentHandleToolResponseParams = {
-  llms: Llms;
   response: AgentSelectToolResponse;
   toolResponses: AgentToolResponses;
   tools: Tools | undefined;

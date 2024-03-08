@@ -1,4 +1,4 @@
-import { type Config, type PartialConfig } from '@/.';
+import type { Config, PartialConfig } from '@/.';
 
 import get from 'lodash/get.js';
 import merge from 'lodash/merge.js';
