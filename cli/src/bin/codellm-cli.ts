@@ -16,6 +16,7 @@ const main = async () => {
       async (argv) => {
         const agent = await newAgent(getConfig(argv));
         if (isError(agent)) {
+          log('Error creating agent', 'error', { agent });
           // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw agent;
         }

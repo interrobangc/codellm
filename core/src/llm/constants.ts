@@ -2,8 +2,11 @@ export const LLM_ERRORS = {
   'llm:invalidProvider': {
     message: 'Invalid provider for LLM',
   },
-  'llm:init': {
-    message: 'Error initializing LLM',
+  'llm:initClients': {
+    message: 'Error initializing LLM clients',
+  },
+  'llm:initModels': {
+    message: 'Error initializing models',
   },
   'llm:noServiceLlm': {
     message: 'No LLM initialized for service',
