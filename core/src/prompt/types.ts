@@ -5,7 +5,7 @@ import type {
 import type { Config } from '@/.';
 
 export type Prompt = PromptTemplate | PipelinePromptTemplate<PromptTemplate>;
-export type Prompts = Record<string, Prompt>;
+export type Prompts = Map<string, Prompt>;
 
 export type PromptPipelineConfigPipeline =
   | string[]

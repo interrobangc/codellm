@@ -1,10 +1,11 @@
-import type { LlmClient, MessageList, Tools } from '@/.';
+import type { LlmClient, MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
 import { CodeLlmError, isError } from '@/error/index.js';
 import { conversation, getLlm } from '@/llm/index.js';
 import log from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
+import { getTool } from '@/tool/index.js';
 import * as agentTypes from './types.js';
 
 const prompt = newPrompt();
@@ -56,17 +57,16 @@ export const getToolResponses = (
 export const handleToolResponse = async ({
   response,
   toolResponses,
-  tools,
 }: agentTypes.AgentHandleToolResponseParams): Promise<
   agentTypes.AgentToolResponses | CodeLlmError
 > => {
   if (!agentTypes.isAgentToolResponse(response)) return toolResponses || {};
   const toolName = response.name;
 
-  const tool = tools?.[toolName];
+  const tool = getTool(toolName);
 
-  if (!tool) {
-    log('Tool not found', 'error', { toolName, tools });
+  if (isError(tool)) {
+    log('Tool not found', 'error', { toolName });
     return {
       ...toolResponses,
       [toolName]: 'Tool not found',
@@ -106,7 +106,6 @@ export const handleQuestion = async ({
   error = null,
   question,
   toolResponses = {},
-  tools,
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const messages: MessageList = [];
 
@@ -138,7 +137,6 @@ export const handleQuestion = async ({
       error: response.message,
       question,
       toolResponses,
-      tools,
     });
   }
 
@@ -155,7 +153,6 @@ export const handleQuestion = async ({
   const toolResponse = await handleToolResponse({
     response,
     toolResponses,
-    tools,
   });
 
   if (isError(toolResponse)) {
@@ -167,28 +164,24 @@ export const handleQuestion = async ({
     depth: depth + 1,
     question,
     toolResponses,
-    tools,
   });
 };
 
 /**
  * Handles the interaction with the llm and tools to provide enough context to the LLM
  * to answer the user's question
- *
- * @param {Llms} llms - The LLMs to use
- * @param {Tools} tools - The tools to use
+
  * @param {String} question - The question to answer
  *
  * @returns - The response from the LLM
  */
-export const chat =
-  (tools: Tools | undefined) =>
-  async (question: string): Promise<agentTypes.AgentResponse> => {
-    log('chat', 'debug', { question });
-    return handleQuestion({
-      question,
-      tools,
-    });
-  };
+export const chat = async (
+  question: string,
+): Promise<agentTypes.AgentResponse> => {
+  log('chat', 'debug', { question });
+  return handleQuestion({
+    question,
+  });
+};
 
 export default chat;

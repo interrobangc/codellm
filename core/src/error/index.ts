@@ -20,14 +20,29 @@ export class CodeLlmError extends Error {
   }
 }
 
-export const isError = (error: unknown): error is CodeLlmError => {
-  return error instanceof CodeLlmError;
+/**
+ * Check if an error is a CodeLlmError
+ *
+ * @param {unknown} error The error to check
+ *
+ * @returns {bool} Whether the error is a CodeLlmError
+ */
+export const isError = (
+  error: unknown,
+  code?: ErrorCode,
+): error is CodeLlmError => {
+  return error instanceof CodeLlmError && (!code || error.code === code);
 };
 
-export const handleMapMaybe = async (
-  map: Promise<unknown>[],
-  code: ErrorCode,
-) => {
+/**
+ * Handle a map of promises and return a CodeLlmError if any of the promises fail
+ *
+ * @param {Promise<unknown>[]} map The map of promises to handle
+ * @param {ErrorCode} code The error code to use if any of the promises fail
+ *
+ * @returns - The results of the promises or a CodeLlmError
+ */
+export const mapMaybe = async (map: Promise<unknown>[], code: ErrorCode) => {
   const resolved = await Promise.allSettled(map);
   const errors = resolved.filter(
     (item) => item.status === 'rejected' || isError(item),

@@ -5,7 +5,8 @@ import type {
   VectorizeFilesPrompts,
 } from '@/.';
 
-import { log, vectorDb } from '@/index.js';
+import { log } from '@/log/index.js';
+import * as vectorDb from '@/vectorDb/index.js';
 import { vectorizeFiles } from './vectorizeFiles.js';
 
 export const newClient = async ({

@@ -1,5 +1,5 @@
 import type { Config, Service } from '@/.';
-import { handleMapMaybe, isError } from '@/error/index.js';
+import { isError, mapMaybe } from '@/error/index.js';
 import log from '@/log/index.js';
 import { getLlm, newClient, setLlm } from './index.js';
 
@@ -16,7 +16,7 @@ export const initLlmClients = async (
     return llm;
   });
 
-  const resolvedLlms = await handleMapMaybe(llmsMap, 'llm:initClients');
+  const resolvedLlms = await mapMaybe(llmsMap, 'llm:initClients');
   if (isError(resolvedLlms)) {
     return resolvedLlms;
   }
@@ -35,10 +35,7 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
     await client.initModel();
     return client;
   });
-  const resolvedInitModels = await handleMapMaybe(
-    initModelsMap,
-    'llm:initModels',
-  );
+  const resolvedInitModels = await mapMaybe(initModelsMap, 'llm:initModels');
   if (isError(resolvedInitModels)) {
     return resolvedInitModels;
   }

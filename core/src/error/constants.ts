@@ -2,6 +2,7 @@ import { AGENT_ERRORS } from '@/agent/constants.js';
 import { CONFIG_ERRORS } from '@/config/constants.js';
 import { LLM_ERRORS } from '@/llm/constants.js';
 import { LOG_ERRORS } from '@/log/constants.js';
+import { TOOL_ERRORS } from '@/tool/constants.js';
 
 export const ERROR_ERRORS = {
   'error:unknown': {
@@ -15,4 +16,5 @@ export const ERRORS = {
   ...ERROR_ERRORS,
   ...LLM_ERRORS,
   ...LOG_ERRORS,
+  ...TOOL_ERRORS,
 } as const;

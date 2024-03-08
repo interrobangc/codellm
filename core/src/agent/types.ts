@@ -1,4 +1,4 @@
-import type { CodeLlmError, Tools } from '@/.';
+import type { CodeLlmError } from '@/.';
 
 import { z } from 'zod';
 
@@ -68,11 +68,9 @@ export type AgentHandleQuestionParams = {
   error?: string | null;
   question: string;
   toolResponses?: AgentToolResponses;
-  tools: Tools | undefined;
 };
 
 export type AgentHandleToolResponseParams = {
   response: AgentSelectToolResponse;
   toolResponses: AgentToolResponses;
-  tools: Tools | undefined;
 };

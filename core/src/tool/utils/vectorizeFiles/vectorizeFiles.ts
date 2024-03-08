@@ -10,7 +10,9 @@ import type {
 } from '@/.';
 
 import { dirname, resolve } from 'path';
-import { llm as codeLlmLlm, log, toolUtils } from '@/index.js';
+import * as codeLlmLlm from '@/llm/index.js';
+import log from '@/log/index.js';
+import * as toolUtils from '@/tool/utils/index.js';
 import { isError } from '@/error/index.js';
 import { mkdir, readFile, stat, writeFile } from '@/fs/index.js';
 

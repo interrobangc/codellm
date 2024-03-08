@@ -56,4 +56,4 @@ export type Tool = {
   import?: () => Promise<ToolRunReturn>;
   description: ToolDescription;
 };
-export type Tools = Record<string, Tool>;
+export type Tools = Map<string, Tool>;

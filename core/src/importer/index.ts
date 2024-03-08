@@ -1,6 +1,6 @@
 import type { Importer, PartialConfig } from '@/.';
 
-import { log } from '@/index.js';
+import { log } from '@/log/index.js';
 import { initTools } from '@/tool/index.js';
 import { getConfig, initConfig } from '@/config/index.js';
 
