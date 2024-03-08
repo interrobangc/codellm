@@ -1,4 +1,12 @@
+import type { ErrorConsts } from '@/.';
+
 /* eslint-disable sonarjs/no-duplicate-string */
+
+export const CONFIG_ERRORS: ErrorConsts = {
+  'config:ValidationError': {
+    message: 'Config validation error',
+  },
+} as const;
 
 export const REQUIRED_PATHS = ['cache', 'project'] as const;
 

@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { log, newAgent, newImporter } from '@codellm/core';
+import { isError, log, newAgent, newImporter } from '@codellm/core';
 
 import { addCliOptions, getConfig } from '@cli/config/index.js';
 import { interactiveLoop } from '@cli/interactiveLoop/index.js';
@@ -15,6 +15,9 @@ const main = async () => {
       () => {},
       async (argv) => {
         const agent = await newAgent(getConfig(argv));
+        if (isError(agent)) {
+          throw agent;
+        }
         await interactiveLoop(agent);
       },
     )

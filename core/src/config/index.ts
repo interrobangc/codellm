@@ -1,19 +1,30 @@
-import type { Config, PartialConfig } from '@/.';
+import { type Config, type PartialConfig } from '@/.';
 
 import get from 'lodash/get.js';
 import merge from 'lodash/merge.js';
+import { CodeLlmError, isError } from '@/error/index.js';
 import log, { initLogger } from '@/log/index.js';
 import { DEFAULTS, LLM_DEFAULTS, REQUIRED_KEYS } from './constants.js';
 
 let config: Config;
 
 // TODO: this should probably be done with zod.
-export const validateConfig = (): void => {
+export const validateConfig = () => {
+  const missing: string[] = [];
   for (const key of REQUIRED_KEYS) {
     if (get(config, key) === undefined) {
-      throw new Error(`Config key "${key}" is required`);
+      missing.push(key);
     }
   }
+
+  if (missing.length > 0) {
+    return new CodeLlmError({
+      code: 'config:ValidationError',
+      meta: { missing },
+    });
+  }
+
+  return false;
 };
 
 export const initConfig = (newConfig: PartialConfig) => {
@@ -23,10 +34,20 @@ export const initConfig = (newConfig: PartialConfig) => {
     LLM_DEFAULTS[config.llmProvider as keyof typeof LLM_DEFAULTS] || {};
 
   config.llms = merge({}, llmDefaults, newConfig.llms) as Config['llms'];
-  validateConfig();
-  initLogger(config);
+
+  const validateRes = validateConfig();
+  if (isError(validateRes)) {
+    return validateRes;
+  }
+
+  const initLoggerRes = initLogger(config);
+  if (isError(initLoggerRes)) {
+    return initLoggerRes;
+  }
 
   log('Config set', 'debug', config);
+
+  return false;
 };
 
 export const getConfig = (): Config => {

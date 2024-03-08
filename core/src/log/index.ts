@@ -1,8 +1,9 @@
 import type { Logger } from 'winston';
+import type { Config, LogLevel } from '@/.';
 import winston from 'winston';
 import isEmpty from 'lodash/isEmpty.js';
 
-import type { Config, LogLevel } from '@/.';
+import { CodeLlmError } from '@/index.js';
 
 let logger: Logger;
 let level: LogLevel;
@@ -47,11 +48,20 @@ export const initLogger = (config: Config) => {
 
   const format = getFormat(config.logFormat);
 
-  logger = winston.createLogger({
-    level: config.logLevel,
-    format,
-    transports: [new winston.transports.Console()],
-  });
+  try {
+    logger = winston.createLogger({
+      level: config.logLevel,
+      format,
+      transports: [new winston.transports.Console()],
+    });
+  } catch (e) {
+    return new CodeLlmError({
+      code: 'log:initError',
+      cause: e,
+    });
+  }
+
+  return false;
 };
 
 /**
@@ -72,4 +82,5 @@ export const log = (
 
 export default log;
 
+export * from './constants.js';
 export * from './types.js';

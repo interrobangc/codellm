@@ -1,5 +1,6 @@
 import type { Agent, PartialConfig } from '@/.';
 import { getConfig, initConfig } from '@/config/index.js';
+import { isError } from '@/error/index.js';
 import { conversation, initLlms } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { initPrompts } from '@/prompt/index.js';
@@ -13,8 +14,11 @@ import chat from './chat.js';
  *
  * @returns - The new agent
  */
-export const newAgent = async (configParam: PartialConfig): Promise<Agent> => {
-  initConfig(configParam);
+export const newAgent = async (configParam: PartialConfig) => {
+  const initConfigRes = initConfig(configParam);
+  if (isError(initConfigRes)) {
+    return initConfigRes;
+  }
   const config = getConfig();
 
   const llms = await initLlms(config, ['agent', 'tool']);
@@ -34,7 +38,7 @@ export const newAgent = async (configParam: PartialConfig): Promise<Agent> => {
 
   return {
     chat: chat(llms, tools),
-  };
+  } as Agent;
 };
 
 export default newAgent;
