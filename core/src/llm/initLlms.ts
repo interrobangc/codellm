@@ -10,12 +10,13 @@ export const initLlmClients = async (
   servicesToInit: Service[],
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
-    const llm = await newClient({ config, service });
-    if (isError(llm)) {
-      return llm;
+    const llmClient = await newClient({ config, service });
+    if (isError(llmClient)) {
+      return llmClient;
     }
-    setLlm(service, llm);
-    return llm;
+
+    setLlm(service, llmClient);
+    return llmClient;
   });
 
   const resolvedLlms = await promiseMapMaybe(llmsMap, 'llm:initClients');

@@ -1,50 +1,66 @@
 import type { Config, Service } from '@/.';
-import type { CHAT_MESSAGE_ROLES_TYPE } from './constants';
+
+import { z } from 'zod';
+import { serviceSchema } from '@/config/types.js';
+import { getEnumConstValues } from '@/type/index.js';
+import { CHAT_MESSAGE_ROLES_TYPE } from './constants.js';
 
 export * from './conversation/types.js';
 
-export type Provider = string;
+export const providerSchema = z.string();
+export type Provider = z.infer<typeof providerSchema>;
 
-export type ProviderConfig = Record<string, unknown>;
+export const providerConfigSchema = z.record(z.unknown());
+export type ProviderConfig = z.infer<typeof providerConfigSchema>;
 
-export type ProviderConfigItem = {
-  config: ProviderConfig;
-  module: string;
-};
+export const providerConfigItemSchema = z.object({
+  config: providerConfigSchema,
+  module: z.string(),
+});
+export type ProviderConfigItem = z.infer<typeof providerConfigItemSchema>;
 
-export type ProviderConfigs = Record<Provider, ProviderConfigItem>;
+export const providerConfigsSchema = z.record(providerConfigItemSchema);
+export type ProviderConfigs = z.infer<typeof providerConfigsSchema>;
 
-export type ProviderServiceItem = {
-  model: string;
-  provider: Provider;
-};
+export const providerServiceItemSchema = z.object({
+  model: z.string(),
+  provider: providerSchema,
+});
+export type ProviderServiceItem = z.infer<typeof providerServiceItemSchema>;
 
-export type ChatMessageRole =
-  (typeof CHAT_MESSAGE_ROLES_TYPE)[keyof typeof CHAT_MESSAGE_ROLES_TYPE];
+export const chatMessageRoleSchema = z.enum(
+  getEnumConstValues(CHAT_MESSAGE_ROLES_TYPE),
+);
+export type ChatMessageRole = z.infer<typeof chatMessageRoleSchema>;
 
-export type ChatMessage = {
-  content: string;
-  role: ChatMessageRole;
-};
+export const chatMessageSchema = z.object({
+  content: z.string(),
+  role: chatMessageRoleSchema,
+});
+export type ChatMessage = z.infer<typeof chatMessageSchema>;
 
-export type MessageList = ChatMessage[];
+export const messageListSchema = z.array(chatMessageSchema);
+export type MessageList = z.infer<typeof messageListSchema>;
 
-export type PromptParams = {
-  prompt: string;
-  system: string;
-};
+export const promptParamsSchema = z.object({
+  prompt: z.string(),
+  system: z.string(),
+});
+export type PromptParams = z.infer<typeof promptParamsSchema>;
 
-export type LlmClientCommon = {
-  chat: (messages: MessageList) => Promise<string>;
-  initModel: () => Promise<void>;
-  prompt: (args: PromptParams) => Promise<string>;
-};
+export const llmProviderClientSchema = z.object({
+  chat: z.function(z.tuple([messageListSchema])).returns(z.promise(z.string())),
+  initModel: z.function().returns(z.promise(z.void())),
+  prompt: z
+    .function(z.tuple([promptParamsSchema]))
+    .returns(z.promise(z.string())),
+});
+export type LlmProviderClient = z.infer<typeof llmProviderClientSchema>;
 
-export type LlmClient = {
-  service: Service;
-} & LlmClientCommon;
-
-export type LlmProviderClient = LlmClientCommon;
+export const llmClientSchema = llmProviderClientSchema.extend({
+  service: serviceSchema,
+});
+export type LlmClient = z.infer<typeof llmClientSchema>;
 
 export type Llms = Map<Service, LlmClient>;
 

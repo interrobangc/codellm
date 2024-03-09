@@ -14,6 +14,9 @@ export const LLM_ERRORS = {
   'llm:serviceNotInitialized': {
     message: 'Service not initialized',
   },
+  'llm:validateClient': {
+    message: 'Error validating the provided LLM client schema',
+  },
 } as const;
 
 export const CHAT_MESSAGE_ROLES_TYPE = {

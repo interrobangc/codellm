@@ -50,7 +50,9 @@ export const maybe = <T>(
   meta: CodeLlmErrorParams['meta'] = {},
 ) => {
   try {
-    return target();
+    const targetResp = target();
+    if (isError(targetResp)) throw targetResp;
+    return targetResp;
   } catch (e) {
     return new CodeLlmError({ cause: e, code, meta });
   }
@@ -72,7 +74,9 @@ export const promiseMaybe = async <T>(
   meta: CodeLlmErrorParams['meta'] = {},
 ) => {
   try {
-    return await target;
+    const targetRes = await target;
+    if (isError(targetRes)) throw targetRes;
+    return targetRes;
   } catch (e) {
     return new CodeLlmError({ cause: e, code, meta });
   }
@@ -92,7 +96,7 @@ export const promiseMapMaybe = async <T>(
 ) => {
   const resolved = await Promise.allSettled(map);
   const errors = resolved.filter(
-    (item) => item.status === 'rejected' || isError(item),
+    (item) => item.status === 'rejected' || isError(item.value),
   );
 
   const results = resolved.filter((item) => item.status === 'fulfilled');

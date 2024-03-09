@@ -8,9 +8,10 @@ import type {
   Service,
 } from '@/.';
 
-import { CodeLlmError, isError } from '@/error/index.js';
+import { CodeLlmError, isError, maybe } from '@/error/index.js';
 import log from '@/log/index.js';
 import * as conversation from './conversation/index.js';
+import { llmProviderClientSchema } from './types.js';
 
 /**
  * Initialize the underlying provider/model for a given service
@@ -104,10 +105,24 @@ export const newClient = async ({ config, service }: GetClientParams) => {
     model,
   });
 
+  const validatedClient = maybe(
+    () => llmProviderClientSchema.parse(client),
+    'llm:validateClient',
+    {
+      client,
+      service,
+    },
+  );
+
+  if (isError(validatedClient)) {
+    return validatedClient;
+  }
+
   return {
-    chat: async (messages: MessageList) => chat(service, client, messages),
-    initModel: () => initModel(client),
-    prompt: async (params: PromptParams) => client.prompt(params),
+    chat: async (messages: MessageList) =>
+      chat(service, validatedClient, messages),
+    initModel: () => initModel(validatedClient),
+    prompt: async (params: PromptParams) => validatedClient.prompt(params),
     service,
   };
 };
