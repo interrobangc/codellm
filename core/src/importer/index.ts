@@ -1,8 +1,9 @@
 import type { Importer, PartialConfig } from '@/.';
 
-import { log } from '@/index.js';
+import { isError } from '@/error/index.js';
+import { log } from '@/log/index.js';
 import { initTools } from '@/tool/index.js';
-import { getConfig, initConfig } from '@/config/index.js';
+import { initConfig } from '@/config/index.js';
 
 /**
  * Create a new importer which is the primary interface to import code into the vector database
@@ -11,28 +12,30 @@ import { getConfig, initConfig } from '@/config/index.js';
  *
  * @returns - The new importer instance for use by a client
  */
-export const newImporter = async (
-  configParam: PartialConfig,
-): Promise<Importer> => {
-  initConfig(configParam);
-  const config = getConfig();
+export const newImporter = async (configParam: PartialConfig) => {
+  const initConfigRes = initConfig(configParam);
+  if (isError(initConfigRes)) {
+    return initConfigRes;
+  }
 
-  const tools = await initTools(config);
-  log('newImporter tools', 'silly', { tools });
+  const tools = await initTools();
+  if (isError(tools)) {
+    return tools;
+  }
+  log('importer tools', 'silly', { tools });
 
   return {
     import: async () => {
-      if (tools == null) return;
-      const toolImports = Object.entries(tools).map(([toolName, tool]) => {
-        if (tool.import == null) return;
-
+      if (!tools.size) return;
+      for (const [toolName, tool] of tools.entries()) {
         log(`Starting import for ${toolName}`);
-        return tool.import();
-      });
+        log('tool', 'silly', { tool });
+        // @ts-expect-error - testing
 
-      await Promise.all(toolImports);
+        await tool.import();
+      }
     },
-  };
+  } as Importer;
 };
 
 export * from './types.js';

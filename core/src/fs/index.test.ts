@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { resolve } from 'path';
 
 import { testConfig } from '@tests/mocks';
+import { expectError } from '@tests/tools';
 import { validatePath } from './index.js';
 import { initConfig } from '../config/index.js';
 
@@ -25,17 +26,13 @@ describe('validatePath', () => {
     expect(validatePath(filePath)).toEqual(filePath);
   });
 
-  it('should throw an error for paths outside the project', () => {
+  it('should return an error for paths outside the project', () => {
     const filePath = '/someFile';
-    expect(() => validatePath(filePath)).toThrowError(
-      `Path "${filePath}" is not allowed`,
-    );
+    expectError(validatePath(filePath), 'fs:invalidPath');
   });
 
-  it('should throw an error for paths outside the project or cache using paths with internal relative shorthand', () => {
+  it('should return an error for paths outside the project or cache using paths with internal relative shorthand', () => {
     const filePath = `${resolve(testConfig.paths!.project)}../../someFile`;
-    expect(() => validatePath(filePath)).toThrowError(
-      `Path "${filePath}" is not allowed`,
-    );
+    expectError(validatePath(filePath), 'fs:invalidPath');
   });
 });

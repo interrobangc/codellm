@@ -1,31 +1,46 @@
-import type { Config, Tools } from '@/.';
+import type { Tools } from '@/.';
 
 import isEmpty from 'lodash/isEmpty.js';
+import { getConfig } from '@/config/index.js';
+import { CodeLlmError, isError, promiseMapMaybe } from '@/error/index.js';
+import { log } from '@/log/index.js';
+
+export const tools: Tools = new Map();
+
+export const getTool = (name: string) => {
+  const tool = tools.get(name);
+  if (!tool) {
+    return new CodeLlmError({ code: 'tool:notFound' });
+  }
+  return tool;
+};
 
 /**
  * Create a new tool instance from the tool library
  *
- * @param config - The configuration object.
- * @param toolName - The name of the tool to create.
- *
- * @returns The new tool instance.
- *
- * @throws If the tool is not found.
- * @throws If there is an error creating the tool.
+ * @returns - The new tool instance or an error
  */
-export const initTools = async (config: Config): Promise<Tools> => {
-  if (isEmpty(config.tools)) return {};
+export const initTools = async () => {
+  const config = getConfig();
+  if (isEmpty(config.tools)) return tools;
 
-  const tools: Tools = {};
+  const toolInits = Object.entries(config.tools).map(
+    async ([name, toolConfig]) => {
+      const toolModule = await import(toolConfig.module);
+      const tool = await toolModule.newTool(name, config);
+      tools.set(name, tool);
+      return tool;
+    },
+  );
 
-  const toolInits = Object.entries(config.tools).map(async ([name, tool]) => {
-    const toolModule = await import(tool.module);
-    tools[name] = await toolModule.newTool(name, config);
+  const toolInitsRes = await promiseMapMaybe(toolInits, 'tool:initError');
+  if (isError(toolInitsRes)) {
+    return toolInitsRes;
+  }
+
+  log('initTools result', 'silly', {
+    toolInitsRes,
   });
-
-  await Promise.all(toolInits);
 
   return tools;
 };
-
-export * from './utils/index.js';

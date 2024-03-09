@@ -4,6 +4,7 @@ import { createHash } from 'crypto';
 
 import type { ProcessFileParams, ProcessFilesParams } from '@/.';
 
+import { isError } from '@/error/index.js';
 import log from '@/log/index.js';
 import { readFile } from '@/fs/index.js';
 
@@ -17,13 +18,15 @@ import { readFile } from '@/fs/index.js';
  * @returns {Promise<void>}
  */
 export const processFile = async ({
-  toolName,
   filePath,
   handle,
-}: ProcessFileParams): Promise<void> => {
+  toolName,
+}: ProcessFileParams) => {
   log(`${toolName} - Processing ${filePath}`, 'debug');
 
   const fileContent = await readFile(filePath);
+  if (isError(fileContent)) return fileContent;
+
   const fileContentHash = createHash('sha256')
     .update(fileContent)
     .digest('hex');
@@ -35,6 +38,8 @@ export const processFile = async ({
     filePath,
     filePathHash,
   });
+
+  return false;
 };
 
 /**
@@ -49,11 +54,11 @@ export const processFile = async ({
  * @returns {Promise<void>}
  */
 export const processFiles = async ({
-  toolName,
-  path,
-  include,
   exclude,
   handle,
+  include,
+  path,
+  toolName,
 }: ProcessFilesParams): Promise<void> => {
   const files = [
     ...include.map((i) => `${resolve(path)}/${i}`),
@@ -61,11 +66,11 @@ export const processFiles = async ({
   ];
 
   log('processFiles config', 'debug', {
-    toolName,
-    path,
-    include,
     exclude,
     files,
+    include,
+    path,
+    toolName,
   });
 
   const paths = await globby(files, {
@@ -78,9 +83,9 @@ export const processFiles = async ({
 
   for (const filePath of paths) {
     await processFile({
-      toolName,
       filePath,
       handle,
+      toolName,
     });
   }
 };

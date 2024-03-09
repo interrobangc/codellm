@@ -30,20 +30,27 @@ export const newTool = async (
   const projectPath = config.paths.project;
 
   return {
+    description,
+    import: async () => {
+      return {
+        content: 'unimplemented',
+        success: true,
+      };
+    },
     run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
       const { filePaths } = params;
 
       if (!Array.isArray(filePaths)) {
         return {
-          success: false,
           content: 'filePaths must be an array',
+          success: false,
         };
       }
 
       if (filePaths.length > toolConfig.maxFileCount) {
         return {
-          success: false,
           content: `The maximum number of files that can be read is ${toolConfig.maxFileCount}`,
+          success: false,
         };
       }
 
@@ -69,14 +76,7 @@ ${fileContent}
 
       log('content', 'debug', { content });
 
-      return { success: true, content };
+      return { content, success: true };
     },
-    import: async () => {
-      return {
-        success: true,
-        content: 'unimplemented',
-      };
-    },
-    description,
   };
 };

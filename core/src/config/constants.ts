@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
+export const CONFIG_ERRORS = {
+  'config:ValidationError': {
+    message: 'Config validation error',
+  },
+} as const;
+
 export const REQUIRED_PATHS = ['cache', 'project'] as const;
 
 export const REQUIRED_KEYS = [
@@ -19,119 +25,122 @@ export const SERVICES = Object.values(SERVICES_TYPE);
 export const LLM_DEFAULTS = {
   anthropic: {
     agent: {
-      provider: 'anthropic',
       // model: 'claude-3-opus-20240229',
       model: 'claude-3-sonnet-20240229',
+
+      provider: 'anthropic',
     },
     embedding: {
-      provider: 'anthropic',
       model: 'davinci-codex',
+      provider: 'anthropic',
     },
     summarize: {
-      provider: 'anthropic',
       // model: 'claude-3-opus-20240229',
       model: 'claude-3-sonnet-20240229',
+
+      provider: 'anthropic',
     },
     tool: {
-      provider: 'anthropic',
       // model: 'claude-3-opus-20240229',
       model: 'claude-3-sonnet-20240229',
+
+      provider: 'anthropic',
     },
   },
   mistral: {
     agent: {
-      provider: 'mistral',
       model: 'mistral-large-latest',
+      provider: 'mistral',
     },
     embedding: {
-      provider: 'mistral',
       model: 'mistral-embed',
+      provider: 'mistral',
     },
     summarize: {
-      provider: 'mistral',
       model: 'open-mixtral-8x7b',
+      provider: 'mistral',
     },
     tool: {
-      provider: 'mistral',
       model: 'open-mixtral-8x7b',
+      provider: 'mistral',
     },
   },
   ollama: {
     agent: {
-      provider: 'ollama',
       model: 'mixtral:8x7b',
+      provider: 'ollama',
     },
     embedding: {
-      provider: 'ollama',
       model: 'nomic-embed-text',
+      provider: 'ollama',
     },
     summarize: {
-      provider: 'ollama',
       model: 'mixtral:8x7b',
+      provider: 'ollama',
     },
     tool: {
-      provider: 'ollama',
       model: 'mixtral:8x7b',
+      provider: 'ollama',
     },
   },
   openai: {
     agent: {
-      provider: 'openai',
       model: 'gpt-4-turbo-preview',
+      provider: 'openai',
     },
     embedding: {
-      provider: 'openai',
       model: 'text-davinci-003',
+      provider: 'openai',
     },
     summarize: {
-      provider: 'openai',
       model: 'gpt-4-turbo-preview',
+      provider: 'openai',
     },
     tool: {
-      provider: 'openai',
       model: 'gpt-4-turbo-preview',
+      provider: 'openai',
     },
   },
 } as const;
 
 export const DEFAULTS = {
-  logLevel: 'info',
-  logFormat: 'cli',
   formatInUserMessage: true,
   llmProvider: 'ollama',
+  logFormat: 'cli',
+  logLevel: 'info',
   providers: {
     anthropic: {
-      module: '@codellm/provider-anthropic',
       config: {
         apiKey: '',
       },
+      module: '@codellm/provider-anthropic',
     },
     mistral: {
-      module: '@codellm/provider-mistral',
       config: {
         apiKey: '',
         endpoint: 'https://api.mistral.ai',
       },
+      module: '@codellm/provider-mistral',
     },
     ollama: {
-      module: '@codellm/provider-ollama',
       config: {
         host: 'http://localhost:11434',
       },
+      module: '@codellm/provider-ollama',
     },
     openai: {
-      module: '@codellm/provider-openai',
       config: {
         apiKey: '',
       },
+      module: '@codellm/provider-openai',
     },
   },
   tools: {
     codeSummaryQuery: {
-      module: '@codellm/tool-code-summary-query',
       config: {
         vectorDbName: 'chromadb',
       },
+      module: '@codellm/tool-code-summary-query',
     },
   },
 

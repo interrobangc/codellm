@@ -5,7 +5,9 @@ import type {
   VectorizeFilesPrompts,
 } from '@/.';
 
-import { log, vectorDb } from '@/index.js';
+import { isError } from '@/error/index.js';
+import { log } from '@/log/index.js';
+import * as vectorDb from '@/vectorDb/index.js';
 import { vectorizeFiles } from './vectorizeFiles.js';
 
 export const newClient = async ({
@@ -13,11 +15,29 @@ export const newClient = async ({
   toolConfig,
   toolName,
 }: VectorizeFilesNewClientParams) => {
-  const { vectorDbName, vectorDbCollectionName } = toolConfig;
-  const dbClient = await vectorDb.newClient(vectorDbName, config);
+  const { vectorDbCollectionName, vectorDbName } = toolConfig;
+  const dbClient = await vectorDb.newClient(vectorDbName);
+
+  if (isError(dbClient)) {
+    return dbClient;
+  }
+
   await dbClient.init([vectorDbCollectionName]);
 
   return {
+    query: (opts: VectorDbQueryOpts) => {
+      log(`${toolName} running vectorizeFiles query`, 'debug', {
+        opts,
+        vectorDbCollectionName,
+      });
+
+      //TODO: Validate params
+
+      return dbClient.query({
+        collectionName: vectorDbCollectionName,
+        opts,
+      });
+    },
     vectorizeFiles: (
       prompts: VectorizeFilesPrompts,
       additionalMetadataFn:
@@ -31,19 +51,6 @@ export const newClient = async ({
         prompts,
         toolConfig,
         toolName,
-      });
-    },
-    query: (opts: VectorDbQueryOpts) => {
-      log(`${toolName} running vectorizeFiles query`, 'debug', {
-        vectorDbCollectionName,
-        opts,
-      });
-
-      //TODO: Validate params
-
-      return dbClient.query({
-        collectionName: vectorDbCollectionName,
-        opts,
       });
     },
   };

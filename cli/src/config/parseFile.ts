@@ -6,8 +6,8 @@ export function parseFile(filePath: string) {
 
   try {
     return loadYaml(fileContent);
-  } catch (error) {
-    throw new Error('Invalid YAML content');
+  } catch (e) {
+    throw new Error('Invalid YAML content in ${filePath}');
   }
 }
 

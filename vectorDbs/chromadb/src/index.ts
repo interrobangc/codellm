@@ -86,9 +86,9 @@ export const convertDocuments = (
   const documents = documentList.map((doc) => doc.document);
 
   const ret: AddParams = {
+    documents,
     ids,
     metadatas,
-    documents,
   };
 
   // TODO: this will need a flag when we start allowing other ebedding functions
@@ -136,37 +136,6 @@ export const newClient = async (): Promise<VectorDbClient> => {
   const config = getConfig();
 
   return {
-    init: async (collectionNames: string[]) => {
-      await Promise.all(
-        collectionNames.map(async (collectionName) => {
-          const fullCollectionName = getFullCollectionName(
-            config.project.name,
-            collectionName,
-          );
-          collections[fullCollectionName] = await getOrCreateCollection({
-            client,
-            params: {
-              name: fullCollectionName,
-            },
-          });
-
-          log(`vectorDB.init: Initialized ${fullCollectionName}`, 'debug');
-          log(`vectorDB.init: Collection ${fullCollectionName} Peek`, 'silly', {
-            peek: await collections[fullCollectionName]?.peek({ limit: 10 }),
-          });
-
-          log(
-            `vectorDB.init: Collection ${fullCollectionName} embeddingFunction`,
-            'silly',
-            {
-              embeddingFunction:
-                collections[fullCollectionName]?.embeddingFunction,
-            },
-          );
-        }),
-      );
-    },
-
     addDocuments: async ({
       collectionName,
       ...params
@@ -210,38 +179,69 @@ export const newClient = async (): Promise<VectorDbClient> => {
 
       return collection.get({
         ids,
+        include: [IncludeEnum.Documents, IncludeEnum.Metadatas],
         limit: 5,
         offset: 0,
-        include: [IncludeEnum.Documents, IncludeEnum.Metadatas],
       });
+    },
+
+    init: async (collectionNames: string[]) => {
+      await Promise.all(
+        collectionNames.map(async (collectionName) => {
+          const fullCollectionName = getFullCollectionName(
+            config.project.name,
+            collectionName,
+          );
+          collections[fullCollectionName] = await getOrCreateCollection({
+            client,
+            params: {
+              name: fullCollectionName,
+            },
+          });
+
+          log(`vectorDB.init: Initialized ${fullCollectionName}`, 'debug');
+          log(`vectorDB.init: Collection ${fullCollectionName} Peek`, 'silly', {
+            peek: await collections[fullCollectionName]?.peek({ limit: 10 }),
+          });
+
+          log(
+            `vectorDB.init: Collection ${fullCollectionName} embeddingFunction`,
+            'silly',
+            {
+              embeddingFunction:
+                collections[fullCollectionName]?.embeddingFunction,
+            },
+          );
+        }),
+      );
     },
 
     query: async ({
       collectionName,
-      opts: { query, numResults },
+      opts: { numResults, query },
     }: VectorDbQueryParams): Promise<VectorDbQueryResult> => {
       const fullCollectionName = getFullCollectionName(
         config.project.name,
         collectionName,
       );
       log(`vectorDB.query: Querying ${fullCollectionName}`, 'silly', {
-        query,
         numResults,
+        query,
       });
       const collection = getCollection(fullCollectionName);
       const resp = await collection.query({
-        queryTexts: query,
         nResults: numResults,
+        queryTexts: query,
       });
 
       log(`vectorDB.query: Query response`, 'silly', { resp });
 
       return (
         resp.ids?.[0]?.map((id, i) => ({
+          distance: resp.distances?.[0]?.[i] ?? null,
+          document: resp.documents?.[0]?.[i] ?? '',
           id,
           metadata: resp.metadatas?.[0]?.[i] ?? {},
-          document: resp.documents?.[0]?.[i] ?? '',
-          distance: resp.distances?.[0]?.[i] ?? null,
         })) ?? []
       );
     },

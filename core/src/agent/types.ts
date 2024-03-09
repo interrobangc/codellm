@@ -1,13 +1,10 @@
-import type { Llms, Tools } from '@/.';
+import type { CodeLlmError } from '@/.';
 
 import { z } from 'zod';
 
 import { toolRunParamsParamSchema } from '@/tool/types.js';
 
 export const agentResponseResponseSchema = z.object({
-  type: z.literal('response'),
-  content: z.string(),
-  reason: z.string().optional(),
   code: z
     .array(
       z.object({
@@ -16,6 +13,9 @@ export const agentResponseResponseSchema = z.object({
       }),
     )
     .optional(),
+  content: z.string(),
+  reason: z.string().optional(),
+  type: z.literal('response'),
 });
 
 export type AgentResponseResponse = z.infer<typeof agentResponseResponseSchema>;
@@ -27,10 +27,10 @@ export const isAgentResponseResponse = (
 };
 
 export const agentToolResponseSchema = z.object({
-  type: z.literal('tool'),
-  reason: z.string(),
   name: z.string(),
   params: toolRunParamsParamSchema,
+  reason: z.string(),
+  type: z.literal('tool'),
 });
 
 export type AgentToolResponse = z.infer<typeof agentToolResponseSchema>;
@@ -57,38 +57,20 @@ export type AgentResponseCodeItem = {
 
 export type AgentResponseCodeItemList = AgentResponseCodeItem[];
 
-export type AgentErrorResponse = {
-  type: 'error';
-  content: string;
-};
+export type AgentSelectToolResponse = AgentResponseResponse | AgentToolResponse;
 
-export const isAgentErrorResponse = (
-  i: AgentSelectToolResponse,
-): i is AgentErrorResponse => {
-  return i.type === 'error';
-};
-
-export type AgentSelectToolResponse =
-  | AgentErrorResponse
-  | AgentResponseResponse
-  | AgentToolResponse;
-
-export type AgentResponse = AgentErrorResponse | AgentResponseResponse;
+export type AgentResponse = CodeLlmError | AgentResponseResponse;
 
 export type AgentToolResponses = Record<string, string>;
 
 export type AgentHandleQuestionParams = {
   depth?: number;
   error?: string | null;
-  llms: Llms;
   question: string;
   toolResponses?: AgentToolResponses;
-  tools: Tools | undefined;
 };
 
 export type AgentHandleToolResponseParams = {
-  llms: Llms;
   response: AgentSelectToolResponse;
   toolResponses: AgentToolResponses;
-  tools: Tools | undefined;
 };

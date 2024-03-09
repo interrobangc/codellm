@@ -34,35 +34,35 @@ export const newTool = async (
   } as ToolConfig;
 
   const vectorizeFilesClient = await toolUtils.vectorizeFiles.newClient({
-    toolName,
     config,
     toolConfig,
+    toolName,
   });
 
   return {
+    description,
+    import: async () => {
+      await vectorizeFilesClient.vectorizeFiles({
+        summarize: summarizeTaskPrompt,
+      });
+      return { content: 'Import complete', success: true };
+    },
     run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
       const dbResponse = await vectorizeFilesClient.query({
-        query: params['query'] as unknown as string,
         numResults,
+        query: params['query'] as unknown as string,
       });
 
       const content = dumpYaml(
         dbResponse.map((d: VectorDbQueryResultItem) => ({
           distance: d.distance,
-          filePath: d.metadata['filePath'],
           fileContent: d.metadata['fileContent'],
+          filePath: d.metadata['filePath'],
           summary: d.document,
         })),
       );
 
-      return { success: true, content };
+      return { content, success: true };
     },
-    import: async () => {
-      await vectorizeFilesClient.vectorizeFiles({
-        summarize: summarizeTaskPrompt,
-      });
-      return { success: true, content: 'Import complete' };
-    },
-    description,
   };
 };

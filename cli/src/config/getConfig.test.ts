@@ -9,6 +9,8 @@ import { configFileData, expectedDefaultConfig } from '@cliTests/mocks/config';
 
 import { getConfig } from './index';
 
+const configFile = './validConfig.yml';
+
 describe('getConfig', () => {
   it('should return the default config when no yargs are present', () => {
     jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
@@ -22,7 +24,7 @@ describe('getConfig', () => {
     jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
 
     const yargv = {
-      configFile: './validConfig.yml',
+      configFile,
       logLevel: 'debug',
     };
 
@@ -35,13 +37,13 @@ describe('getConfig', () => {
     jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
 
     const yargv = {
-      configFile: './validConfig.yml',
+      configFile,
       invalidOption: 'invalid',
     };
 
     const expectedConfig = {
       ...expectedDefaultConfig,
-      configFile: './validConfig.yml',
+      configFile,
     };
 
     const result = getConfig(yargv);

@@ -9,6 +9,13 @@ module.exports = {
     'airbnb-typescript/base',
     'prettier',
     'plugin:sonarjs/recommended',
+    'plugin:typescript-sort-keys/recommended',
+  ],
+  ignorePatterns: [
+    '**/dist/**',
+    '**/coverage/**',
+    'node_modules/**',
+    '**/node_modules/**',
   ],
   overrides: [
     {
@@ -23,24 +30,43 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.eslint.json',
     ecmaVersion: 'latest',
+    project: './tsconfig.eslint.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'import', 'sonarjs'],
+  plugins: [
+    '@typescript-eslint',
+    'import',
+    'sonarjs',
+    'sort-destructure-keys',
+    'sort-keys-fix',
+    'typescript-sort-keys',
+  ],
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
-    '@typescript-eslint/consistent-type-imports': 'error',
-    'no-console': 'error',
-    'sort-imports': [
+    '@typescript-eslint/dot-notation': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      { ts: 'never', tsx: 'never' },
+    ],
+    'import/no-extraneous-dependencies': [
       'error',
       {
-        ignoreCase: true,
-        ignoreDeclarationSort: true,
+        devDependencies: [
+          '**/tests/**',
+          '**/*.test.{ts,tsx}',
+          '**/jest.config.js',
+          '**/.eslintrc.js',
+        ],
+        optionalDependencies: false,
       },
     ],
-    '@typescript-eslint/dot-notation': 'off',
-    'import/extensions': 'off',
+    'no-console': 'error',
+    'sort-destructure-keys/sort-destructure-keys': 2,
+    'sort-imports': ['error', { ignoreDeclarationSort: true }],
+    'sort-keys': 'error',
+    'sort-keys-fix/sort-keys-fix': 'warn',
   },
   settings: {
     'import/resolver': {
@@ -49,13 +75,4 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: [
-    '**/dist/**',
-    '**/coverage/**',
-    'node_modules/**',
-    '**/node_modules/**',
-    '**/test/**',
-    '**/*.test.ts',
-    'jest.config.js',
-  ],
 };

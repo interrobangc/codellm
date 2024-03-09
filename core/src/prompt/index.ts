@@ -1,10 +1,4 @@
-import type {
-  Config,
-  PromptConfig,
-  PromptConfigItem,
-  Prompts,
-  Tools,
-} from '@/.';
+import type { PromptConfig, PromptConfigItem, Prompts } from '@/.';
 
 import {
   PipelinePromptTemplate,
@@ -14,15 +8,21 @@ import { dump as dumpYaml } from 'js-yaml';
 import isArray from 'lodash/isArray.js';
 import isString from 'lodash/isString.js';
 
+import { getConfig } from '@/config/index.js';
+import { CodeLlmError } from '@/error/index.js';
 import log from '@/log/index.js';
-import { DEFAULT_PROMPTS, DEFAULTS } from './constants.js';
+import { tools } from '@/tool/index.js';
+import { DEFAULTS, DEFAULT_PROMPTS } from './constants.js';
 import { isPromptPipeline } from './types.js';
 
-const prompts: Prompts = {};
+const prompts: Prompts = new Map();
 const baseParams: Record<string, string> = {};
 
-export const getToolDescriptions = (tools: Tools = {}) => {
-  const descriptions = Object.values(tools).map((tool) => tool.description);
+export const getToolDescriptions = () => {
+  const descriptions = [];
+  for (const [, tool] of tools.entries()) {
+    descriptions.push(tool.description);
+  }
 
   log('getToolDescriptions', 'debug', { descriptions });
   return dumpYaml(descriptions);
@@ -30,13 +30,13 @@ export const getToolDescriptions = (tools: Tools = {}) => {
 
 export const newPrompt = () => {
   return {
-    get: (
-      promptName: string,
-      params: Record<string, unknown> = {},
-    ): Promise<string> => {
-      const prompt = prompts[promptName];
+    get: (promptName: string, params: Record<string, unknown> = {}) => {
+      const prompt = prompts.get(promptName);
       if (!prompt) {
-        throw new Error(`Prompt ${promptName} not found`);
+        return new CodeLlmError({
+          code: 'prompt:notFound',
+          meta: { promptName },
+        });
       }
 
       const promptString = prompt.format({
@@ -45,8 +45,8 @@ export const newPrompt = () => {
       });
 
       log('newPrompt data', 'debug', {
-        promptName,
         params,
+        promptName,
         promptString,
       });
 
@@ -55,15 +55,10 @@ export const newPrompt = () => {
   };
 };
 
-export const initPrompts = ({
-  config,
-  tools,
-}: {
-  config: Config;
-  tools: Tools;
-}) => {
+export const initPrompts = () => {
+  const config = getConfig();
   const configPrompts: PromptConfig = DEFAULT_PROMPTS;
-  baseParams['availableTools'] = getToolDescriptions(tools);
+  baseParams['availableTools'] = getToolDescriptions();
 
   Object.entries(DEFAULTS).forEach(([key, value]) => {
     baseParams[key] = value;
@@ -71,9 +66,9 @@ export const initPrompts = ({
 
   Object.entries(configPrompts).forEach(([name, prompt]) => {
     if (isString(prompt)) {
-      prompts[name] = PromptTemplate.fromTemplate(prompt);
+      prompts.set(name, PromptTemplate.fromTemplate(prompt));
     } else if (prompt instanceof PromptTemplate) {
-      prompts[name] = prompt;
+      prompts.set(name, prompt);
     }
   });
 
@@ -86,15 +81,14 @@ export const initPrompts = ({
 
       const pipelinePrompts = pipelinePromptItems.map((step) => ({
         name: step,
-        prompt: prompts[step],
+        prompt: prompts.get(step) as PromptTemplate,
       }));
 
-      prompts[name] = new PipelinePromptTemplate<PromptTemplate>({
-        // @ts-expect-error - fix types later
-        finalPrompt: prompts[prompt.final],
-        // @ts-expect-error - fix types later
+      const promptTemplate = new PipelinePromptTemplate<PromptTemplate>({
+        finalPrompt: prompts.get(prompt.final) as PromptTemplate,
         pipelinePrompts,
       });
+      prompts.set(name, promptTemplate);
     },
   );
 

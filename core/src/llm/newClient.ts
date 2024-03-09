@@ -1,7 +1,6 @@
 import type {
   Config,
   GetClientParams,
-  LlmClient,
   LlmProviderClient,
   MessageList,
   PromptParams,
@@ -9,6 +8,7 @@ import type {
   Service,
 } from '@/.';
 
+import { CodeLlmError, isError } from '@/error/index.js';
 import log from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 
@@ -16,8 +16,6 @@ import * as conversation from './conversation/index.js';
  * Initialize the underlying provider/model for a given service
  *
  * @param client - The LLM provider client to use
- *
- * @throws - If there is an error initializing the model
  */
 export const initModel = async (client: LlmProviderClient): Promise<void> => {
   await client.initModel();
@@ -31,8 +29,6 @@ export const initModel = async (client: LlmProviderClient): Promise<void> => {
  * @param messages - The messages to send
  *
  * @returns - A normalized response from the provider
- *
- * @throws - If there is an error sending the message
  */
 export const chat = async (
   service: Service,
@@ -46,13 +42,13 @@ export const chat = async (
   log('conversationHistoryBeforeChat', 'silly', {
     history: conversation.getHistory(service),
   });
-  log('llmChat send', 'debug', { service, messages });
+  log('llmChat send', 'debug', { messages, service });
   const response = await client.chat(conversation.getHistory(service));
-  log('llmChat receive', 'debug', { service, response });
+  log('llmChat receive', 'debug', { response, service });
 
   // We also need to add the response to the conversation history to ensure that
   // the next message has the full context including the response
-  conversation.addMessages(service, [{ role: 'assistant', content: response }]);
+  conversation.addMessages(service, [{ content: response, role: 'assistant' }]);
 
   log('conversationHistoryAfterChat', 'silly', {
     history: conversation.getHistory(service),
@@ -67,21 +63,22 @@ export const chat = async (
  * @param provider - The provider to import
  *
  * @returns - The provider module
- *
- * @throws - If the provider is not found
  */
 const getClient = async (config: Config, provider: Provider) => {
   const providerConfigItem = config.providers[provider];
 
   if (!providerConfigItem) {
-    throw new Error(`Provider not found: ${provider}`);
+    return new CodeLlmError({
+      code: 'llm:invalidProvider',
+      meta: { provider },
+    });
   }
 
   const { config: providerConfig, module } = providerConfigItem;
 
   return {
-    providerModule: await import(module),
     providerConfig,
+    providerModule: await import(module),
   };
 };
 
@@ -92,16 +89,15 @@ const getClient = async (config: Config, provider: Provider) => {
  * @param service - The service to use
  *
  * @returns - The new client
- *
- * @throws - If the provider is not found
  */
-export const newClient = async ({
-  config,
-  service,
-}: GetClientParams): Promise<LlmClient> => {
+export const newClient = async ({ config, service }: GetClientParams) => {
   const { model, provider } = config.llms[service];
 
-  const { providerConfig, providerModule } = await getClient(config, provider);
+  const getClientRes = await getClient(config, provider);
+  if (isError(getClientRes)) {
+    return getClientRes;
+  }
+  const { providerConfig, providerModule } = getClientRes;
 
   const client = await providerModule.newClient({
     config: providerConfig,
@@ -109,9 +105,9 @@ export const newClient = async ({
   });
 
   return {
-    service,
-    initModel: () => initModel(client),
     chat: async (messages: MessageList) => chat(service, client, messages),
+    initModel: () => initModel(client),
     prompt: async (params: PromptParams) => client.prompt(params),
+    service,
   };
 };

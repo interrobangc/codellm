@@ -20,7 +20,7 @@ export const run = async ({
     params,
   });
 
-  return { success: true, content: 'success' };
+  return { content: 'success', success: true };
 };
 
 export default run;

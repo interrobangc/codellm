@@ -1,7 +1,17 @@
 import type { Config, VectorDb, VectorDbClient, VectorDbs } from '@/.';
+import { getConfig } from '@/config/index.js';
+import { CodeLlmError, isError } from '@/error/index.js';
 import log from '@/log/index.js';
 
-const vectorDbs: VectorDbs = {};
+const vectorDbs: VectorDbs = new Map();
+
+export const getVectorDb = (name: VectorDb) => {
+  const db = vectorDbs.get(name);
+  if (!db) {
+    return new CodeLlmError({ code: 'vectorDb:notFound' });
+  }
+  return db;
+};
 
 /**
  * Import a VectorDb module from the vectorDb library
@@ -14,10 +24,18 @@ const vectorDbs: VectorDbs = {};
 export const importVectorDbModule = async (name: VectorDb, config: Config) => {
   const dbConfig = config.vectorDbs[name];
 
-  if (!dbConfig) throw new Error(`VectorDb config not found: ${name}`);
-  const dbModule = dbConfig.module;
-
-  return import(dbModule);
+  if (!dbConfig) {
+    return new CodeLlmError({ code: 'vectorDb:configNotFound' });
+  }
+  const dbModuleName = dbConfig.module;
+  try {
+    return await import(dbModuleName);
+  } catch (e) {
+    return new CodeLlmError({
+      cause: e,
+      code: 'vectorDb:importError',
+    });
+  }
 };
 
 /**
@@ -28,22 +46,18 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
  *
  * @returns The new VectorDbClient instance.
  */
-export const newClient = async (
-  name: VectorDb,
-  config: Config,
-): Promise<VectorDbClient> => {
+export const newClient = async (name: VectorDb) => {
   log(`vectordb newClient: ${name}`, 'silly');
-
-  if (!vectorDbs[name]) {
+  if (!vectorDbs.get(name)) {
+    const config = getConfig();
     const module = await importVectorDbModule(name, config);
-    vectorDbs[name] = module.newClient();
+    if (isError(module)) {
+      return module;
+    }
+    vectorDbs.set(name, await module.newClient(config));
   }
 
-  if (!vectorDbs[name]) {
-    throw new Error(`VectorDb not found: ${name}`);
-  }
-
-  return vectorDbs[name]!;
+  return vectorDbs.get(name) as VectorDbClient;
 };
 
 export * from './types.js';

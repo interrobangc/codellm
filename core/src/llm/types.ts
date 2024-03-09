@@ -8,35 +8,35 @@ export type Provider = string;
 export type ProviderConfig = Record<string, unknown>;
 
 export type ProviderConfigItem = {
-  module: string;
   config: ProviderConfig;
+  module: string;
 };
 
 export type ProviderConfigs = Record<Provider, ProviderConfigItem>;
 
 export type ProviderServiceItem = {
-  provider: Provider;
   model: string;
+  provider: Provider;
 };
 
 export type ChatMessageRole =
   (typeof CHAT_MESSAGE_ROLES_TYPE)[keyof typeof CHAT_MESSAGE_ROLES_TYPE];
 
 export type ChatMessage = {
-  role: ChatMessageRole;
   content: string;
+  role: ChatMessageRole;
 };
 
 export type MessageList = ChatMessage[];
 
 export type PromptParams = {
-  system: string;
   prompt: string;
+  system: string;
 };
 
 export type LlmClientCommon = {
-  initModel: () => Promise<void>;
   chat: (messages: MessageList) => Promise<string>;
+  initModel: () => Promise<void>;
   prompt: (args: PromptParams) => Promise<string>;
 };
 
@@ -46,7 +46,7 @@ export type LlmClient = {
 
 export type LlmProviderClient = LlmClientCommon;
 
-export type Llms = Record<Service, LlmClient>;
+export type Llms = Map<Service, LlmClient>;
 
 export type GetClientParams = {
   config: Config;
@@ -54,6 +54,6 @@ export type GetClientParams = {
 };
 
 export type ProviderGetClientParams = {
-  model: string;
   config: ProviderConfig;
+  model: string;
 };

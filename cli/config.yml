@@ -16,7 +16,7 @@ llmProvider: ollama # openai | ollama
 # format the output for the user. If you are using a more powerful LLM and paying for
 # message tokens, you can set this to false and the agent will only send the format to
 # the LLM in the initial system message which will save you tokens and processing time.
-formatInUserMessage: false
+formatInUserMessage: true
 
 tools:
   codeElementsQuery:

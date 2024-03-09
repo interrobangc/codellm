@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { log, newAgent, newImporter } from '@codellm/core';
+import { isError, log, newAgent, newImporter } from '@codellm/core';
 
 import { addCliOptions, getConfig } from '@cli/config/index.js';
 import { interactiveLoop } from '@cli/interactiveLoop/index.js';
@@ -15,6 +15,11 @@ const main = async () => {
       () => {},
       async (argv) => {
         const agent = await newAgent(getConfig(argv));
+        if (isError(agent)) {
+          log('Error creating agent', 'error', { agent });
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          throw agent;
+        }
         await interactiveLoop(agent);
       },
     )
@@ -24,6 +29,11 @@ const main = async () => {
       () => {},
       async (argv) => {
         const importer = await newImporter(getConfig(argv));
+        if (isError(importer)) {
+          log('Error creating importer', 'error', { importer });
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          throw importer;
+        }
         await importer.import();
 
         log('Import complete');

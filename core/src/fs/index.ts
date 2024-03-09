@@ -6,6 +6,7 @@ import {
   writeFile as fsWriteFile,
 } from 'fs/promises';
 import { getConfig } from '../config/index.js';
+import { CodeLlmError, isError, promiseMaybe } from '@/error/index.js';
 
 /**
  * We want to make sure that the file path is within the project paths before we do anything with it.
@@ -31,16 +32,48 @@ export const validatePath = (filePath: string) => {
     if (resolvedFilePath.startsWith(resolve(path))) return resolvedFilePath;
   }
 
-  throw new Error(`Path "${filePath}" is not allowed`);
+  return new CodeLlmError({
+    code: 'fs:invalidPath',
+    meta: { filePath },
+  });
 };
 
-export const mkdir = async (dirPath: string) =>
-  fsMkdir(validatePath(dirPath), { recursive: true });
+export const mkdir = async (dirPath: string) => {
+  const validatePathRes = validatePath(dirPath);
+  if (isError(validatePathRes)) return validatePathRes;
 
-export const readFile = async (filePath: string) =>
-  fsReadFile(validatePath(filePath), 'utf-8');
+  return promiseMaybe(
+    fsMkdir(validatePathRes, { recursive: true }),
+    'fs:mkdirError',
+    {
+      dirPath,
+    },
+  );
+};
 
-export const stat = async (filePath: string) => fsStat(validatePath(filePath));
+export const readFile = async (filePath: string) => {
+  const validatePathRes = validatePath(filePath);
+  if (isError(validatePathRes)) return validatePathRes;
 
-export const writeFile = async (filePath: string, data: string) =>
-  fsWriteFile(validatePath(filePath), data);
+  return promiseMaybe(fsReadFile(validatePathRes, 'utf8'), 'fs:readFileError', {
+    filePath,
+  });
+};
+
+export const stat = async (filePath: string) => {
+  const validatePathRes = validatePath(filePath);
+  if (isError(validatePathRes)) return validatePathRes;
+
+  return promiseMaybe(fsStat(validatePathRes), 'fs:statError', { filePath });
+};
+
+export const writeFile = async (filePath: string, data: string) => {
+  const validatePathRes = validatePath(filePath);
+  if (isError(validatePathRes)) return validatePathRes;
+
+  return promiseMaybe(fsWriteFile(validatePathRes, data), 'fs:writeFileError', {
+    filePath,
+  });
+};
+
+export * from './constants.js';

@@ -9,20 +9,15 @@ import type { AnthropicConfig } from './types';
 import Anthropic from '@anthropic-ai/sdk';
 import { log } from '@codellm/core';
 
-export const newClient = async ({ model, config }: ProviderGetClientParams) => {
+export const newClient = async ({ config, model }: ProviderGetClientParams) => {
   const client = new Anthropic({ apiKey: (config as AnthropicConfig).apiKey });
   return {
-    initModel: async () => {
-      // log('mistral availableModels', 'debug', {
-      //   models: await client.listModels(),
-      // });
-    },
     chat: async (messages: MessageList) => {
       const request = {
         max_tokens: 1024,
         messages: messages.filter((message) => message.role !== 'system'),
-        system: messages.find((message) => message.role === 'system')?.content,
         model,
+        system: messages.find((message) => message.role === 'system')?.content,
       };
 
       log('anthropic chat request', 'debug', { request });
@@ -31,7 +26,12 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
 
       return response?.content[0]?.text;
     },
-    prompt: async ({ system, prompt }: PromptParams) => {
+    initModel: async () => {
+      // log('mistral availableModels', 'debug', {
+      //   models: await client.listModels(),
+      // });
+    },
+    prompt: async ({ prompt, system }: PromptParams) => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };
