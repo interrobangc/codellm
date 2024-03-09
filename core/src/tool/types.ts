@@ -1,6 +1,7 @@
-import type { LlmClient } from '@/.';
-
 import { z } from 'zod';
+
+export * from './utils/types.js';
+import { llmClientSchema } from '@/llm/types.js';
 
 export * from './utils/types.js';
 
@@ -13,57 +14,67 @@ export const toolRunParamsParamSchema = z.record(
     z.array(z.unknown()),
   ]),
 );
-
 export type ToolRunParamsParams = z.infer<typeof toolRunParamsParamSchema>;
 
-export type ToolRunParamsCommon = {
-  llm: LlmClient;
-  params: ToolRunParamsParams;
-};
+export const toolRunParamsCommonSchema = z.object({
+  llm: llmClientSchema,
+  params: toolRunParamsParamSchema,
+});
+export type ToolRunParamsCommon = z.infer<typeof toolRunParamsCommonSchema>;
 
-export type ToolRunReturn = {
-  additionalPrompt?: string;
-  content: string;
-  success: boolean;
-};
+export const toolRunReturnSchema = z.object({
+  additionalPrompt: z.string().optional(),
+  content: z.string(),
+  success: z.boolean(),
+});
+export type ToolRunReturn = z.infer<typeof toolRunReturnSchema>;
 
-export type ToolConfig = Record<string, unknown>;
+export const toolConfigSchema = z.record(z.unknown());
+export type ToolConfig = z.infer<typeof toolConfigSchema>;
 
-export type ToolConfigItem = {
-  config: ToolConfig;
-  module: string;
-};
+export const toolConfigItemSchema = z.object({
+  config: toolConfigSchema,
+  module: z.string(),
+});
+export type ToolConfigItem = z.infer<typeof toolConfigItemSchema>;
 
-export type ToolConfigs = Record<string, ToolConfigItem>;
+export const toolConfigsSchema = z.record(toolConfigItemSchema);
+export type ToolConfigs = z.infer<typeof toolConfigsSchema>;
 
-export type ToolDescriptionParamsType = 'array' | 'bool' | 'string' | 'number';
+export const toolDescriptionParamsTypeSchema = z.enum([
+  'array',
+  'bool',
+  'string',
+  'number',
+]);
+export type ToolDescriptionParamsType = z.infer<
+  typeof toolDescriptionParamsTypeSchema
+>;
 
-export type ToolDescriptionParams = {
-  description: string;
-  name: string;
-  required: boolean;
-  type: ToolDescriptionParamsType;
-};
+export const toolDescriptionParamsSchema = z.object({
+  description: z.string(),
+  name: z.string(),
+  required: z.boolean(),
+  type: toolDescriptionParamsTypeSchema,
+});
+export type ToolDescriptionParams = z.infer<typeof toolDescriptionParamsSchema>;
 
-export type ToolDescription = {
-  description: string;
-  name: string;
-  params: ToolDescriptionParams[];
-};
+export const toolDescriptionSchema = z.object({
+  description: z.string(),
+  name: z.string(),
+  params: z.array(toolDescriptionParamsSchema),
+});
 
-export type Tool = {
-  description: ToolDescription;
-  import?: () => Promise<ToolRunReturn>;
-  run: (params: ToolRunParamsCommon) => Promise<ToolRunReturn>;
-};
+export type ToolDescription = z.infer<typeof toolDescriptionSchema>;
 
-export const isTool = (tool: unknown): tool is Tool => {
-  if (typeof tool !== 'object' || tool === null) return false;
-  if (!('description' in tool)) return false;
-  if (!('import' in tool)) return false;
-  if (!('run' in tool)) return false;
+export const toolSchema = z.object({
+  description: toolDescriptionSchema,
+  import: z.function().returns(z.promise(toolRunReturnSchema)).optional(),
+  run: z
+    .function(z.tuple([toolRunParamsCommonSchema]))
+    .returns(z.promise(toolRunReturnSchema)),
+});
 
-  return true;
-};
+export type Tool = z.infer<typeof toolSchema>;
 
 export type Tools = Map<string, Tool>;

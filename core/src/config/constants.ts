@@ -135,14 +135,6 @@ export const DEFAULTS = {
       module: '@codellm/provider-openai',
     },
   },
-  tools: {
-    codeSummaryQuery: {
-      config: {
-        vectorDbName: 'chromadb',
-      },
-      module: '@codellm/tool-code-summary-query',
-    },
-  },
 
   vectorDbs: {
     chromadb: {

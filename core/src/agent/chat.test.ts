@@ -1,10 +1,10 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { dump as dumpYaml } from 'js-yaml';
 
-import { expectError } from '@tests/tools';
+import { expectError, jestSetup } from '@tests/tools';
 import { decodeResponse } from './chat';
 
-jest.mock('@/log/index.js');
+jestSetup();
 
 describe('decodeResponse', () => {
   it('should decode a valid response', () => {

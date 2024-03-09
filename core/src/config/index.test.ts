@@ -1,10 +1,9 @@
 import { describe, expect, it } from '@jest/globals';
 
+import { PartialConfig, Provider } from '@/index.js';
 import { testConfig } from '@tests/mocks';
 import { getConfig, initConfig } from './index';
 import { DEFAULTS, LLM_DEFAULTS } from './constants';
-import type { PartialConfig } from './types';
-import type { Provider } from '../llm';
 
 describe('initConfig', () => {
   it('should initialize the config with the defaults when called with base config', () => {

@@ -11,7 +11,7 @@ import isString from 'lodash/isString.js';
 import { getConfig } from '@/config/index.js';
 import { CodeLlmError } from '@/error/index.js';
 import log from '@/log/index.js';
-import { tools } from '@/tool/index.js';
+import { getTools } from '@/tool/index.js';
 import { DEFAULTS, DEFAULT_PROMPTS } from './constants.js';
 import { isPromptPipeline } from './types.js';
 
@@ -20,7 +20,7 @@ const baseParams: Record<string, string> = {};
 
 export const getToolDescriptions = () => {
   const descriptions = [];
-  for (const [, tool] of tools.entries()) {
+  for (const [, tool] of getTools().entries()) {
     descriptions.push(tool.description);
   }
 

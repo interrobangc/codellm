@@ -1,6 +1,12 @@
 export const TOOL_ERRORS = {
-  'tool:initError': {
+  'tool:import': {
+    message: 'Error importing tool',
+  },
+  'tool:init': {
     message: 'Error initializing tool',
+  },
+  'tool:invalidTool': {
+    message: 'Invalid tool instance',
   },
   'tool:invalidToolModule': {
     message: 'Invalid tool module',
