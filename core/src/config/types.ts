@@ -1,5 +1,4 @@
-import type { REQUIRED_PATHS, SERVICES_TYPE } from './constants.js';
-
+import type { REQUIRED_PATHS } from './constants';
 import type {
   LogFormat,
   LogLevel,
@@ -10,7 +9,12 @@ import type {
   VectorDbConfigs,
 } from '@/.';
 
-export type Service = (typeof SERVICES_TYPE)[keyof typeof SERVICES_TYPE];
+import { z } from 'zod';
+import { SERVICES_TYPE } from './constants.js';
+import { getEnumConstValues } from '@/type/index.js';
+
+export const serviceSchema = z.enum(getEnumConstValues(SERVICES_TYPE));
+export type Service = z.infer<typeof serviceSchema>;
 
 export type ConfigRequiredPaths = (typeof REQUIRED_PATHS)[number];
 
