@@ -15,6 +15,6 @@ export const getLlm = (service: Service) => {
   return llm;
 };
 
-export const setLlm = (service: Service, client: LlmClient): void => {
+export const setLlm = (service: Service, client: LlmClient) => {
   llms.set(service, client);
 };

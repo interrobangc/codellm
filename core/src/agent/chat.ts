@@ -1,7 +1,7 @@
 import type { LlmClient, MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import { CodeLlmError, isError } from '@/error/index.js';
+import { CodeLlmError, isError, maybe } from '@/error/index.js';
 import { conversation, getLlm } from '@/llm/index.js';
 import log from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -29,17 +29,11 @@ export const sendChat = async (llm: LlmClient, messages: MessageList) => {
  *
  * @returns - The decoded response or an error
  */
-export const decodeResponse = (
-  content: string,
-): agentTypes.AgentSelectToolResponse | CodeLlmError => {
-  try {
-    return agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim()));
-  } catch (e) {
-    return new CodeLlmError({
-      cause: e,
-      code: 'agent:decodeResponse',
-    });
-  }
+export const decodeResponse = (content: string) => {
+  return maybe<agentTypes.AgentLlmResponse>(
+    () => agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim())),
+    'agent:decodeResponse',
+  );
 };
 
 export const getToolResponses = (
@@ -133,11 +127,9 @@ export const handleQuestion = async ({
   }
 
   const response = decodeResponse(await sendChat(agentLlm, messages));
-
   log(`conversation.getHistory('agent')`, 'debug', {
     history: conversation.getHistory('agent'),
   });
-
   if (isError(response)) {
     // If we had a decode error, we add the error to the response and try again
     return handleQuestion({

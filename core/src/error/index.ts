@@ -44,6 +44,18 @@ export const isError = (
   return target instanceof CodeLlmError && (!code || target.code === code);
 };
 
+export const maybe = <T>(
+  target: () => T,
+  code: ErrorCode,
+  meta: CodeLlmErrorParams['meta'] = {},
+) => {
+  try {
+    return target();
+  } catch (e) {
+    return new CodeLlmError({ cause: e, code, meta });
+  }
+};
+
 /**
  * Resolves a promise that could throw and returns a CodeLlmError if the promise fails
  *

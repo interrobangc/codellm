@@ -50,7 +50,7 @@ export const initConfig = (newConfig: PartialConfig) => {
   return false;
 };
 
-export const getConfig = (): Config => {
+export const getConfig = () => {
   return config;
 };
 

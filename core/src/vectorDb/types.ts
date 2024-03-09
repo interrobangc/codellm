@@ -56,6 +56,18 @@ export type VectorDbDeleteParams = {
 export type VectorDbGetResultItem = EmbeddingDocument;
 export type VectorDbGetResult = VectorDbGetResultItem[];
 
+export type VectorDbModule = {
+  newClient: (config: VectorDbClientConfig) => Promise<VectorDbClient>;
+};
+
+export const isVectorDbModule = (module: unknown): module is VectorDbModule => {
+  return (
+    typeof module === 'object' &&
+    module !== null &&
+    typeof (module as VectorDbModule).newClient === 'function'
+  );
+};
+
 export type VectorDbClient = {
   addDocuments: (params: VectorDbAddDocumentsParams) => Promise<void>;
   deleteDocuments: (params: VectorDbDeleteParams) => Promise<void>;

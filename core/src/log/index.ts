@@ -3,7 +3,7 @@ import type { Config, LogLevel } from '@/.';
 import winston from 'winston';
 import isEmpty from 'lodash/isEmpty.js';
 
-import { CodeLlmError } from '@/error/index.js';
+import { isError, maybe } from '@/error/index.js';
 
 let logger: Logger;
 let level: LogLevel;
@@ -48,18 +48,21 @@ export const initLogger = (config: Config) => {
 
   const format = getFormat(config.logFormat);
 
-  try {
-    logger = winston.createLogger({
-      format,
-      level: config.logLevel,
-      transports: [new winston.transports.Console()],
-    });
-  } catch (e) {
-    return new CodeLlmError({
-      cause: e,
-      code: 'log:init',
-    });
+  const newLogger = maybe(
+    () =>
+      winston.createLogger({
+        format,
+        level: config.logLevel,
+        transports: [new winston.transports.Console()],
+      }),
+    'log:init',
+  );
+
+  if (isError(newLogger)) {
+    throw newLogger;
   }
+
+  logger = newLogger;
 
   return false;
 };
