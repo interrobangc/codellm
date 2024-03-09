@@ -1,7 +1,9 @@
-import type { Config, Tools } from '@/.';
+import type { Tools } from '@/.';
 
-import { CodeLlmError, isError, mapMaybe } from '@/error/index.js';
 import isEmpty from 'lodash/isEmpty.js';
+import { getConfig } from '@/config/index.js';
+import { CodeLlmError, isError, promiseMapMaybe } from '@/error/index.js';
+import { log } from '@/log/index.js';
 
 export const tools: Tools = new Map();
 
@@ -16,15 +18,10 @@ export const getTool = (name: string) => {
 /**
  * Create a new tool instance from the tool library
  *
- * @param config - The configuration object.
- * @param toolName - The name of the tool to create.
- *
- * @returns The new tool instance.
- *
- * @throws If the tool is not found.
- * @throws If there is an error creating the tool.
+ * @returns - The new tool instance or an error
  */
-export const initTools = async (config: Config) => {
+export const initTools = async () => {
+  const config = getConfig();
   if (isEmpty(config.tools)) return tools;
 
   const toolInits = Object.entries(config.tools).map(
@@ -36,10 +33,14 @@ export const initTools = async (config: Config) => {
     },
   );
 
-  const toolInitsRes = await mapMaybe(toolInits, 'tool:initError');
+  const toolInitsRes = await promiseMapMaybe(toolInits, 'tool:initError');
   if (isError(toolInitsRes)) {
     return toolInitsRes;
   }
+
+  log('initTools result', 'silly', {
+    toolInitsRes,
+  });
 
   return tools;
 };

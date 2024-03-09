@@ -29,6 +29,11 @@ const main = async () => {
       () => {},
       async (argv) => {
         const importer = await newImporter(getConfig(argv));
+        if (isError(importer)) {
+          log('Error creating importer', 'error', { importer });
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          throw importer;
+        }
         await importer.import();
 
         log('Import complete');

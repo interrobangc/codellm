@@ -2,6 +2,16 @@ import type { CodeLlmErrorParams, ErrorCode } from '@/.';
 
 import { ERRORS } from './constants.js';
 
+/**
+ * A custom error class for the CodeLlm project.
+ *
+ * We extend the base Error class because folks know how to deal with them and they include a stack trace.
+ *
+ * We change the call signature to include a code, cause, and meta data.
+ *
+ * The code is a string that represents the error. It should be unique and descriptive.
+ * The message will be pulled from the ERRORS constant.
+ */
 export class CodeLlmError extends Error {
   code: CodeLlmErrorParams['code'];
 
@@ -23,26 +33,51 @@ export class CodeLlmError extends Error {
 /**
  * Check if an error is a CodeLlmError
  *
- * @param {unknown} error The error to check
+ * @param {unknown} target The error to check
  *
- * @returns {bool} Whether the error is a CodeLlmError
+ * @returns {bool} Whether the target is a CodeLlmError
  */
 export const isError = (
-  error: unknown,
+  target: unknown,
   code?: ErrorCode,
-): error is CodeLlmError => {
-  return error instanceof CodeLlmError && (!code || error.code === code);
+): target is CodeLlmError => {
+  return target instanceof CodeLlmError && (!code || target.code === code);
 };
 
 /**
- * Handle a map of promises and return a CodeLlmError if any of the promises fail
+ * Resolves a promise that could throw and returns a CodeLlmError if the promise fails
  *
- * @param {Promise<unknown>[]} map The map of promises to handle
+ * @param {Promise<T>} target The promise to handle
+ * @param {ErrorCode} code The error code to use if the promise fails
+ * @param {CodeLlmErrorParams['meta']} meta The meta data to include in the error
+ *
+ * @returns - The result of the promise or a CodeLlmError with the error in the meta
+ *
+ */
+export const promiseMaybe = async <T>(
+  target: Promise<T>,
+  code: ErrorCode,
+  meta: CodeLlmErrorParams['meta'] = {},
+) => {
+  try {
+    return await target;
+  } catch (e) {
+    return new CodeLlmError({ code, cause: e, meta });
+  }
+};
+
+/**
+ * Resolves a map of promises and return a CodeLlmError if any of the promises fail
+ *
+ * @param {Promise<T>[]} map The map of promises to handle
  * @param {ErrorCode} code The error code to use if any of the promises fail
  *
- * @returns - The results of the promises or a CodeLlmError
+ * @returns - The results of the promises or a CodeLlmError with the errors and results in the meta
  */
-export const mapMaybe = async (map: Promise<unknown>[], code: ErrorCode) => {
+export const promiseMapMaybe = async <T>(
+  map: Promise<T>[],
+  code: ErrorCode,
+) => {
   const resolved = await Promise.allSettled(map);
   const errors = resolved.filter(
     (item) => item.status === 'rejected' || isError(item),

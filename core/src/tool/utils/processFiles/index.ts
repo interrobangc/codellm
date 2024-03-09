@@ -4,6 +4,7 @@ import { createHash } from 'crypto';
 
 import type { ProcessFileParams, ProcessFilesParams } from '@/.';
 
+import { isError } from '@/error/index.js';
 import log from '@/log/index.js';
 import { readFile } from '@/fs/index.js';
 
@@ -20,10 +21,12 @@ export const processFile = async ({
   toolName,
   filePath,
   handle,
-}: ProcessFileParams): Promise<void> => {
+}: ProcessFileParams) => {
   log(`${toolName} - Processing ${filePath}`, 'debug');
 
   const fileContent = await readFile(filePath);
+  if (isError(fileContent)) return fileContent;
+
   const fileContentHash = createHash('sha256')
     .update(fileContent)
     .digest('hex');
@@ -35,6 +38,8 @@ export const processFile = async ({
     filePath,
     filePathHash,
   });
+
+  return false;
 };
 
 /**

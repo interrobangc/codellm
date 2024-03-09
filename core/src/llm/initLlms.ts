@@ -1,5 +1,7 @@
 import type { Config, Service } from '@/.';
-import { isError, mapMaybe } from '@/error/index.js';
+
+import { getConfig } from '@/config/index.js';
+import { isError, promiseMapMaybe } from '@/error/index.js';
 import log from '@/log/index.js';
 import { getLlm, newClient, setLlm } from './index.js';
 
@@ -16,7 +18,7 @@ export const initLlmClients = async (
     return llm;
   });
 
-  const resolvedLlms = await mapMaybe(llmsMap, 'llm:initClients');
+  const resolvedLlms = await promiseMapMaybe(llmsMap, 'llm:initClients');
   if (isError(resolvedLlms)) {
     return resolvedLlms;
   }
@@ -35,7 +37,10 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
     await client.initModel();
     return client;
   });
-  const resolvedInitModels = await mapMaybe(initModelsMap, 'llm:initModels');
+  const resolvedInitModels = await promiseMapMaybe(
+    initModelsMap,
+    'llm:initModels',
+  );
   if (isError(resolvedInitModels)) {
     return resolvedInitModels;
   }
@@ -52,7 +57,8 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
  * @returns - The initialized LLM Clients
  *
  */
-export const initLlms = async (config: Config, servicesToInit: Service[]) => {
+export const initLlms = async (servicesToInit: Service[]) => {
+  const config = getConfig();
   const initLlmClientsRes = await initLlmClients(config, servicesToInit);
   if (isError(initLlmClientsRes)) {
     return initLlmClientsRes;

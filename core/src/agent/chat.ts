@@ -87,6 +87,7 @@ export const handleToolResponse = async ({
       llm: toolLlm,
       params: response.params,
     });
+    log('Tool response', 'debug', { toolResponse });
   } catch (e) {
     log('Error running tool', 'error', { toolName, e });
     return {
@@ -94,6 +95,8 @@ export const handleToolResponse = async ({
       [toolName]: 'Error running tool: ' + e,
     };
   }
+
+  log('Tool responses', 'debug', { toolResponses });
 
   return {
     ...toolResponses,
@@ -134,7 +137,7 @@ export const handleQuestion = async ({
     // If we had a decode error, we add the error to the response and try again
     return handleQuestion({
       depth: depth + 1,
-      error: response.message,
+      error: `${response.message} - ${response.cause}`,
       question,
       toolResponses,
     });
@@ -163,7 +166,7 @@ export const handleQuestion = async ({
   return handleQuestion({
     depth: depth + 1,
     question,
-    toolResponses,
+    toolResponses: toolResponse,
   });
 };
 

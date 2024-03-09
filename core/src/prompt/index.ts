@@ -18,7 +18,10 @@ const prompts: Prompts = new Map();
 const baseParams: Record<string, string> = {};
 
 export const getToolDescriptions = () => {
-  const descriptions = Object.values(tools).map((tool) => tool.description);
+  const descriptions = [];
+  for (const [, tool] of tools.entries()) {
+    descriptions.push(tool.description);
+  }
 
   log('getToolDescriptions', 'debug', { descriptions });
   return dumpYaml(descriptions);

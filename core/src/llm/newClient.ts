@@ -16,8 +16,6 @@ import * as conversation from './conversation/index.js';
  * Initialize the underlying provider/model for a given service
  *
  * @param client - The LLM provider client to use
- *
- * @throws - If there is an error initializing the model
  */
 export const initModel = async (client: LlmProviderClient): Promise<void> => {
   await client.initModel();
@@ -65,8 +63,6 @@ export const chat = async (
  * @param provider - The provider to import
  *
  * @returns - The provider module
- *
- * @throws - If the provider is not found
  */
 const getClient = async (config: Config, provider: Provider) => {
   const providerConfigItem = config.providers[provider];
@@ -93,8 +89,6 @@ const getClient = async (config: Config, provider: Provider) => {
  * @param service - The service to use
  *
  * @returns - The new client
- *
- * @throws - If the provider is not found
  */
 export const newClient = async ({ config, service }: GetClientParams) => {
   const { model, provider } = config.llms[service];

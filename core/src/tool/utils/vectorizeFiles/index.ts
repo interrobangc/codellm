@@ -5,6 +5,7 @@ import type {
   VectorizeFilesPrompts,
 } from '@/.';
 
+import { isError } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import * as vectorDb from '@/vectorDb/index.js';
 import { vectorizeFiles } from './vectorizeFiles.js';
@@ -15,7 +16,12 @@ export const newClient = async ({
   toolName,
 }: VectorizeFilesNewClientParams) => {
   const { vectorDbName, vectorDbCollectionName } = toolConfig;
-  const dbClient = await vectorDb.newClient(vectorDbName, config);
+  const dbClient = await vectorDb.newClient(vectorDbName);
+
+  if (isError(dbClient)) {
+    return dbClient;
+  }
+
   await dbClient.init([vectorDbCollectionName]);
 
   return {

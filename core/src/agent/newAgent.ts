@@ -1,5 +1,5 @@
 import type { Agent, PartialConfig } from '@/.';
-import { getConfig, initConfig } from '@/config/index.js';
+import { initConfig } from '@/config/index.js';
 import { isError } from '@/error/index.js';
 import { conversation, initLlms } from '@/llm/index.js';
 import { log } from '@/log/index.js';
@@ -19,16 +19,15 @@ export const newAgent = async (configParam: PartialConfig) => {
   if (isError(initConfigRes)) {
     return initConfigRes;
   }
-  const config = getConfig();
 
-  const llms = await initLlms(config, ['agent', 'tool']);
+  const llms = await initLlms(['agent', 'tool']);
   if (isError(llms)) {
     return llms;
   }
 
   log('newAgent LLMs', 'silly', { llms });
 
-  const tools = await initTools(config);
+  const tools = await initTools();
   if (isError(tools)) {
     return tools;
   }

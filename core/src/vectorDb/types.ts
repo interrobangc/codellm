@@ -65,4 +65,4 @@ export type VectorDbClient = {
   reset: () => Promise<void>;
 };
 
-export type VectorDbs = Record<VectorDb, VectorDbClient>;
+export type VectorDbs = Map<VectorDb, VectorDbClient>;
