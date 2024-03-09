@@ -21,8 +21,8 @@ describe('initConfig', () => {
   it('should merge the new config with the defaults', () => {
     const llms = {
       embedding: {
-        provider: 'openai' as Provider,
         model: 'some-fake-provider',
+        provider: 'openai' as Provider,
       },
     };
     const newConfig: PartialConfig = {

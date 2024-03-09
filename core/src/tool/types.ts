@@ -22,16 +22,16 @@ export type ToolRunParamsCommon = {
 };
 
 export type ToolRunReturn = {
-  success: boolean;
-  content: string;
   additionalPrompt?: string;
+  content: string;
+  success: boolean;
 };
 
 export type ToolConfig = Record<string, unknown>;
 
 export type ToolConfigItem = {
-  module: string;
   config: ToolConfig;
+  module: string;
 };
 
 export type ToolConfigs = Record<string, ToolConfigItem>;
@@ -39,21 +39,21 @@ export type ToolConfigs = Record<string, ToolConfigItem>;
 export type ToolDescriptionParamsType = 'array' | 'bool' | 'string' | 'number';
 
 export type ToolDescriptionParams = {
-  name: string;
   description: string;
-  type: ToolDescriptionParamsType;
+  name: string;
   required: boolean;
+  type: ToolDescriptionParamsType;
 };
 
 export type ToolDescription = {
-  name: string;
   description: string;
+  name: string;
   params: ToolDescriptionParams[];
 };
 
 export type Tool = {
-  run: (params: ToolRunParamsCommon) => Promise<ToolRunReturn>;
-  import?: () => Promise<ToolRunReturn>;
   description: ToolDescription;
+  import?: () => Promise<ToolRunReturn>;
+  run: (params: ToolRunParamsCommon) => Promise<ToolRunReturn>;
 };
 export type Tools = Map<string, Tool>;

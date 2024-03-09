@@ -9,7 +9,7 @@ export type ErrorConstItem = {
 export type ErrorConsts = Record<string, ErrorConstItem>;
 
 export type CodeLlmErrorParams = {
-  code: ErrorCode;
   cause?: unknown;
+  code: ErrorCode;
   meta?: Record<string, unknown>;
 };

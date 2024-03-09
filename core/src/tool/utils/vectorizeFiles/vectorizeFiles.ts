@@ -1,5 +1,4 @@
-import {
-  CodeLlmError,
+import type {
   LlmClient,
   ProcessFileHandleParams,
   RemoveMissingFilesParams,
@@ -10,6 +9,7 @@ import {
 } from '@/.';
 
 import { dirname, resolve } from 'path';
+import { CodeLlmError } from '@/error/index.js';
 import * as codeLlmLlm from '@/llm/index.js';
 import log from '@/log/index.js';
 import * as toolUtils from '@/tool/utils/index.js';
@@ -32,11 +32,11 @@ export const summarize = async (
   code: string,
 ) => {
   return llm.prompt({
-    system: '',
     prompt: `
-    ${prompt}
-    ${code}
-  `,
+      ${prompt}
+      ${code}
+    `,
+    system: '',
   });
 };
 
@@ -79,8 +79,8 @@ export const updateTrackingCache = async ({
   );
   if (isError(writeFileRes)) {
     return new CodeLlmError({
-      code: 'vectorizeFiles:updateTrackingCache',
       cause: writeFileRes,
+      code: 'vectorizeFiles:updateTrackingCache',
     });
   }
 
@@ -112,10 +112,10 @@ export const vectorizeFile = async ({
   const id = getId(idPrefix, filePath);
 
   const trackingRes = await updateTrackingCache({
-    cacheDir,
-    idPrefix,
-    filePath,
     action: 'add',
+    cacheDir,
+    filePath,
+    idPrefix,
   });
 
   if (isError(trackingRes)) {
@@ -172,9 +172,9 @@ export const vectorizeFile = async ({
     collectionName,
     documents: [
       {
+        document: response,
         id,
         metadata,
-        document: response,
       },
     ],
   };
@@ -219,10 +219,10 @@ export const removeMissingFiles = async ({
           ids: [getId(idPrefix, filePath)],
         });
         await updateTrackingCache({
-          cacheDir,
-          idPrefix,
-          filePath,
           action: 'delete',
+          cacheDir,
+          filePath,
+          idPrefix,
         });
       }
     }),
@@ -259,9 +259,6 @@ export const vectorizeFiles = async ({
   const cacheDir = `${rootCacheDir}/${projectName}/${toolName}`;
 
   await toolUtils.processFiles({
-    toolName,
-    path,
-    include,
     exclude,
     handle: async (params: ProcessFileHandleParams) => {
       const vectorizeRes = await vectorizeFile({
@@ -281,6 +278,9 @@ export const vectorizeFiles = async ({
         throw vectorizeRes;
       }
     },
+    include,
+    path,
+    toolName,
   });
 
   await removeMissingFiles({

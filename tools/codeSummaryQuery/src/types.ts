@@ -14,6 +14,6 @@ export type RunParams = ToolRunParamsCommon & {
 
 export type RunImportParams = {
   config: Config;
-  toolConfig: ToolConfig;
   dbClient: VectorDbClient;
+  toolConfig: ToolConfig;
 };

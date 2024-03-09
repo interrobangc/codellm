@@ -26,12 +26,12 @@ describe('validatePath', () => {
     expect(validatePath(filePath)).toEqual(filePath);
   });
 
-  it('should throw an error for paths outside the project', () => {
+  it('should return an error for paths outside the project', () => {
     const filePath = '/someFile';
     expectError(validatePath(filePath), 'fs:invalidPath');
   });
 
-  it('should throw an error for paths outside the project or cache using paths with internal relative shorthand', () => {
+  it('should return an error for paths outside the project or cache using paths with internal relative shorthand', () => {
     const filePath = `${resolve(testConfig.paths!.project)}../../someFile`;
     expectError(validatePath(filePath), 'fs:invalidPath');
   });

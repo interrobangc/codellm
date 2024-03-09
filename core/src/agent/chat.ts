@@ -36,8 +36,8 @@ export const decodeResponse = (
     return agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim()));
   } catch (e) {
     return new CodeLlmError({
-      code: 'agent:decodeResponse',
       cause: e,
+      code: 'agent:decodeResponse',
     });
   }
 };
@@ -89,7 +89,7 @@ export const handleToolResponse = async ({
     });
     log('Tool response', 'debug', { toolResponse });
   } catch (e) {
-    log('Error running tool', 'error', { toolName, e });
+    log('Error running tool', 'error', { e, toolName });
     return {
       ...toolResponses,
       [toolName]: 'Error running tool: ' + e,
@@ -112,13 +112,18 @@ export const handleQuestion = async ({
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const messages: MessageList = [];
 
+  const content = await prompt.get('agentQuestion', {
+    error,
+    question,
+    toolResponses: getToolResponses(toolResponses),
+  });
+  if (isError(content)) {
+    return content;
+  }
+
   messages.push({
+    content,
     role: 'user',
-    content: await prompt.get('agentQuestion', {
-      error,
-      question,
-      toolResponses: getToolResponses(toolResponses),
-    }),
   });
 
   const agentLlm = getLlm('agent');

@@ -66,11 +66,11 @@ export const processFiles = async ({
   ];
 
   log('processFiles config', 'debug', {
-    toolName,
-    path,
-    include,
     exclude,
     files,
+    include,
+    path,
+    toolName,
   });
 
   const paths = await globby(files, {
@@ -83,9 +83,9 @@ export const processFiles = async ({
 
   for (const filePath of paths) {
     await processFile({
-      toolName,
       filePath,
       handle,
+      toolName,
     });
   }
 };

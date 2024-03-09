@@ -25,6 +25,19 @@ export const newClient = async ({
   await dbClient.init([vectorDbCollectionName]);
 
   return {
+    query: (opts: VectorDbQueryOpts) => {
+      log(`${toolName} running vectorizeFiles query`, 'debug', {
+        opts,
+        vectorDbCollectionName,
+      });
+
+      //TODO: Validate params
+
+      return dbClient.query({
+        collectionName: vectorDbCollectionName,
+        opts,
+      });
+    },
     vectorizeFiles: (
       prompts: VectorizeFilesPrompts,
       additionalMetadataFn:
@@ -38,19 +51,6 @@ export const newClient = async ({
         prompts,
         toolConfig,
         toolName,
-      });
-    },
-    query: (opts: VectorDbQueryOpts) => {
-      log(`${toolName} running vectorizeFiles query`, 'debug', {
-        vectorDbCollectionName,
-        opts,
-      });
-
-      //TODO: Validate params
-
-      return dbClient.query({
-        collectionName: vectorDbCollectionName,
-        opts,
       });
     },
   };

@@ -9,9 +9,10 @@ import isArray from 'lodash/isArray.js';
 import isString from 'lodash/isString.js';
 
 import { getConfig } from '@/config/index.js';
+import { CodeLlmError } from '@/error/index.js';
 import log from '@/log/index.js';
 import { tools } from '@/tool/index.js';
-import { DEFAULT_PROMPTS, DEFAULTS } from './constants.js';
+import { DEFAULTS, DEFAULT_PROMPTS } from './constants.js';
 import { isPromptPipeline } from './types.js';
 
 const prompts: Prompts = new Map();
@@ -29,13 +30,13 @@ export const getToolDescriptions = () => {
 
 export const newPrompt = () => {
   return {
-    get: (
-      promptName: string,
-      params: Record<string, unknown> = {},
-    ): Promise<string> => {
+    get: (promptName: string, params: Record<string, unknown> = {}) => {
       const prompt = prompts.get(promptName);
       if (!prompt) {
-        throw new Error(`Prompt ${promptName} not found`);
+        return new CodeLlmError({
+          code: 'prompt:notFound',
+          meta: { promptName },
+        });
       }
 
       const promptString = prompt.format({
@@ -44,8 +45,8 @@ export const newPrompt = () => {
       });
 
       log('newPrompt data', 'debug', {
-        promptName,
         params,
+        promptName,
         promptString,
       });
 

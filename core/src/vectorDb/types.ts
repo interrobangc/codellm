@@ -5,17 +5,17 @@ export type VectorDb = string;
 export type VectorDbClientConfig = Record<string, unknown>;
 
 export type VectorDbConfigItem = {
-  module: string;
   config: VectorDbClientConfig;
+  module: string;
 };
 
 export type VectorDbConfigs = Record<VectorDb, VectorDbConfigItem>;
 
 export type EmbeddingDocument = {
-  id: string;
-  embedding?: Embedding;
-  metadata: Metadata;
   document: Document;
+  embedding?: Embedding;
+  id: string;
+  metadata: Metadata;
 };
 
 export type EmbeddingDocumentList = EmbeddingDocument[];
@@ -26,8 +26,8 @@ export type VectorDbAddDocumentsParams = {
 };
 
 export type VectorDbQueryOpts = {
-  query: string;
   numResults: number;
+  query: string;
 };
 
 export type VectorDbQueryParams = {

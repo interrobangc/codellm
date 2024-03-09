@@ -62,7 +62,7 @@ export const promiseMaybe = async <T>(
   try {
     return await target;
   } catch (e) {
-    return new CodeLlmError({ code, cause: e, meta });
+    return new CodeLlmError({ cause: e, code, meta });
   }
 };
 

@@ -14,14 +14,14 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
   );
 
   return {
+    chat: async (messages: MessageList) => {
+      const response = await client.chat({ messages, model });
+      return response?.choices?.[0]?.message.content;
+    },
     initModel: async () => {
       // log('mistral availableModels', 'debug', {
       //   models: await client.listModels(),
       // });
-    },
-    chat: async (messages: MessageList) => {
-      const response = await client.chat({ model, messages });
-      return response?.choices?.[0]?.message.content;
     },
     prompt: async ({ system, prompt }: PromptParams) => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;

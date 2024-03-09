@@ -27,8 +27,8 @@ export const getLangchainClient = async (
 
 export const transformCodeLlmMessages = (messages: MessageList) => {
   const roleMap = {
-    system: SystemMessage,
     assistant: AIMessage,
+    system: SystemMessage,
     user: HumanMessage,
   };
 
@@ -41,7 +41,6 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
   const client = await getLangchainClient(model, config as LangchainConfig);
 
   return {
-    initModel: async () => {},
     chat: async (messages: MessageList) => {
       const response = await client.invoke(transformCodeLlmMessages(messages));
 
@@ -49,6 +48,7 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
 
       return response?.content;
     },
+    initModel: async () => {},
     prompt: async ({ system, prompt }: PromptParams) => {
       return `Not implemented yet for langchain. System: ${system}, Prompt: ${prompt}`;
     },

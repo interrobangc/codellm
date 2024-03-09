@@ -9,6 +9,13 @@ module.exports = {
     'airbnb-typescript/base',
     'prettier',
     'plugin:sonarjs/recommended',
+    'plugin:typescript-sort-keys/recommended',
+  ],
+  ignorePatterns: [
+    '**/dist/**',
+    '**/coverage/**',
+    'node_modules/**',
+    '**/node_modules/**',
   ],
   overrides: [
     {
@@ -23,23 +30,25 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.eslint.json',
     ecmaVersion: 'latest',
+    project: './tsconfig.eslint.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'import', 'sonarjs'],
+  plugins: [
+    '@typescript-eslint',
+    'import',
+    'sonarjs',
+    'sort-keys-fix',
+    'typescript-sort-keys',
+  ],
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
-    'no-console': 'error',
-    'sort-imports': [
-      'error',
-      {
-        ignoreCase: true,
-        ignoreDeclarationSort: true,
-      },
-    ],
     '@typescript-eslint/dot-notation': 'off',
-    'import/extensions': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      { ts: 'never', tsx: 'never' },
+    ],
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -52,6 +61,10 @@ module.exports = {
         optionalDependencies: false,
       },
     ],
+    'no-console': 'error',
+    'sort-imports': ['error', { ignoreDeclarationSort: true }],
+    'sort-keys': 'error',
+    'sort-keys-fix/sort-keys-fix': 'warn',
   },
   settings: {
     'import/resolver': {
@@ -60,10 +73,4 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: [
-    '**/dist/**',
-    '**/coverage/**',
-    'node_modules/**',
-    '**/node_modules/**',
-  ],
 };

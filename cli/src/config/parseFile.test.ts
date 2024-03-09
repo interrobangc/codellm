@@ -10,13 +10,13 @@ describe('parseFile', () => {
     const filePath = 'validFilePath.yaml';
 
     const data = {
-      some: 'data',
+      array: [1, 2, 3],
       arrayOfObjects: [
         {
           some: 'object',
         },
       ],
-      array: [1, 2, 3],
+      some: 'data',
     };
 
     const fileContent = dumpYaml(data);

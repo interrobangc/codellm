@@ -32,8 +32,8 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
     return await import(dbModuleName);
   } catch (e) {
     return new CodeLlmError({
-      code: 'vectorDb:importError',
       cause: e,
+      code: 'vectorDb:importError',
     });
   }
 };

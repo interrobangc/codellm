@@ -21,15 +21,15 @@ export const newTool = async (
   } as ToolConfig;
 
   return {
+    description,
+    import: async () => ({
+      content: 'unimplemented',
+      success: true,
+    }),
     run: async (params: ToolRunParamsCommon) =>
       run({
         ...params,
         toolConfig,
       }),
-    import: async () => ({
-      success: true,
-      content: 'unimplemented',
-    }),
-    description,
   };
 };

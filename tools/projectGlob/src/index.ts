@@ -30,13 +30,20 @@ export const newTool = async (
   const projectPath = config.paths.project;
 
   return {
+    description,
+    import: async () => {
+      return {
+        content: 'unimplemented',
+        success: true,
+      };
+    },
     run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
       const { globPatterns } = params;
 
       if (!Array.isArray(globPatterns)) {
         return {
-          success: false,
           content: 'globPatterns must be an array',
+          success: false,
         };
       }
 
@@ -50,18 +57,18 @@ export const newTool = async (
 
       try {
         await toolUtils.processFiles({
-          toolName: 'projectGlob',
-          path: projectPath,
-          include: globPatterns as string[],
           exclude: toolConfig.exclude,
           handle: async ({ filePath }: ProcessFileHandleParams) => {
             filePaths.push(filePath);
           },
+          include: globPatterns as string[],
+          path: projectPath,
+          toolName: 'projectGlob',
         });
       } catch (error) {
         return {
-          success: false,
           content: String(error),
+          success: false,
         };
       }
 
@@ -73,14 +80,7 @@ export const newTool = async (
 ${filePaths.join('\n')};
 `;
 
-      return { success: true, content };
+      return { content, success: true };
     },
-    import: async () => {
-      return {
-        success: true,
-        content: 'unimplemented',
-      };
-    },
-    description,
   };
 };

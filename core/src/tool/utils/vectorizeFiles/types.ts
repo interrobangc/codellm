@@ -7,8 +7,8 @@ import type {
 } from '@/.';
 
 export type VectorizeFilesToolConfig = ProcessFilesToolConfig & {
-  vectorDbName: string;
   vectorDbCollectionName: string;
+  vectorDbName: string;
 };
 
 export type VectorizeFilesPrompts = {
@@ -44,9 +44,9 @@ export type VectorizeFileParams = ProcessFileHandleParams & {
   cacheDir: string;
   collectionName: string;
   dbClient: VectorDbClient;
+  idPrefix: string;
   llm: LlmClient;
   prompt: string;
-  idPrefix: string;
 };
 
 export type RemoveMissingFilesParams = {
@@ -59,6 +59,6 @@ export type RemoveMissingFilesParams = {
 export type UpdateTrackingCacheParams = {
   action: 'add' | 'delete';
   cacheDir: string;
-  idPrefix: string;
   filePath: string;
+  idPrefix: string;
 };

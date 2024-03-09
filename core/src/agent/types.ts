@@ -5,9 +5,6 @@ import { z } from 'zod';
 import { toolRunParamsParamSchema } from '@/tool/types.js';
 
 export const agentResponseResponseSchema = z.object({
-  type: z.literal('response'),
-  content: z.string(),
-  reason: z.string().optional(),
   code: z
     .array(
       z.object({
@@ -16,6 +13,9 @@ export const agentResponseResponseSchema = z.object({
       }),
     )
     .optional(),
+  content: z.string(),
+  reason: z.string().optional(),
+  type: z.literal('response'),
 });
 
 export type AgentResponseResponse = z.infer<typeof agentResponseResponseSchema>;
@@ -27,10 +27,10 @@ export const isAgentResponseResponse = (
 };
 
 export const agentToolResponseSchema = z.object({
-  type: z.literal('tool'),
-  reason: z.string(),
   name: z.string(),
   params: toolRunParamsParamSchema,
+  reason: z.string(),
+  type: z.literal('tool'),
 });
 
 export type AgentToolResponse = z.infer<typeof agentToolResponseSchema>;

@@ -50,14 +50,14 @@ export const initLogger = (config: Config) => {
 
   try {
     logger = winston.createLogger({
-      level: config.logLevel,
       format,
+      level: config.logLevel,
       transports: [new winston.transports.Console()],
     });
   } catch (e) {
     return new CodeLlmError({
-      code: 'log:init',
       cause: e,
+      code: 'log:init',
     });
   }
 

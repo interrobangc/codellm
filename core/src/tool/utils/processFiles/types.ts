@@ -1,6 +1,6 @@
 export type ProcessFilesToolConfig = {
-  include: string[];
   exclude: string[];
+  include: string[];
 };
 
 export type ProcessFileHandleParams = {
@@ -15,13 +15,13 @@ export type ProcessFilesHandleFunction = (
 ) => Promise<void>;
 
 export type ProcessFilesParams = ProcessFilesToolConfig & {
-  toolName: string;
-  path: string;
   handle: ProcessFilesHandleFunction;
+  path: string;
+  toolName: string;
 };
 
 export type ProcessFileParams = {
-  toolName: string;
   filePath: string;
   handle: ProcessFilesHandleFunction;
+  toolName: string;
 };

@@ -35,10 +35,15 @@ export const newAgent = async (configParam: PartialConfig) => {
 
   const prompt = initPrompts();
 
+  const content = await prompt.get('agentSystem');
+  if (isError(content)) {
+    return content;
+  }
+
   conversation.addMessages('agent', [
     {
+      content,
       role: 'system',
-      content: await prompt.get('agentSystem'),
     },
   ]);
 

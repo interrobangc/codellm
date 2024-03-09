@@ -42,13 +42,13 @@ export const chat = async (
   log('conversationHistoryBeforeChat', 'silly', {
     history: conversation.getHistory(service),
   });
-  log('llmChat send', 'debug', { service, messages });
+  log('llmChat send', 'debug', { messages, service });
   const response = await client.chat(conversation.getHistory(service));
-  log('llmChat receive', 'debug', { service, response });
+  log('llmChat receive', 'debug', { response, service });
 
   // We also need to add the response to the conversation history to ensure that
   // the next message has the full context including the response
-  conversation.addMessages(service, [{ role: 'assistant', content: response }]);
+  conversation.addMessages(service, [{ content: response, role: 'assistant' }]);
 
   log('conversationHistoryAfterChat', 'silly', {
     history: conversation.getHistory(service),
@@ -77,8 +77,8 @@ const getClient = async (config: Config, provider: Provider) => {
   const { config: providerConfig, module } = providerConfigItem;
 
   return {
-    providerModule: await import(module),
     providerConfig,
+    providerModule: await import(module),
   };
 };
 
@@ -105,9 +105,9 @@ export const newClient = async ({ config, service }: GetClientParams) => {
   });
 
   return {
-    service,
-    initModel: () => initModel(client),
     chat: async (messages: MessageList) => chat(service, client, messages),
+    initModel: () => initModel(client),
     prompt: async (params: PromptParams) => client.prompt(params),
+    service,
   };
 };
