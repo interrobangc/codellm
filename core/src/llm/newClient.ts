@@ -97,7 +97,7 @@ export const newClient = async ({ config, service }: GetClientParams) => {
   if (isError(getClientRes)) {
     return getClientRes;
   }
-  const { providerModule, providerConfig } = getClientRes;
+  const { providerConfig, providerModule } = getClientRes;
 
   const client = await providerModule.newClient({
     config: providerConfig,

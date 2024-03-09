@@ -21,7 +21,7 @@ export class CodeLlmError extends Error {
 
   meta: CodeLlmErrorParams['meta'];
 
-  constructor({ code, cause, meta }: CodeLlmErrorParams) {
+  constructor({ cause, code, meta }: CodeLlmErrorParams) {
     super();
     this.code = code;
     this.message = ERRORS[code]?.message || code;

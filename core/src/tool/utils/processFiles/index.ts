@@ -18,9 +18,9 @@ import { readFile } from '@/fs/index.js';
  * @returns {Promise<void>}
  */
 export const processFile = async ({
-  toolName,
   filePath,
   handle,
+  toolName,
 }: ProcessFileParams) => {
   log(`${toolName} - Processing ${filePath}`, 'debug');
 
@@ -54,11 +54,11 @@ export const processFile = async ({
  * @returns {Promise<void>}
  */
 export const processFiles = async ({
-  toolName,
-  path,
-  include,
   exclude,
   handle,
+  include,
+  path,
+  toolName,
 }: ProcessFilesParams): Promise<void> => {
   const files = [
     ...include.map((i) => `${resolve(path)}/${i}`),

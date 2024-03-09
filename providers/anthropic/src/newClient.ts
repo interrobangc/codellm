@@ -9,7 +9,7 @@ import type { AnthropicConfig } from './types';
 import Anthropic from '@anthropic-ai/sdk';
 import { log } from '@codellm/core';
 
-export const newClient = async ({ model, config }: ProviderGetClientParams) => {
+export const newClient = async ({ config, model }: ProviderGetClientParams) => {
   const client = new Anthropic({ apiKey: (config as AnthropicConfig).apiKey });
   return {
     chat: async (messages: MessageList) => {
@@ -31,7 +31,7 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
       //   models: await client.listModels(),
       // });
     },
-    prompt: async ({ system, prompt }: PromptParams) => {
+    prompt: async ({ prompt, system }: PromptParams) => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };

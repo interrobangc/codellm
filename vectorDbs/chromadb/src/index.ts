@@ -28,6 +28,8 @@ export type CreateCollectionParams = {
  * @param params - The parameters for creating the collection.
  *
  * @returns The new collection instance.
+ *
+ * @throws If there is an error creating the collection.
  */
 export const getOrCreateCollection = async ({
   client,
@@ -216,7 +218,7 @@ export const newClient = async (): Promise<VectorDbClient> => {
 
     query: async ({
       collectionName,
-      opts: { query, numResults },
+      opts: { numResults, query },
     }: VectorDbQueryParams): Promise<VectorDbQueryResult> => {
       const fullCollectionName = getFullCollectionName(
         config.project.name,

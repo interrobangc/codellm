@@ -7,7 +7,7 @@ import type { OpenaiConfig } from './types';
 
 import OpenAI from 'openai';
 
-export const newClient = ({ model, config }: ProviderGetClientParams) => {
+export const newClient = ({ config, model }: ProviderGetClientParams) => {
   const client = new OpenAI(config as OpenaiConfig);
 
   return {
@@ -20,7 +20,7 @@ export const newClient = ({ model, config }: ProviderGetClientParams) => {
       return response.choices?.[0]?.message.content ?? '';
     },
     initModel: async () => {},
-    prompt: async ({ system, prompt }: PromptParams): Promise<string> => {
+    prompt: async ({ prompt, system }: PromptParams): Promise<string> => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };

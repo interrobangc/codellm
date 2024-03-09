@@ -48,10 +48,10 @@ export const getCacheFilePath = (cacheDir: string, idPrefix: string) =>
   resolve(`${cacheDir}/vectorizeFiles-${idPrefix}.json`);
 
 export const updateTrackingCache = async ({
-  cacheDir,
-  idPrefix,
-  filePath,
   action,
+  cacheDir,
+  filePath,
+  idPrefix,
 }: UpdateTrackingCacheParams) => {
   const trackingCache = new Set();
   const cacheFilePath = getCacheFilePath(cacheDir, idPrefix);
@@ -98,14 +98,14 @@ export const vectorizeFile = async ({
   additionalMetadataFn,
   basePath,
   cacheDir,
+  collectionName,
   dbClient,
-  idPrefix,
-  llm,
   fileContent,
   fileContentHash,
   filePath,
   filePathHash,
-  collectionName,
+  idPrefix,
+  llm,
   prompt,
 }: VectorizeFileParams) => {
   // TODO: dynamic for different passes in a single run
@@ -246,12 +246,12 @@ export const vectorizeFiles = async ({
   }
 
   const {
-    project: { name: projectName },
     paths: { cache: rootCacheDir, project: path },
+    project: { name: projectName },
   } = config;
   const {
-    include,
     exclude,
+    include,
     vectorDbCollectionName: collectionName,
   } = toolConfig;
 

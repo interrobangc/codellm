@@ -13,3 +13,8 @@ export type CodeLlmErrorParams = {
   code: ErrorCode;
   meta?: Record<string, unknown>;
 };
+
+export type CodeLlmLibErrorParams = CodeLlmErrorParams & {
+  code: string;
+  errorConsts: ErrorConsts;
+};

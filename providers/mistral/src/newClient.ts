@@ -7,7 +7,7 @@ import type { MistralConfig } from './types';
 
 import MistralClient from '@mistralai/mistralai';
 
-export const newClient = async ({ model, config }: ProviderGetClientParams) => {
+export const newClient = async ({ config, model }: ProviderGetClientParams) => {
   const client = new MistralClient(
     (config as MistralConfig).apiKey,
     (config as MistralConfig).endpoint,
@@ -23,7 +23,7 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
       //   models: await client.listModels(),
       // });
     },
-    prompt: async ({ system, prompt }: PromptParams) => {
+    prompt: async ({ prompt, system }: PromptParams) => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };

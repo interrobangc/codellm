@@ -16,7 +16,7 @@ export const getLangchainClient = async (
   model: string,
   config: LangchainConfig,
 ) => {
-  const { module: modulePath, chatClass: chatClassName } = config;
+  const { chatClass: chatClassName, module: modulePath } = config;
 
   const chatModule = await import(modulePath);
 
@@ -37,7 +37,7 @@ export const transformCodeLlmMessages = (messages: MessageList) => {
   });
 };
 
-export const newClient = async ({ model, config }: ProviderGetClientParams) => {
+export const newClient = async ({ config, model }: ProviderGetClientParams) => {
   const client = await getLangchainClient(model, config as LangchainConfig);
 
   return {
@@ -49,7 +49,7 @@ export const newClient = async ({ model, config }: ProviderGetClientParams) => {
       return response?.content;
     },
     initModel: async () => {},
-    prompt: async ({ system, prompt }: PromptParams) => {
+    prompt: async ({ prompt, system }: PromptParams) => {
       return `Not implemented yet for langchain. System: ${system}, Prompt: ${prompt}`;
     },
   };
