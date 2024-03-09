@@ -3,8 +3,8 @@ import { resolve } from 'path';
 
 import { testConfig } from '@tests/mocks';
 import { expectError } from '@tests/tools';
+import { initConfig } from '@/config/index.js';
 import { validatePath } from './index.js';
-import { initConfig } from '../config/index.js';
 
 describe('validatePath', () => {
   beforeEach(() => {

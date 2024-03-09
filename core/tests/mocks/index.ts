@@ -1,1 +1,2 @@
-export * from './testConfig';
+export * from './config';
+export * from './tools';

@@ -8,4 +8,12 @@ export const testConfig: PartialConfig = {
   project: {
     name: 'testProject',
   },
+  tools: {
+    fakeToolName: {
+      config: {
+        vectorDbName: 'fakeVectorDbName',
+      },
+      module: '@fakeProject/tool-that-does-not-exist',
+    },
+  },
 };
