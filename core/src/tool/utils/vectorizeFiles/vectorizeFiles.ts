@@ -210,21 +210,22 @@ export const removeMissingFiles = async ({
     [...trackingCache].map(async (p) => {
       const filePath = p as string;
       log(`Checking file ${filePath} for deletion`, 'debug');
-      try {
-        await stat(filePath);
-      } catch (e) {
-        log(`File ${filePath} has been deleted, removing from database`);
-        await dbClient.deleteDocuments({
-          collectionName,
-          ids: [getId(idPrefix, filePath)],
-        });
-        await updateTrackingCache({
-          action: 'delete',
-          cacheDir,
-          filePath,
-          idPrefix,
-        });
-      }
+      const statRes = await stat(filePath);
+
+      // If the file still exists, we don't need to do anything
+      if (!isError(statRes, 'fs:statError')) return;
+
+      log(`File ${filePath} has been deleted, removing from database`);
+      await dbClient.deleteDocuments({
+        collectionName,
+        ids: [getId(idPrefix, filePath)],
+      });
+      await updateTrackingCache({
+        action: 'delete',
+        cacheDir,
+        filePath,
+        idPrefix,
+      });
     }),
   );
 };

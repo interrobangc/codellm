@@ -5,6 +5,9 @@ export const VECTOR_DB_ERRORS = {
   'vectorDb:importError': {
     message: 'VectorDb import error',
   },
+  'vectorDb:invalidModule': {
+    message: 'VectorDb module does not appear to be a valid VectorDb module',
+  },
   'vectorDb:notFound': {
     message: 'VectorDb not found',
   },

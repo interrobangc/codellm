@@ -17,7 +17,7 @@ import * as conversation from './conversation/index.js';
  *
  * @param client - The LLM provider client to use
  */
-export const initModel = async (client: LlmProviderClient): Promise<void> => {
+export const initModel = async (client: LlmProviderClient) => {
   await client.initModel();
 };
 

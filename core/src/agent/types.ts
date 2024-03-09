@@ -46,6 +46,8 @@ export const agentLlmResponseSchema = z.union([
   agentToolResponseSchema,
 ]);
 
+export type AgentLlmResponse = z.infer<typeof agentLlmResponseSchema>;
+
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
 };
