@@ -237,7 +237,7 @@ export const vectorizeFiles = async ({
   prompts,
   toolConfig,
   toolName,
-}: VectorizeFilesParams): Promise<void | CodeLlmError> => {
+}: VectorizeFilesParams) => {
   const llms = await codeLlmLlm.initLlms(['summarize']);
   log(`${toolName} runImport LLMs`, 'silly', { llms });
   const llm = codeLlmLlm.getLlm('summarize');
@@ -290,4 +290,6 @@ export const vectorizeFiles = async ({
     dbClient,
     idPrefix,
   });
+
+  return false;
 };

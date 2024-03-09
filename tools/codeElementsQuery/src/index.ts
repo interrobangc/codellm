@@ -7,7 +7,7 @@ import type {
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { toolUtils } from '@codellm/core';
+import { isError, toolUtils } from '@codellm/core';
 import { dump as dumpYaml } from 'js-yaml';
 import {
   DEFAULT_CONFIG,
@@ -24,10 +24,7 @@ import {
  *
  * @returns - The new tool instance
  */
-export const newTool = async (
-  toolName: string,
-  config: Config,
-): Promise<Tool> => {
+export const newTool = async (toolName: string, config: Config) => {
   const toolConfig = {
     ...DEFAULT_CONFIG,
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
@@ -39,15 +36,17 @@ export const newTool = async (
     toolName,
   });
 
+  if (isError(vectorizeFilesClient)) return vectorizeFilesClient;
+
   return {
     description,
     import: async () => {
       await vectorizeFilesClient.vectorizeFiles({
         summarize: summarizeTaskPrompt,
       });
-      return { content: 'Import complete', success: true };
+      return { content: 'Import complete', success: true } as ToolRunReturn;
     },
-    run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
+    run: async ({ params }: ToolRunParamsCommon) => {
       const dbResponse = await vectorizeFilesClient.query({
         numResults,
         query: params['query'] as unknown as string,
@@ -64,7 +63,7 @@ export const newTool = async (
         })),
       );
 
-      return { content, success: true };
+      return { content, success: true } as ToolRunReturn;
     },
-  };
+  } as Tool;
 };

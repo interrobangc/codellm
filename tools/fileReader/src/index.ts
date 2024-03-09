@@ -1,9 +1,4 @@
-import type {
-  Config,
-  Tool,
-  ToolRunParamsCommon,
-  ToolRunReturn,
-} from '@codellm/core';
+import type { Config, Tool, ToolRunParamsCommon } from '@codellm/core';
 import type { ToolConfig } from './types';
 
 import { fs, log } from '@codellm/core';
@@ -18,10 +13,7 @@ import { DEFAULT_CONFIG, description } from './constants.js';
  *
  * @returns - The new tool instance
  */
-export const newTool = async (
-  toolName: string,
-  config: Config,
-): Promise<Tool> => {
+export const newTool = async (toolName: string, config: Config) => {
   const toolConfig = {
     ...DEFAULT_CONFIG,
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
@@ -37,7 +29,7 @@ export const newTool = async (
         success: true,
       };
     },
-    run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
+    run: async ({ params }: ToolRunParamsCommon) => {
       const { filePaths } = params;
 
       if (!Array.isArray(filePaths)) {
@@ -78,5 +70,5 @@ ${fileContent}
 
       return { content, success: true };
     },
-  };
+  } as Tool;
 };

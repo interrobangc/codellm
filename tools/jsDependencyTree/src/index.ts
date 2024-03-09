@@ -11,10 +11,7 @@ import run from './run.js';
  *
  * @returns - The new tool instance
  */
-export const newTool = async (
-  toolName: string,
-  config: Config,
-): Promise<Tool> => {
+export const newTool = async (toolName: string, config: Config) => {
   const toolConfig = {
     ...DEFAULT_CONFIG,
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
@@ -31,5 +28,5 @@ export const newTool = async (
         ...params,
         toolConfig,
       }),
-  };
+  } as Tool;
 };

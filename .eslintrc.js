@@ -63,6 +63,7 @@ module.exports = {
       },
     ],
     'no-console': 'error',
+    'sonarjs/prefer-single-boolean-return': 'off',
     'sort-destructure-keys/sort-destructure-keys': 2,
     'sort-imports': ['error', { ignoreDeclarationSort: true }],
     'sort-keys': 'error',

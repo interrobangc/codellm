@@ -28,6 +28,11 @@ export const initTools = async () => {
     async ([name, toolConfig]) => {
       const toolModule = await import(toolConfig.module);
       const tool = await toolModule.newTool(name, config);
+
+      if (isError(tool)) {
+        Promise.reject(tool);
+      }
+
       tools.set(name, tool);
       return tool;
     },

@@ -3,7 +3,6 @@ import type {
   ProcessFileHandleParams,
   Tool,
   ToolRunParamsCommon,
-  ToolRunReturn,
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
@@ -18,10 +17,7 @@ import { DEFAULT_CONFIG, description } from './constants.js';
  *
  * @returns - The new tool instance
  */
-export const newTool = async (
-  toolName: string,
-  config: Config,
-): Promise<Tool> => {
+export const newTool = async (toolName: string, config: Config) => {
   log(`Creating ${toolName} tool`, 'silly', { config });
   const toolConfig = {
     ...DEFAULT_CONFIG,
@@ -37,7 +33,7 @@ export const newTool = async (
         success: true,
       };
     },
-    run: async ({ params }: ToolRunParamsCommon): Promise<ToolRunReturn> => {
+    run: async ({ params }: ToolRunParamsCommon) => {
       const { globPatterns } = params;
 
       if (!Array.isArray(globPatterns)) {
@@ -55,6 +51,7 @@ export const newTool = async (
 
       const filePaths: string[] = [];
 
+      // TODO: use maybe and CodeLlmErrors instead of try/catch
       try {
         await toolUtils.processFiles({
           exclude: toolConfig.exclude,
@@ -82,5 +79,5 @@ ${filePaths.join('\n')};
 
       return { content, success: true };
     },
-  };
+  } as Tool;
 };

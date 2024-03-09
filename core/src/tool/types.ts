@@ -56,4 +56,14 @@ export type Tool = {
   import?: () => Promise<ToolRunReturn>;
   run: (params: ToolRunParamsCommon) => Promise<ToolRunReturn>;
 };
+
+export const isTool = (tool: unknown): tool is Tool => {
+  if (typeof tool !== 'object' || tool === null) return false;
+  if (!('description' in tool)) return false;
+  if (!('import' in tool)) return false;
+  if (!('run' in tool)) return false;
+
+  return true;
+};
+
 export type Tools = Map<string, Tool>;
