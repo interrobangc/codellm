@@ -6,9 +6,8 @@ const conversationHistory: ConversationHistory = SERVICES.reduce(
   {} as ConversationHistory,
 );
 
-export const getHistory = (service: Service): MessageList =>
-  conversationHistory[service];
+export const getHistory = (service: Service) => conversationHistory[service];
 
-export const addMessages = (service: Service, messages: MessageList): void => {
+export const addMessages = (service: Service, messages: MessageList) => {
   conversationHistory[service] = [...conversationHistory[service], ...messages];
 };

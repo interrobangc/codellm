@@ -75,9 +75,7 @@ export const getCollection = (collectionName: string) => {
  *
  * @returns The AddParams.
  */
-export const convertDocuments = (
-  documentList: EmbeddingDocumentList,
-): AddParams => {
+export const convertDocuments = (documentList: EmbeddingDocumentList) => {
   const ids = documentList.map((doc) => doc.id);
   // const embeddings: Embedding[] = documentList.map(
   //   (doc) => doc.embedding ?? [],
@@ -131,7 +129,7 @@ export const getFullCollectionName = (
  *
  * @returns The new VectorDb client.
  */
-export const newClient = async (): Promise<VectorDbClient> => {
+export const newClient = async () => {
   const client = new ChromaClient();
   const config = getConfig();
 
@@ -219,7 +217,7 @@ export const newClient = async (): Promise<VectorDbClient> => {
     query: async ({
       collectionName,
       opts: { numResults, query },
-    }: VectorDbQueryParams): Promise<VectorDbQueryResult> => {
+    }: VectorDbQueryParams) => {
       const fullCollectionName = getFullCollectionName(
         config.project.name,
         collectionName,
@@ -236,19 +234,17 @@ export const newClient = async (): Promise<VectorDbClient> => {
 
       log(`vectorDB.query: Query response`, 'silly', { resp });
 
-      return (
-        resp.ids?.[0]?.map((id, i) => ({
-          distance: resp.distances?.[0]?.[i] ?? null,
-          document: resp.documents?.[0]?.[i] ?? '',
-          id,
-          metadata: resp.metadatas?.[0]?.[i] ?? {},
-        })) ?? []
-      );
+      return (resp.ids?.[0]?.map((id, i) => ({
+        distance: resp.distances?.[0]?.[i] ?? null,
+        document: resp.documents?.[0]?.[i] ?? '',
+        id,
+        metadata: resp.metadatas?.[0]?.[i] ?? {},
+      })) ?? []) as VectorDbQueryResult;
     },
 
     reset: async () => {
       log('vectorDB.close: Closing VectorDb client', 'debug');
       await client.reset();
     },
-  };
+  } as VectorDbClient;
 };

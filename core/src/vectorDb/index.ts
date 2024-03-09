@@ -1,4 +1,4 @@
-import type { Config, VectorDb, VectorDbModule, VectorDbs } from '@/.';
+import type { Config, VectorDb, VectorDbs } from '@/.';
 import { getConfig } from '@/config/index.js';
 import { CodeLlmError, isError, promiseMaybe } from '@/error/index.js';
 import log from '@/log/index.js';
@@ -22,20 +22,26 @@ export const getVectorDb = (name: VectorDb) => {
  *
  * @returns The VectorDb module.
  **/
-export const importVectorDbModule = (name: VectorDb, config: Config) => {
+export const importVectorDbModule = async (name: VectorDb, config: Config) => {
   const dbConfig = config.vectorDbs[name];
 
   if (!dbConfig) {
     return new CodeLlmError({ code: 'vectorDb:configNotFound' });
   }
   const dbModuleName = dbConfig.module;
-  const dbModule = promiseMaybe<VectorDbModule>(
+  const dbModule = await promiseMaybe(
     import(dbModuleName),
     'vectorDb:importError',
     {
       dbModuleName,
     },
   );
+
+  log('importVectorDbModule imported module', 'silly', {
+    dbModule,
+    dbModuleName,
+  });
+
   if (isError(dbModule)) {
     return dbModule;
   }

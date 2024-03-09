@@ -11,16 +11,13 @@ import { log } from '@codellm/core';
  *
  * @returns
  */
-export const run = async ({
-  llm,
-  params,
-}: RunParams): Promise<ToolRunReturn> => {
+export const run = async ({ llm, params }: RunParams) => {
   log('codeSummaryTool running', 'debug', {
     llm,
     params,
   });
 
-  return { content: 'success', success: true };
+  return { content: 'success', success: true } as ToolRunReturn;
 };
 
 export default run;

@@ -1,4 +1,5 @@
 import type { Document, Embedding, Metadata } from 'chromadb';
+import log from '@/log/index.js';
 
 export type VectorDb = string;
 
@@ -61,9 +62,17 @@ export type VectorDbModule = {
 };
 
 export const isVectorDbModule = (module: unknown): module is VectorDbModule => {
+  log('isVectorDbModule', 'debug', {
+    hasNewClient: 'newClient' in (module as VectorDbModule),
+    isFunction: typeof (module as VectorDbModule).newClient === 'function',
+    isNotNull: module !== null,
+    isObject: typeof module === 'object',
+    module,
+  });
   return (
     typeof module === 'object' &&
     module !== null &&
+    'newClient' in module &&
     typeof (module as VectorDbModule).newClient === 'function'
   );
 };

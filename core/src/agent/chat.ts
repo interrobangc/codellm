@@ -175,9 +175,7 @@ export const handleQuestion = async ({
  *
  * @returns - The response from the LLM
  */
-export const chat = async (
-  question: string,
-): Promise<agentTypes.AgentResponse> => {
+export const chat = async (question: string) => {
   log('chat', 'debug', { question });
   return handleQuestion({
     question,

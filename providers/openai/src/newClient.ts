@@ -11,7 +11,7 @@ export const newClient = ({ config, model }: ProviderGetClientParams) => {
   const client = new OpenAI(config as OpenaiConfig);
 
   return {
-    chat: async (messages: MessageList): Promise<string> => {
+    chat: async (messages: MessageList) => {
       const response = await client.chat.completions.create({
         messages,
         model,
@@ -20,7 +20,7 @@ export const newClient = ({ config, model }: ProviderGetClientParams) => {
       return response.choices?.[0]?.message.content ?? '';
     },
     initModel: async () => {},
-    prompt: async ({ prompt, system }: PromptParams): Promise<string> => {
+    prompt: async ({ prompt, system }: PromptParams) => {
       return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
     },
   };

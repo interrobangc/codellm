@@ -30,7 +30,11 @@ export const newImporter = async (configParam: PartialConfig) => {
       for (const [toolName, tool] of tools.entries()) {
         log(`Starting import for ${toolName}`);
         log('tool', 'silly', { tool });
-        // @ts-expect-error - testing
+
+        if (!tool.import) {
+          log(`No import method found for ${toolName}`, 'warn');
+          continue;
+        }
 
         await tool.import();
       }

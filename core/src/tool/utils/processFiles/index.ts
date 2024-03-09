@@ -59,7 +59,7 @@ export const processFiles = async ({
   include,
   path,
   toolName,
-}: ProcessFilesParams): Promise<void> => {
+}: ProcessFilesParams) => {
   const files = [
     ...include.map((i) => `${resolve(path)}/${i}`),
     ...exclude.map((e) => `!${resolve(path)}/${e}`),

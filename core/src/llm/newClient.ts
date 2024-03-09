@@ -34,7 +34,7 @@ export const chat = async (
   service: Service,
   client: LlmProviderClient,
   messages: MessageList,
-): Promise<string> => {
+) => {
   // We need to send the full conversation history to the provider
   // to ensure that the provider has all the context it needs to generate a response
   conversation.addMessages(service, messages);
