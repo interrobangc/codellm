@@ -13,7 +13,7 @@ export const ERROR_ERRORS = {
   },
 } as const;
 
-export const ERRORS = {
+export const CODE_LLM_ERRORS = {
   ...AGENT_ERRORS,
   ...CONFIG_ERRORS,
   ...FS_ERRORS,

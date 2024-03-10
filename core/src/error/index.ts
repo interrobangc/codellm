@@ -1,6 +1,6 @@
 import type { CodeLlmErrorParams, ErrorCode } from '@/.';
 
-import { ERRORS } from './constants.js';
+import { CODE_LLM_ERRORS } from './constants.js';
 import { getConfig } from '@/config/index.js';
 
 /**
@@ -11,7 +11,7 @@ import { getConfig } from '@/config/index.js';
  * We change the call signature to include a code, cause, and meta data.
  *
  * The code is a string that represents the error. It should be unique and descriptive.
- * The message will be pulled from the ERRORS constant.
+ * The message will be pulled from the CODE_LLM_ERRORS constant.
  */
 export class CodeLlmError extends Error {
   code: CodeLlmErrorParams['code'];
@@ -25,7 +25,7 @@ export class CodeLlmError extends Error {
   constructor({ cause, code, meta }: CodeLlmErrorParams) {
     super();
     this.code = code;
-    this.message = ERRORS[code]?.message || code;
+    this.message = CODE_LLM_ERRORS[code]?.message || code;
     this.cause = cause;
     this.meta = meta || {};
   }
@@ -126,3 +126,6 @@ export const throwOrReturn = (e: CodeLlmError) => {
 
   return e;
 };
+
+export * from './constants.js';
+export * from './types.js';

@@ -1,5 +1,4 @@
-import { vi } from 'vitest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { readFileSync } from 'fs';
 import { dump as dumpYaml } from 'js-yaml';
