@@ -20,7 +20,7 @@ export const unitTestConfig: PartialConfig = {
 
 export const integrationTestConfig: PartialConfig = {
   llmProvider: 'ollama',
-  logLevel: 'silly',
+  // logLevel: 'silly',
   paths: {
     cache: './.cache',
     project: './tests/integration',

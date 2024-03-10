@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 import tsConfig from './tsconfig.test.json';
@@ -15,7 +17,5 @@ const config = defineConfig({
     globals: true,
   },
 });
-
-console.dir(config, { depth: null });
 
 export default config;

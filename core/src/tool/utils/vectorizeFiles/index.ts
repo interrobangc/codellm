@@ -16,7 +16,7 @@ export const newClient = async ({
   toolName,
 }: VectorizeFilesNewClientParams) => {
   const { vectorDbCollectionName, vectorDbName } = toolConfig;
-  const dbClient = await vectorDb.newClient(vectorDbName);
+  const dbClient = await vectorDb.newClient(vectorDbName, config);
 
   if (isError(dbClient)) return dbClient;
 

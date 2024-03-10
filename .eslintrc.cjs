@@ -1,4 +1,7 @@
-module.exports = {
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const tsConfig = require('./tsconfig.json');
+
+const config = {
   env: {
     browser: true,
     es2021: true,
@@ -56,10 +59,13 @@ module.exports = {
         devDependencies: [
           '**/tests/**',
           '**/*.test.{ts,tsx}',
-          '**/jest.config.js',
-          '**/.eslintrc.js',
+          '**/.eslintrc.cjs',
         ],
         optionalDependencies: false,
+        packageDir: [
+          './',
+          ...tsConfig.references.map((ref) => `./${ref.path}`),
+        ],
       },
     ],
     'no-console': 'error',
@@ -77,3 +83,5 @@ module.exports = {
     },
   },
 };
+
+module.exports = config;

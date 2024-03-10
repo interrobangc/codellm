@@ -19,6 +19,5 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "strict": true /* Enable all strict type-checking options. */
-  },
-  "types": ["@types/jest"]
+  }
 }
