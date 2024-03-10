@@ -10,7 +10,7 @@ import isString from 'lodash/isString.js';
 
 import { getConfig } from '@/config/index.js';
 import { CodeLlmError } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import { getTools } from '@/tool/index.js';
 import { DEFAULTS, DEFAULT_PROMPTS } from './constants.js';
 import { isPromptPipeline } from './types.js';

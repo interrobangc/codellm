@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { dump as dumpYaml } from 'js-yaml';
 
 import { expectError, testSetup } from '@tests/tools';
-import { decodeResponse } from './chat';
+import * as chat from './chat';
 
 testSetup();
 
@@ -19,13 +19,13 @@ describe('decodeResponse', () => {
       type: 'tool',
     };
     const encodedResponse = dumpYaml(response);
-    expect(decodeResponse(encodedResponse)).toEqual(response);
+    expect(chat.decodeResponse(encodedResponse)).toEqual(response);
   });
 
   it('should handle an error decoding an invalid json response', () => {
     const response = 'some invalid response';
 
-    expectError(decodeResponse(response), 'agent:decodeResponse');
+    expectError(chat.decodeResponse(response), 'agent:decodeResponse');
   });
 
   it('should handle an error decoding a valid json response with incorrect type', () => {
@@ -35,6 +35,6 @@ describe('decodeResponse', () => {
     };
 
     const encodedResponse = dumpYaml(response);
-    expectError(decodeResponse(encodedResponse), 'agent:decodeResponse');
+    expectError(chat.decodeResponse(encodedResponse), 'agent:decodeResponse');
   });
 });

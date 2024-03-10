@@ -1,6 +1,6 @@
 import type { Config, VectorDb, VectorDbs } from '@/.';
 import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import { isVectorDbModule } from './types.js';
 
 const vectorDbs: VectorDbs = new Map();

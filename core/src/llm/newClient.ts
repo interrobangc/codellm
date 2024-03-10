@@ -9,7 +9,7 @@ import type {
 } from '@/.';
 
 import { CodeLlmError, isError, mayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
 

@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 import type { ProcessFileParams, ProcessFilesParams } from '@/.';
 
 import { isError, promiseMayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import { readFile } from '@/fs/index.js';
 
 /**

@@ -63,6 +63,12 @@ export type AgentSelectToolResponse = AgentResponseResponse | AgentToolResponse;
 
 export type AgentResponse = CodeLlmError | AgentResponseResponse;
 
+export type AgentToolResponseItem = {
+  name: string;
+  response: string;
+};
+
+// TODO: this needs to be updated to an array of AgentToolResponseItem so we don't lose tool responses to the same tool
 export type AgentToolResponses = Record<string, string>;
 
 export type AgentHandleQuestionParams = {

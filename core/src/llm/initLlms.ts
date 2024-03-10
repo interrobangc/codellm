@@ -2,7 +2,7 @@ import type { Config, Service } from '@/.';
 
 import { getConfig } from '@/config/index.js';
 import { isError, promiseMapMayFail, promiseMayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import { getLlm, newClient, setLlm } from './index.js';
 
 export const initLlmClients = async (
