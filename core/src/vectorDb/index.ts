@@ -1,6 +1,6 @@
 import type { Config, VectorDb, VectorDbs } from '@/.';
 import { getConfig } from '@/config/index.js';
-import { CodeLlmError, isError, promiseMaybe } from '@/error/index.js';
+import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
 import log from '@/log/index.js';
 import { isVectorDbModule } from './types.js';
 
@@ -29,7 +29,7 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
     return new CodeLlmError({ code: 'vectorDb:configNotFound' });
   }
   const dbModuleName = dbConfig.module;
-  const dbModule = await promiseMaybe(
+  const dbModule = await promiseMayFail(
     import(dbModuleName),
     'vectorDb:importError',
     {
@@ -42,9 +42,7 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
     dbModuleName,
   });
 
-  if (isError(dbModule)) {
-    return dbModule;
-  }
+  if (isError(dbModule)) return dbModule;
 
   if (!isVectorDbModule(dbModule)) {
     return new CodeLlmError({
@@ -69,16 +67,14 @@ export const newClient = async (name: VectorDb) => {
   if (!vectorDbs.get(name)) {
     const config = getConfig();
     const module = await importVectorDbModule(name, config);
-    if (isError(module)) {
-      return module;
-    }
+    if (isError(module)) return module;
+
     vectorDbs.set(name, await module.newClient(config));
   }
 
   if (!vectorDbs.get(name)) {
-    return new CodeLlmError({ code: 'vectorDb:notFound' });
+    return new CodeLlmError({ code: 'vectorDb:notFound', meta: { name } });
   }
-
   return vectorDbs.get(name)!;
 };
 

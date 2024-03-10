@@ -16,29 +16,22 @@ import chat from './chat.js';
  */
 export const newAgent = async (configParam: PartialConfig) => {
   const initConfigRes = initConfig(configParam);
-  if (isError(initConfigRes)) {
-    return initConfigRes;
-  }
+  if (isError(initConfigRes)) return initConfigRes;
 
   const llms = await initLlms(['agent', 'tool']);
-  if (isError(llms)) {
-    return llms;
-  }
+  if (isError(llms)) return llms;
 
   log('newAgent LLMs', 'silly', { llms });
 
   const tools = await initTools();
-  if (isError(tools)) {
-    return tools;
-  }
+  if (isError(tools)) return tools;
+
   log('newAgent tools', 'silly', { tools });
 
   const prompt = initPrompts();
 
   const content = await prompt.get('agentSystem');
-  if (isError(content)) {
-    return content;
-  }
+  if (isError(content)) return content;
 
   conversation.addMessages('agent', [
     {

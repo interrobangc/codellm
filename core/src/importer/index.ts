@@ -14,14 +14,10 @@ import { initConfig } from '@/config/index.js';
  */
 export const newImporter = async (configParam: PartialConfig) => {
   const initConfigRes = initConfig(configParam);
-  if (isError(initConfigRes)) {
-    return initConfigRes;
-  }
+  if (isError(initConfigRes)) return initConfigRes;
 
   const tools = await initTools();
-  if (isError(tools)) {
-    return tools;
-  }
+  if (isError(tools)) return tools;
   log('importer tools', 'silly', { tools });
 
   return {

@@ -6,7 +6,7 @@ import {
   writeFile as fsWriteFile,
 } from 'fs/promises';
 import { getConfig } from '../config/index.js';
-import { CodeLlmError, isError, promiseMaybe } from '@/error/index.js';
+import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
 
 /**
  * We want to make sure that the file path is within the project paths before we do anything with it.
@@ -42,7 +42,7 @@ export const mkdir = async (dirPath: string) => {
   const validatePathRes = validatePath(dirPath);
   if (isError(validatePathRes)) return validatePathRes;
 
-  return promiseMaybe(
+  return promiseMayFail(
     fsMkdir(validatePathRes, { recursive: true }),
     'fs:mkdirError',
     {
@@ -55,25 +55,33 @@ export const readFile = async (filePath: string) => {
   const validatePathRes = validatePath(filePath);
   if (isError(validatePathRes)) return validatePathRes;
 
-  return promiseMaybe(fsReadFile(validatePathRes, 'utf8'), 'fs:readFileError', {
-    filePath,
-  });
+  return promiseMayFail(
+    fsReadFile(validatePathRes, 'utf8'),
+    'fs:readFileError',
+    {
+      filePath,
+    },
+  );
 };
 
 export const stat = async (filePath: string) => {
   const validatePathRes = validatePath(filePath);
   if (isError(validatePathRes)) return validatePathRes;
 
-  return promiseMaybe(fsStat(validatePathRes), 'fs:statError', { filePath });
+  return promiseMayFail(fsStat(validatePathRes), 'fs:statError', { filePath });
 };
 
 export const writeFile = async (filePath: string, data: string) => {
   const validatePathRes = validatePath(filePath);
   if (isError(validatePathRes)) return validatePathRes;
 
-  return promiseMaybe(fsWriteFile(validatePathRes, data), 'fs:writeFileError', {
-    filePath,
-  });
+  return promiseMayFail(
+    fsWriteFile(validatePathRes, data),
+    'fs:writeFileError',
+    {
+      filePath,
+    },
+  );
 };
 
 export * from './constants.js';

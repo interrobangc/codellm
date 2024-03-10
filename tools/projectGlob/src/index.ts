@@ -51,7 +51,7 @@ export const newTool = async (toolName: string, config: Config) => {
 
       const filePaths: string[] = [];
 
-      // TODO: use maybe and CodeLlmErrors instead of try/catch
+      // TODO: use mayfail and CodeLlmErrors instead of try/catch
       try {
         await toolUtils.processFiles({
           exclude: toolConfig.exclude,

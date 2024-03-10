@@ -1,3 +1,5 @@
+import { TOOL_UTILS_ERRORS } from './utils/constants.js';
+
 export const TOOL_ERRORS = {
   'tool:import': {
     message: 'Error importing tool',
@@ -14,4 +16,5 @@ export const TOOL_ERRORS = {
   'tool:notFound': {
     message: 'Tool not found',
   },
+  ...TOOL_UTILS_ERRORS,
 } as const;

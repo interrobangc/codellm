@@ -1,7 +1,7 @@
 import type { LlmClient, MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import { CodeLlmError, isError, maybe } from '@/error/index.js';
+import { CodeLlmError, isError, mayfail } from '@/error/index.js';
 import { conversation, getLlm } from '@/llm/index.js';
 import log from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -30,12 +30,19 @@ export const sendChat = async (llm: LlmClient, messages: MessageList) => {
  * @returns - The decoded response or an error
  */
 export const decodeResponse = (content: string) => {
-  return maybe<agentTypes.AgentLlmResponse>(
+  return mayfail<agentTypes.AgentLlmResponse>(
     () => agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim())),
     'agent:decodeResponse',
   );
 };
 
+/**
+ * Get the tool responses as a string
+ *
+ * @param {AgentToolResponses} toolResponses - The tool responses
+ *
+ * @returns - The tool responses as a string
+ */
 export const getToolResponses = (
   toolResponses: agentTypes.AgentToolResponses,
 ) => {
@@ -48,6 +55,15 @@ export const getToolResponses = (
     .join('\n');
 };
 
+/**
+ * Handle the response from a tool
+ *
+ * @param {Object} params - The parameters for the handleToolResponse function
+ * @param {Object} params.response - The response from the tool
+ * @param {agentTypes.AgentToolResponses} params.toolResponses - The tool responses
+ *
+ * @returns - The tool responses or an error
+ */
 export const handleToolResponse = async ({
   response,
   toolResponses,
@@ -58,7 +74,6 @@ export const handleToolResponse = async ({
   const toolName = response.name;
 
   const tool = getTool(toolName);
-
   if (isError(tool)) {
     log('Tool not found', 'error', { toolName });
     return {
@@ -70,9 +85,7 @@ export const handleToolResponse = async ({
   log(`Running the ${response.name} tool`);
 
   const toolLlm = getLlm('tool');
-  if (isError(toolLlm)) {
-    return toolLlm;
-  }
+  if (isError(toolLlm)) return toolLlm;
 
   // TODO: move tool run response to a response or an CodeLlmError
   let toolResponse;
@@ -111,9 +124,7 @@ export const handleQuestion = async ({
     question,
     toolResponses: getToolResponses(toolResponses),
   });
-  if (isError(content)) {
-    return content;
-  }
+  if (isError(content)) return content;
 
   messages.push({
     content,
@@ -121,16 +132,14 @@ export const handleQuestion = async ({
   });
 
   const agentLlm = getLlm('agent');
-  if (isError(agentLlm)) {
-    // Any error here is a critical error
-    return agentLlm;
-  }
+  if (isError(agentLlm)) return agentLlm;
 
   const response = decodeResponse(await sendChat(agentLlm, messages));
   log(`conversation.getHistory('agent')`, 'debug', {
     history: conversation.getHistory('agent'),
   });
   if (isError(response)) {
+    log('Error decoding response', 'error', { response });
     // If we had a decode error, we add the error to the response and try again
     return handleQuestion({
       depth: depth + 1,
@@ -155,9 +164,7 @@ export const handleQuestion = async ({
     toolResponses,
   });
 
-  if (isError(toolResponse)) {
-    return toolResponse;
-  }
+  if (isError(toolResponse)) return toolResponse;
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
   return handleQuestion({

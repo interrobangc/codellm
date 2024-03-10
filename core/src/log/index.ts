@@ -3,7 +3,7 @@ import type { Config, LogLevel } from '@/.';
 import winston from 'winston';
 import isEmpty from 'lodash/isEmpty.js';
 
-import { isError, maybe } from '@/error/index.js';
+import { isError, mayfail } from '@/error/index.js';
 
 let logger: Logger;
 let level: LogLevel;
@@ -48,7 +48,7 @@ export const initLogger = (config: Config) => {
 
   const format = getFormat(config.logFormat);
 
-  const newLogger = maybe(
+  const newLogger = mayfail(
     () =>
       winston.createLogger({
         format,
@@ -57,14 +57,10 @@ export const initLogger = (config: Config) => {
       }),
     'log:init',
   );
-
-  if (isError(newLogger)) {
-    throw newLogger;
-  }
-
+  if (isError(newLogger)) throw newLogger;
   logger = newLogger;
 
-  return false;
+  return logger;
 };
 
 /**

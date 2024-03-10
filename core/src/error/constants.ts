@@ -6,7 +6,6 @@ import { LOG_ERRORS } from '@/log/constants.js';
 import { PROMPT_ERRORS } from '@/prompt/constants.js';
 import { TOOL_ERRORS } from '@/tool/constants.js';
 import { VECTOR_DB_ERRORS } from '@/vectorDb/constants.js';
-import { VECTORIZE_FILES_ERRORS } from '@/tool/utils/vectorizeFiles/constants.js';
 
 export const ERROR_ERRORS = {
   'error:unknown': {
@@ -24,5 +23,4 @@ export const ERRORS = {
   ...PROMPT_ERRORS,
   ...TOOL_ERRORS,
   ...VECTOR_DB_ERRORS,
-  ...VECTORIZE_FILES_ERRORS,
 } as const;

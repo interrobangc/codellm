@@ -9,7 +9,7 @@ import type {
 } from '@/.';
 
 import { dirname, resolve } from 'path';
-import { CodeLlmError } from '@/error/index.js';
+import { promiseMayFail } from '@/error/index.js';
 import * as codeLlmLlm from '@/llm/index.js';
 import log from '@/log/index.js';
 import * as toolUtils from '@/tool/utils/index.js';
@@ -71,20 +71,25 @@ export const updateTrackingCache = async ({
   log('trackingCache', 'silly', { trackingCache });
 
   const dir = dirname(cacheFilePath);
-  await mkdir(dir);
-  log(`writing trackingCache to ${cacheFilePath}`, 'debug');
-  const writeFileRes = await writeFile(
-    cacheFilePath,
-    JSON.stringify([...trackingCache]),
+  const mkDirRes = promiseMayFail(
+    mkdir(dir),
+    'vectorizeFiles:trackingCacheMkDir',
+    {
+      dir,
+    },
   );
-  if (isError(writeFileRes)) {
-    return new CodeLlmError({
-      cause: writeFileRes,
-      code: 'vectorizeFiles:updateTrackingCache',
-    });
-  }
+  if (isError(mkDirRes)) return mkDirRes;
 
-  return false;
+  log(`writing trackingCache to ${cacheFilePath}`, 'debug');
+
+  return promiseMayFail(
+    writeFile(cacheFilePath, JSON.stringify([...trackingCache])),
+    'vectorizeFiles:updateTrackingCache',
+    {
+      cacheFilePath,
+      trackingCache,
+    },
+  );
 };
 
 /**
@@ -118,10 +123,7 @@ export const vectorizeFile = async ({
     idPrefix,
   });
 
-  if (isError(trackingRes)) {
-    // This is a critical error, so we return it
-    return trackingRes;
-  }
+  if (isError(trackingRes)) return trackingRes;
 
   // TODO: track files that have been processed and check fo deletions
 
@@ -146,7 +148,7 @@ export const vectorizeFile = async ({
   // but only deal with relative paths for the rest of the metadata and document
   const relativeFilePath = filePath.replace(resolve(basePath), '.');
 
-  const response = await summarize(
+  const summarizeRes = await summarize(
     llm,
     prompt,
     `file: ${relativeFilePath}\n\n${fileContent}`,
@@ -172,7 +174,7 @@ export const vectorizeFile = async ({
     collectionName,
     documents: [
       {
-        document: response,
+        document: summarizeRes,
         id,
         metadata,
       },
@@ -181,9 +183,14 @@ export const vectorizeFile = async ({
 
   log('vectorizeFile document', 'debug', { document });
 
-  await dbClient.addDocuments(document);
-
-  return false;
+  return promiseMayFail(
+    dbClient.addDocuments(document),
+    'vectorizeFiles:addDocuments',
+    {
+      collectionName,
+      document,
+    },
+  );
 };
 
 export const removeMissingFiles = async ({
@@ -202,11 +209,12 @@ export const removeMissingFiles = async ({
       `Error reading trackingCache from ${cacheFilePath}. Files that have been deleted will not be cleaned`,
       'error',
     );
+    return trackingCacheFile;
   } else {
     JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
   }
 
-  Promise.all(
+  return Promise.allSettled(
     [...trackingCache].map(async (p) => {
       const filePath = p as string;
       log(`Checking file ${filePath} for deletion`, 'debug');
@@ -242,9 +250,7 @@ export const vectorizeFiles = async ({
   log(`${toolName} runImport LLMs`, 'silly', { llms });
   const llm = codeLlmLlm.getLlm('summarize');
 
-  if (isError(llm)) {
-    return llm;
-  }
+  if (isError(llm)) return llm;
 
   const {
     paths: { cache: rootCacheDir, project: path },
@@ -259,7 +265,7 @@ export const vectorizeFiles = async ({
   const idPrefix = 'summary';
   const cacheDir = `${rootCacheDir}/${projectName}/${toolName}`;
 
-  await toolUtils.processFiles({
+  const processFilesRes = await toolUtils.processFiles({
     exclude,
     handle: async (params: ProcessFileHandleParams) => {
       const vectorizeRes = await vectorizeFile({
@@ -284,12 +290,12 @@ export const vectorizeFiles = async ({
     toolName,
   });
 
-  await removeMissingFiles({
+  if (isError(processFilesRes)) return processFilesRes;
+
+  return removeMissingFiles({
     cacheDir,
     collectionName,
     dbClient,
     idPrefix,
   });
-
-  return false;
 };
