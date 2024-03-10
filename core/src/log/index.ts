@@ -76,6 +76,11 @@ export const log = (
   meta?: Record<string, unknown>,
 ) => {
   if (logLevel === 'none') return;
+  if (!logger) {
+    // eslint-disable-next-line no-console
+    console.error('Logger not initialized');
+    return;
+  }
   logger.log(logLevel, message, meta);
 };
 

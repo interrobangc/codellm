@@ -1,2 +1,2 @@
 export * from './expectError';
-export * from './jestSetup';
+export * from './testSetup';

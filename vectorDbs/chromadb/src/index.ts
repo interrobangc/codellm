@@ -6,6 +6,7 @@ import type {
 import { ChromaClient, IncludeEnum } from 'chromadb';
 
 import type {
+  Config,
   EmbeddingDocumentList,
   VectorDbAddDocumentsParams,
   VectorDbClient,
@@ -14,7 +15,7 @@ import type {
   VectorDbQueryResult,
 } from '@codellm/core';
 
-import { getConfig, log } from '@codellm/core';
+import { log } from '@codellm/core';
 
 export type CreateCollectionParams = {
   client: ChromaClient;
@@ -129,9 +130,8 @@ export const getFullCollectionName = (
  *
  * @returns The new VectorDb client.
  */
-export const newClient = async () => {
+export const newClient = async (config: Config) => {
   const client = new ChromaClient();
-  const config = getConfig();
 
   return {
     addDocuments: async ({

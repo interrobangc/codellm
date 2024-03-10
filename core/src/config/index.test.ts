@@ -1,19 +1,19 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 import { PartialConfig, Provider } from '@/index.js';
-import { testConfig } from '@tests/mocks';
+import { unitTestConfig } from '@tests/mocks';
 import { getConfig, initConfig } from './index';
 import { DEFAULTS, LLM_DEFAULTS } from './constants';
 
 describe('initConfig', () => {
   it('should initialize the config with the defaults when called with base config', () => {
-    initConfig(testConfig);
+    initConfig(unitTestConfig);
     const config = getConfig();
 
     expect(config).toEqual({
       ...DEFAULTS,
       llms: LLM_DEFAULTS[DEFAULTS.llmProvider],
-      ...testConfig,
+      ...unitTestConfig,
     });
   });
 
@@ -25,7 +25,7 @@ describe('initConfig', () => {
       },
     };
     const newConfig: PartialConfig = {
-      ...testConfig,
+      ...unitTestConfig,
       llmProvider: 'openai',
       llms,
     };

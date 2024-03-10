@@ -10,8 +10,7 @@
     "build:ts": "tsc",
     "build:ts-alias": "tsc-alias -p tsconfig.json",
     "start": "node -r tsconfig-paths/register ./dist/bin/codellm-cli",
-    "start:import": "node -r tsconfig-paths/register ./dist/bin/codellm-cli import",
-    "test:unit": "jest --coverage '.*\\.test\\.ts'"
+    "start:import": "node -r tsconfig-paths/register ./dist/bin/codellm-cli import"
   },
   "dependencies": {
     "@codellm/core": "^0.0.1",
@@ -28,7 +27,6 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.14.202",
     "@types/yargs": "^17.0.32",

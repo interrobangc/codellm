@@ -1,20 +1,27 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, vi } from 'vitest';
 
-import { testConfig, validTool } from '@tests/mocks';
-import { jestSetup } from '@tests/tools';
+import { unitTestConfig, validTool } from '@tests/mocks';
+import { testSetup } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
 import { CodeLlmError, isError } from '@/error/index.js';
 import { toolSchema } from './types.js';
-import * as initTools from './initTools';
+import { importTool } from './importTool.js';
+import * as initTools from './initTools.js';
 
-jestSetup();
+testSetup();
+
+vi.mock('./importTool.js', () => ({
+  importTool: vi.fn().mockImplementation(() => ''),
+}));
+
+const mockImportTool = vi.mocked(importTool);
 
 describe('initTools', () => {
   it('should initialize the tools', async () => {
-    jest
-      .spyOn(initTools, 'importTool')
-      .mockResolvedValue({ newTool: () => validTool });
-    initConfig(testConfig);
+    mockImportTool.mockImplementation(async () => ({
+      newTool: () => validTool,
+    }));
+    initConfig(unitTestConfig);
 
     const tools = await initTools.initTools();
     expect(isError(tools)).toBeFalsy();
@@ -29,30 +36,35 @@ describe('initTools', () => {
   });
 
   it('should return an error when a tool module cannot be imported', async () => {
-    jest
-      .spyOn(initTools, 'importTool')
-      .mockResolvedValue(new CodeLlmError({ code: 'tool:import' }));
+    // vi.spyOn(initTools, 'importTool').mockResolvedValue(
+    //   new CodeLlmError({ code: 'tool:import' }),
+    // );
+    mockImportTool.mockResolvedValue(new CodeLlmError({ code: 'tool:import' }));
 
-    initConfig(testConfig);
+    initConfig(unitTestConfig);
 
     const tools = await initTools.initTools();
     expect(isError(tools, 'tool:init')).toBeTruthy();
   });
 
   it('should return an error when a tool module does not export a newTool method', async () => {
-    jest.spyOn(initTools, 'importTool').mockResolvedValue({});
-    initConfig(testConfig);
+    // vi.spyOn(initTools, 'importTool').mockResolvedValue({});
+    mockImportTool.mockResolvedValue({});
+    initConfig(unitTestConfig);
 
     const tools = await initTools.initTools();
     expect(isError(tools, 'tool:init')).toBeTruthy();
   });
 
   it('should return an error when a tool module returns an invalid tool', async () => {
-    jest
-      .spyOn(initTools, 'importTool')
-      .mockResolvedValue({ newTool: () => ({}) });
+    // vi.spyOn(initTools, 'importTool').mockResolvedValue({
+    //   newTool: () => ({}),
+    // });
+    mockImportTool.mockResolvedValue({
+      newTool: () => ({}),
+    });
 
-    initConfig(testConfig);
+    initConfig(unitTestConfig);
 
     const tools = await initTools.initTools();
     expect(isError(tools, 'tool:init')).toBeTruthy();
