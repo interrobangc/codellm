@@ -5,7 +5,7 @@ import { getConfig } from '@/config/index.js';
 import {
   CodeLlmError,
   isError,
-  mayfail,
+  mayFail,
   promiseMapMayFail,
 } from '@/error/index.js';
 import { log } from '@/log/index.js';
@@ -41,7 +41,7 @@ export const initTool = async ([name, toolConfig]: [
   const tool = await toolModule.newTool(name, config);
   if (isError(tool)) return tool;
 
-  const validatedTool = mayfail(
+  const validatedTool = mayFail(
     () => toolSchema.parse(tool),
     'tool:invalidTool',
     { name, tool },

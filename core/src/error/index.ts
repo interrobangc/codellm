@@ -53,7 +53,7 @@ export const isError = (
  *
  * @returns The result of the target or a CodeLlmError with the error in the meta
  */
-export const mayfail = <T>(
+export const mayFail = <T>(
   target: () => T,
   code: ErrorCode,
   meta: CodeLlmErrorParams['meta'] = {},

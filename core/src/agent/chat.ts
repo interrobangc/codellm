@@ -1,7 +1,7 @@
 import type { LlmClient, MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import { CodeLlmError, isError, mayfail } from '@/error/index.js';
+import { CodeLlmError, isError, mayFail } from '@/error/index.js';
 import { conversation, getLlm } from '@/llm/index.js';
 import log from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -30,7 +30,7 @@ export const sendChat = async (llm: LlmClient, messages: MessageList) => {
  * @returns - The decoded response or an error
  */
 export const decodeResponse = (content: string) => {
-  return mayfail<agentTypes.AgentLlmResponse>(
+  return mayFail<agentTypes.AgentLlmResponse>(
     () => agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim())),
     'agent:decodeResponse',
   );

@@ -8,7 +8,7 @@ import type {
   Service,
 } from '@/.';
 
-import { CodeLlmError, isError, mayfail } from '@/error/index.js';
+import { CodeLlmError, isError, mayFail } from '@/error/index.js';
 import log from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
@@ -104,7 +104,7 @@ export const newClient = async ({ config, service }: GetClientParams) => {
     model,
   });
 
-  const validatedClient = mayfail(
+  const validatedClient = mayFail(
     () => llmProviderClientSchema.parse(client),
     'llm:validateClient',
     {
