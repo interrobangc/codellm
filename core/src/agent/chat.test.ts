@@ -1,10 +1,10 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { dump as dumpYaml } from 'js-yaml';
 
-import { expectError, jestSetup } from '@tests/tools';
+import { expectError, testSetup } from '@tests/tools';
 import { decodeResponse } from './chat';
 
-jestSetup();
+testSetup();
 
 describe('decodeResponse', () => {
   it('should decode a valid response', () => {

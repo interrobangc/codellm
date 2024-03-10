@@ -1,28 +1,32 @@
-import { jest } from '@jest/globals';
-import { describe, expect, it } from '@jest/globals';
+import { vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import { dump as dumpYaml } from 'js-yaml';
 import merge from 'lodash/merge.js';
 
 import { configFileData, expectedDefaultConfig } from '@cliTests/mocks/config';
 
-import { getConfig } from './index';
+import getConfig from './getConfig';
 
 const configFile = './validConfig.yml';
 
+vi.mock('fs', () => ({
+  readFileSync: vi.fn().mockImplementation(() => ''),
+}));
+
+const mockReadFileSync = vi.mocked(readFileSync);
+
 describe('getConfig', () => {
   it('should return the default config when no yargs are present', () => {
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
-
+    mockReadFileSync.mockImplementation(() => dumpYaml(configFileData));
     const yargv = {};
     const result = getConfig(yargv);
     expect(result).toEqual(expectedDefaultConfig);
   });
 
   it('should return a valid partial configuration object when given valid input', () => {
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
-
+    mockReadFileSync.mockImplementation(() => dumpYaml(configFileData));
     const yargv = {
       configFile,
       logLevel: 'debug',
@@ -34,8 +38,7 @@ describe('getConfig', () => {
   });
 
   it('should not return any invalid yarg options', () => {
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(dumpYaml(configFileData));
-
+    mockReadFileSync.mockImplementation(() => dumpYaml(configFileData));
     const yargv = {
       configFile,
       invalidOption: 'invalid',
@@ -53,7 +56,7 @@ describe('getConfig', () => {
   it('should throw an error when given an invalid file path', () => {
     const filePath = 'invalidFilePath.yaml';
 
-    jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
+    mockReadFileSync.mockImplementation(() => {
       throw new Error('File not found');
     });
 

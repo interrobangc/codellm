@@ -1,6 +1,6 @@
 import type { ErrorCode } from '@/.';
 
-import { expect } from '@jest/globals';
+import { expect } from 'vitest';
 import { CodeLlmError } from '@/error/index.js';
 
 export const expectError = (resp: unknown, code: ErrorCode) => {

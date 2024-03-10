@@ -9,9 +9,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "run-s build:ts build:ts-alias",
-    "build:ts": "tsc ",
-    "build:ts-alias": "tsc-alias -p tsconfig.json",
-    "test:unit": "jest --coverage '.*\\.test\\.ts'"
+    "build:ts": "tsc",
+    "build:ts-alias": "tsc-alias -p tsconfig.json"
   },
   "dependencies": {
     "@langchain/core": "^0.1.40",

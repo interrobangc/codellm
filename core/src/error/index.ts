@@ -1,6 +1,7 @@
 import type { CodeLlmErrorParams, ErrorCode } from '@/.';
 
 import { ERRORS } from './constants.js';
+import { getConfig } from '@/config/index.js';
 
 /**
  * A custom error class for the CodeLlm project.
@@ -117,4 +118,11 @@ export const promiseMapMayFail = async <T>(
   }
 
   return results;
+};
+
+export const throwOrReturn = (e: CodeLlmError) => {
+  const { shouldThrow } = getConfig();
+  if (shouldThrow) throw e;
+
+  return e;
 };

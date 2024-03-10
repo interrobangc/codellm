@@ -1,9 +1,15 @@
-import { jest } from '@jest/globals';
-import { describe, expect, it } from '@jest/globals';
+import { vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import { dump as dumpYaml } from 'js-yaml';
 import parseFile from './parseFile.js';
+
+vi.mock('fs', () => ({
+  readFileSync: vi.fn().mockImplementation(() => ''),
+}));
+
+const mockReadFileSync = vi.mocked(readFileSync);
 
 describe('parseFile', () => {
   it('should successfully parse a valid YAML file when given a valid file path', () => {
@@ -21,7 +27,7 @@ describe('parseFile', () => {
 
     const fileContent = dumpYaml(data);
 
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(fileContent);
+    mockReadFileSync.mockImplementation(() => fileContent);
     const result = parseFile(filePath);
     expect(result).toEqual(data);
   });
@@ -29,7 +35,7 @@ describe('parseFile', () => {
   it('should throw an error when given an invalid file path', () => {
     const filePath = 'invalidFilePath.yaml';
 
-    jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
+    mockReadFileSync.mockImplementation(() => {
       throw new Error('File not found');
     });
 
@@ -41,7 +47,7 @@ describe('parseFile', () => {
 
     const fileContent = 'invalid: yaml: content';
 
-    jest.spyOn(fs, 'readFileSync').mockReturnValue(fileContent);
+    mockReadFileSync.mockImplementation(() => fileContent);
 
     expect(() => parseFile(filePath)).toThrow('Invalid YAML content');
   });

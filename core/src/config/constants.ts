@@ -135,7 +135,7 @@ export const DEFAULTS = {
       module: '@codellm/provider-openai',
     },
   },
-
+  shouldThrow: false,
   vectorDbs: {
     chromadb: {
       module: '@codellm/vectordb-chromadb',

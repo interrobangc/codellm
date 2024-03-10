@@ -23,7 +23,7 @@ export const getVectorDb = (name: VectorDb) => {
  * @returns The VectorDb module.
  **/
 export const importVectorDbModule = async (name: VectorDb, config: Config) => {
-  const dbConfig = config.vectorDbs[name];
+  const dbConfig = config?.vectorDbs?.[name];
 
   if (!dbConfig) {
     return new CodeLlmError({ code: 'vectorDb:configNotFound' });

@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./core/src/*"],
+      "@tests/*": ["./core/tests/*"],
+      "@cli/*": ["./cli/src/*"],
+      "@cliTests/*": ["./cli/tests/*"]
+    }
+  }
+}

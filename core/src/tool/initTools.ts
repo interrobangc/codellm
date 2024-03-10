@@ -2,34 +2,12 @@ import type { ToolConfigItem } from '@/.';
 
 import isEmpty from 'lodash/isEmpty.js';
 import { getConfig } from '@/config/index.js';
-import {
-  CodeLlmError,
-  isError,
-  mayFail,
-  promiseMapMayFail,
-} from '@/error/index.js';
+import { isError, mayFail, promiseMapMayFail } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import { toolSchema } from './types.js';
 import { getTools, setTool } from './tools.js';
+import { importTool } from './importTool.js';
 
-/**
- * Import a tool module
- *
- * @param {string} moduleName The name of the module to import
- *
- * @returns {Promise<unknown | CodeLlmError>}The tool module or an error
- */
-export const importTool = async (moduleName: string) => {
-  try {
-    return await import(moduleName);
-  } catch (e) {
-    return new CodeLlmError({
-      cause: e,
-      code: 'tool:import',
-      meta: { moduleName },
-    });
-  }
-};
 export const initTool = async ([name, toolConfig]: [
   string,
   ToolConfigItem,

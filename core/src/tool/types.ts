@@ -33,7 +33,7 @@ export const toolConfigSchema = z.record(z.unknown());
 export type ToolConfig = z.infer<typeof toolConfigSchema>;
 
 export const toolConfigItemSchema = z.object({
-  config: toolConfigSchema,
+  config: toolConfigSchema.optional(),
   module: z.string(),
 });
 export type ToolConfigItem = z.infer<typeof toolConfigItemSchema>;

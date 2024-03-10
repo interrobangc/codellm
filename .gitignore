@@ -9,4 +9,4 @@
 
 .cache
 .chromadb
-chroma.log
+**/*.log

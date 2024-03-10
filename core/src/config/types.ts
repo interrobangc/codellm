@@ -32,6 +32,7 @@ export type ConfigCommon = {
   logLevel: LogLevel;
   paths: ConfigPaths;
   project: ConfigProject;
+  shouldThrow: boolean;
   tools?: ToolConfigs;
 };
 
