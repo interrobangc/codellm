@@ -36,18 +36,14 @@ export const initConfig = (newConfig: PartialConfig) => {
   config.llms = merge({}, llmDefaults, newConfig.llms) as Config['llms'];
 
   const validateRes = validateConfig();
-  if (isError(validateRes)) {
-    return validateRes;
-  }
+  if (isError(validateRes)) return validateRes;
 
   const initLoggerRes = initLogger(config);
-  if (isError(initLoggerRes)) {
-    return initLoggerRes;
-  }
+  if (isError(initLoggerRes)) return initLoggerRes;
 
   log('Config set', 'debug', config);
 
-  return false;
+  return config;
 };
 
 export const getConfig = () => {

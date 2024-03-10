@@ -2,6 +2,9 @@ export const LLM_ERRORS = {
   'llm:initClients': {
     message: 'Error initializing LLM clients',
   },
+  'llm:initModel': {
+    message: 'Error initializing model',
+  },
   'llm:initModels': {
     message: 'Error initializing models',
   },

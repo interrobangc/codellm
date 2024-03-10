@@ -18,9 +18,7 @@ export const newClient = async ({
   const { vectorDbCollectionName, vectorDbName } = toolConfig;
   const dbClient = await vectorDb.newClient(vectorDbName);
 
-  if (isError(dbClient)) {
-    return dbClient;
-  }
+  if (isError(dbClient)) return dbClient;
 
   await dbClient.init([vectorDbCollectionName]);
 

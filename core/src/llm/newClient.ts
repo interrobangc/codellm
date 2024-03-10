@@ -8,7 +8,7 @@ import type {
   Service,
 } from '@/.';
 
-import { CodeLlmError, isError, maybe } from '@/error/index.js';
+import { CodeLlmError, isError, mayFail } from '@/error/index.js';
 import log from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
@@ -95,9 +95,8 @@ export const newClient = async ({ config, service }: GetClientParams) => {
   const { model, provider } = config.llms[service];
 
   const getClientRes = await getClient(config, provider);
-  if (isError(getClientRes)) {
-    return getClientRes;
-  }
+  if (isError(getClientRes)) return getClientRes;
+
   const { providerConfig, providerModule } = getClientRes;
 
   const client = await providerModule.newClient({
@@ -105,7 +104,7 @@ export const newClient = async ({ config, service }: GetClientParams) => {
     model,
   });
 
-  const validatedClient = maybe(
+  const validatedClient = mayFail(
     () => llmProviderClientSchema.parse(client),
     'llm:validateClient',
     {
@@ -113,10 +112,7 @@ export const newClient = async ({ config, service }: GetClientParams) => {
       service,
     },
   );
-
-  if (isError(validatedClient)) {
-    return validatedClient;
-  }
+  if (isError(validatedClient)) return validatedClient;
 
   return {
     chat: async (messages: MessageList) =>

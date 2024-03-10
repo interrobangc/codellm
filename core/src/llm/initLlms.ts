@@ -1,7 +1,7 @@
 import type { Config, Service } from '@/.';
 
 import { getConfig } from '@/config/index.js';
-import { isError, promiseMapMaybe } from '@/error/index.js';
+import { isError, promiseMapMayFail, promiseMayFail } from '@/error/index.js';
 import log from '@/log/index.js';
 import { getLlm, newClient, setLlm } from './index.js';
 
@@ -11,42 +11,28 @@ export const initLlmClients = async (
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
     const llmClient = await newClient({ config, service });
-    if (isError(llmClient)) {
-      return llmClient;
-    }
+    if (isError(llmClient)) return llmClient;
 
     setLlm(service, llmClient);
     return llmClient;
   });
 
-  const resolvedLlms = await promiseMapMaybe(llmsMap, 'llm:initClients');
-  if (isError(resolvedLlms)) {
-    return resolvedLlms;
-  }
-
-  return false;
+  return promiseMapMayFail(llmsMap, 'llm:initClients');
 };
 
 export const initLlmModels = async (servicesToInit: Service[]) => {
   const initModelsMap = servicesToInit.map(async (service) => {
     const client = getLlm(service);
-    if (isError(client)) {
-      return client;
-    }
+    if (isError(client)) return client;
 
     log('Initializing model', 'debug', { service: client.service });
-    await client.initModel();
-    return client;
-  });
-  const resolvedInitModels = await promiseMapMaybe(
-    initModelsMap,
-    'llm:initModels',
-  );
-  if (isError(resolvedInitModels)) {
-    return resolvedInitModels;
-  }
 
-  return false;
+    return promiseMayFail(client.initModel(), 'llm:initModel', {
+      service,
+    });
+  });
+
+  return promiseMapMayFail(initModelsMap, 'llm:initModels');
 };
 
 /**
@@ -61,14 +47,7 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
 export const initLlms = async (servicesToInit: Service[]) => {
   const config = getConfig();
   const initLlmClientsRes = await initLlmClients(config, servicesToInit);
-  if (isError(initLlmClientsRes)) {
-    return initLlmClientsRes;
-  }
+  if (isError(initLlmClientsRes)) return initLlmClientsRes;
 
-  const initLlmModelsRes = await initLlmModels(servicesToInit);
-  if (isError(initLlmModelsRes)) {
-    return initLlmModelsRes;
-  }
-
-  return false;
+  return initLlmModels(servicesToInit);
 };

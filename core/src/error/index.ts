@@ -44,7 +44,16 @@ export const isError = (
   return target instanceof CodeLlmError && (!code || target.code === code);
 };
 
-export const maybe = <T>(
+/**
+ * Resolves a target that could throw and returns a CodeLlmError if the target fails
+ *
+ * @param {() => T} target The function to handle
+ * @param {ErrorCode} code The error code to use if the target fails
+ * @param {CodeLlmErrorParams['meta']} meta The meta data to include in the error
+ *
+ * @returns The result of the target or a CodeLlmError with the error in the meta
+ */
+export const mayFail = <T>(
   target: () => T,
   code: ErrorCode,
   meta: CodeLlmErrorParams['meta'] = {},
@@ -68,7 +77,7 @@ export const maybe = <T>(
  * @returns - The result of the promise or a CodeLlmError with the error in the meta
  *
  */
-export const promiseMaybe = async <T>(
+export const promiseMayFail = async <T>(
   target: Promise<T>,
   code: ErrorCode,
   meta: CodeLlmErrorParams['meta'] = {},
@@ -90,7 +99,7 @@ export const promiseMaybe = async <T>(
  *
  * @returns - The results of the promises or a CodeLlmError with the errors and results in the meta
  */
-export const promiseMapMaybe = async <T>(
+export const promiseMapMayFail = async <T>(
   map: Promise<T>[],
   code: ErrorCode,
 ) => {

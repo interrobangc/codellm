@@ -5,8 +5,8 @@ import { getConfig } from '@/config/index.js';
 import {
   CodeLlmError,
   isError,
-  maybe,
-  promiseMapMaybe,
+  mayFail,
+  promiseMapMayFail,
 } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import { toolSchema } from './types.js';
@@ -35,24 +35,18 @@ export const initTool = async ([name, toolConfig]: [
   ToolConfigItem,
 ]) => {
   const toolModule = await importTool(toolConfig.module);
-  if (isError(toolModule)) {
-    return toolModule;
-  }
+  if (isError(toolModule)) return toolModule;
 
   const config = getConfig();
   const tool = await toolModule.newTool(name, config);
-  if (isError(tool)) {
-    return tool;
-  }
+  if (isError(tool)) return tool;
 
-  const validatedTool = maybe(
+  const validatedTool = mayFail(
     () => toolSchema.parse(tool),
     'tool:invalidTool',
     { name, tool },
   );
-  if (isError(validatedTool)) {
-    return validatedTool;
-  }
+  if (isError(validatedTool)) return validatedTool;
 
   setTool(name, validatedTool);
   return validatedTool;
@@ -68,10 +62,8 @@ export const initTools = async () => {
   if (isEmpty(config.tools)) return getTools();
 
   const toolInitMap = Object.entries(config.tools).map(initTool);
-  const toolInitsRes = await promiseMapMaybe(toolInitMap, 'tool:init');
-  if (isError(toolInitsRes)) {
-    return toolInitsRes;
-  }
+  const toolInitsRes = await promiseMapMayFail(toolInitMap, 'tool:init');
+  if (isError(toolInitsRes)) return toolInitsRes;
 
   log('initTools result', 'silly', {
     toolInitsRes,
