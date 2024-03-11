@@ -5,6 +5,9 @@ export const VECTORIZE_FILES_ERRORS = {
   'vectorizeFiles:trackingCacheMkDir': {
     message: 'Error creating tracking cache directory',
   },
+  'vectorizeFiles:trackingCacheParse': {
+    message: 'Error parsing tracking cache',
+  },
   'vectorizeFiles:updateTrackingCache': {
     message: 'Error updating tracking cache',
   },

@@ -1,4 +1,4 @@
-import { CodeLlmError } from '..';
+import { CodeLlmError } from '@/error/index.js';
 import { Prompt, Prompts } from './types';
 
 const prompts: Prompts = new Map();

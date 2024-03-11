@@ -2,11 +2,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { readFile } from 'fs/promises';
 import { globby } from 'globby';
-import {
-  invalidFilePath,
-  unitTestConfig,
-  validProjectFilePath,
-} from '@tests/mocks';
+import { unitTestConfig, validProjectFilePath } from '@tests/mocks';
 import { expectError } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
 import * as processFiles from './processFiles.js';
@@ -49,5 +45,22 @@ describe('processFile', () => {
 
     // @ts-expect-error - used before defined
     expect(fileContentHolder).toEqual(fakeFileContent);
+  });
+
+  it('should return CodeLlmError for  handler error', async () => {
+    globbyMock.mockImplementation(() =>
+      Promise.resolve([validProjectFilePath]),
+    );
+    readFileMock.mockImplementation(() => Promise.resolve('fileContent'));
+    const res = await processFiles.processFiles({
+      exclude: [],
+      handle: async () => {
+        throw new Error('handler error');
+      },
+      include: ['**/*.ts'],
+      path: '/path',
+      toolName: 'processFiles',
+    });
+    expectError(res, 'processFiles:processFile');
   });
 });

@@ -9,7 +9,7 @@ import type {
 } from '@/.';
 
 import { dirname, resolve } from 'path';
-import { promiseMayFail } from '@/error/index.js';
+import { mayFail, promiseMayFail } from '@/error/index.js';
 import * as codeLlmLlm from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import * as toolUtils from '@/tool/utils/index.js';
@@ -63,7 +63,18 @@ export const updateTrackingCache = async ({
       'error',
     );
   } else {
-    JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i));
+    const jsonParseRes = mayFail(
+      () =>
+        JSON.parse(trackingCacheFile)?.map((i: string) => trackingCache.add(i)),
+      'vectorizeFiles:trackingCacheParse',
+      { cacheFilePath, trackingCacheFile },
+    );
+    if (isError(jsonParseRes)) {
+      log(
+        `Error parsing trackingCache from ${cacheFilePath}. If this is not the first run, files that have been deleted will not be cleaned`,
+        'error',
+      );
+    }
   }
 
   trackingCache[action](filePath);
