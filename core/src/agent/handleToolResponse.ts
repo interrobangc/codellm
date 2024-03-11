@@ -25,10 +25,7 @@ export const handleToolResponse = async ({
   const tool = getTool(toolName);
   if (isError(tool)) {
     log('Tool not found', 'error', { toolName });
-    return {
-      ...toolResponses,
-      [toolName]: 'Tool not found',
-    };
+    return [...toolResponses, { name: toolName, response: 'Tool not found' }];
   }
 
   log(`Running the ${response.name} tool`);
@@ -46,16 +43,13 @@ export const handleToolResponse = async ({
     log('Tool response', 'debug', { toolResponse });
   } catch (e) {
     log('Error running tool', 'error', { e, toolName });
-    return {
+    return [
       ...toolResponses,
-      [toolName]: 'Error running tool: ' + e,
-    };
+      { name: toolName, response: 'Error running tool: ' + e },
+    ];
   }
 
   log('Tool responses', 'debug', { toolResponses });
 
-  return {
-    ...toolResponses,
-    [toolName]: toolResponse.content,
-  };
+  return [...toolResponses, { name: toolName, response: toolResponse.content }];
 };

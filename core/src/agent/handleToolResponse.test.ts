@@ -45,26 +45,28 @@ describe('handleToolResponse', () => {
   it('should handle a valid tool response', async () => {
     const res = await handleToolResponse({
       response: fakeToolResponse,
-      toolResponses: {},
+      toolResponses: [],
     });
 
     expect(getToolSpy).toHaveBeenCalled();
     expect(getLlmSpy).toHaveBeenCalled();
-    expect(res).toEqual({ fakeTool: fakeToolResponseContent });
+    expect(res).toEqual([
+      { name: 'fakeTool', response: fakeToolResponseContent },
+    ]);
   });
 
   it('should append a valid tool response to existing tool responses', async () => {
     const res = await handleToolResponse({
       response: fakeToolResponse,
-      toolResponses: { otherTool: 'other response' },
+      toolResponses: [{ name: 'otherTool', response: 'other response' }],
     });
 
     expect(getToolSpy).toHaveBeenCalled();
     expect(getLlmSpy).toHaveBeenCalled();
-    expect(res).toEqual({
-      fakeTool: fakeToolResponseContent,
-      otherTool: 'other response',
-    });
+    expect(res).toEqual([
+      { name: 'otherTool', response: 'other response' },
+      { name: 'fakeTool', response: fakeToolResponseContent },
+    ]);
   });
 
   it('should handle an error when the tool is not found', async () => {
@@ -74,10 +76,10 @@ describe('handleToolResponse', () => {
 
     const res = await handleToolResponse({
       response: fakeToolResponse,
-      toolResponses: {},
+      toolResponses: [],
     });
 
-    expect(res).toEqual({ fakeTool: 'Tool not found' });
+    expect(res).toEqual([{ name: 'fakeTool', response: 'Tool not found' }]);
     expect(getToolSpy).toHaveBeenCalled();
     expect(logSpy).toHaveBeenCalledWith('Tool not found', 'error', {
       toolName: 'fakeTool',

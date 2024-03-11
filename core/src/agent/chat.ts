@@ -35,10 +35,10 @@ export const decodeResponse = (content: string) => {
 export const getToolResponses = (
   toolResponses: agentTypes.AgentToolResponses,
 ) => {
-  return Object.entries(toolResponses)
+  return toolResponses
     .map(
-      ([tool, response]) => `####${tool}:
-    ${response}
+      (toolRes) => `####${toolRes.name}:
+    ${toolRes.response}
   `,
     )
     .join('\n');
@@ -48,7 +48,7 @@ export const sendUserMessage = async ({
   agentLlm,
   error,
   question,
-  toolResponses = {},
+  toolResponses = [],
 }: agentTypes.AgentHandleQuestionParams) => {
   const messages: MessageList = [];
 
@@ -72,7 +72,7 @@ export const handleQuestionRecursive = async ({
   depth = 0,
   error = null,
   question,
-  toolResponses = {},
+  toolResponses = [],
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const response = await sendUserMessage({
     agentLlm,

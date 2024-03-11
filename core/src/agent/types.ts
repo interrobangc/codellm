@@ -68,8 +68,7 @@ export type AgentToolResponseItem = {
   response: string;
 };
 
-// TODO: this needs to be updated to an array of AgentToolResponseItem so we don't lose tool responses to the same tool
-export type AgentToolResponses = Record<string, string>;
+export type AgentToolResponses = AgentToolResponseItem[];
 
 export type AgentHandleQuestionParams = {
   agentLlm: LlmClient;

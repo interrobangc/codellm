@@ -58,7 +58,7 @@ describe('sendUserMessage', () => {
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
     };
-    const toolResponses = {};
+    const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
       question,
@@ -80,7 +80,7 @@ describe('sendUserMessage', () => {
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
     };
-    const toolResponses = {};
+    const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
       question,
@@ -95,7 +95,7 @@ describe('sendUserMessage', () => {
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
     };
-    const toolResponses = {};
+    const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
       question,
@@ -115,7 +115,7 @@ describe('handleQuestionRecursive', () => {
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
     };
-    const toolResponses = {};
+    const toolResponses = [];
     const res = await chat.handleQuestionRecursive({
       agentLlm,
       question,
