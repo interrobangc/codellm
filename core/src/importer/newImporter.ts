@@ -34,6 +34,8 @@ export const newImporter = async (configParam: PartialConfig) => {
 
         return promiseMayFail(tool.import(), `tool:import`, { toolName });
       }
+
+      return undefined;
     },
   } as Importer;
 };

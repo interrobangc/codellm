@@ -1,3 +1,5 @@
 export const IMPORTER_ERRORS = {
-  'importer:noTools': 'No tools were found to import with',
+  'importer:noTools': {
+    message: 'No tools were found to import with',
+  },
 } as const;
