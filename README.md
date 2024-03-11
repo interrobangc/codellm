@@ -1,6 +1,7 @@
 # CodeLLM
 
 <p align="center">
+  <a href="https://github.com/interrobangc/codellm/actions/workflows/test.yml">
     <img src="https://github.com/interrobangc/codellm/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests">
   </a>
 </p>
