@@ -5,7 +5,8 @@
       "@/*": ["./core/src/*"],
       "@tests/*": ["./core/tests/*"],
       "@cli/*": ["./cli/src/*"],
-      "@cliTests/*": ["./cli/tests/*"]
+      "@cliTests/*": ["./cli/tests/*"],
+      "@web/*": ["./web/app/*"]
     }
   }
 }

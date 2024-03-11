@@ -10,7 +10,8 @@
     "providers/*",
     "tools/*",
     "vectorDbs/*",
-    "cli"
+    "cli",
+    "web"
   ],
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
@@ -24,6 +25,9 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-sonarjs": "^0.24.0",
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
@@ -42,6 +46,7 @@
     "build": "run-s build:ts build:ts-alias",
     "build:ts": "tsc -b --verbose",
     "build:ts-alias": "npm run --workspaces --if-present build:ts-alias",
+    "dev": "npm run -w web dev",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
     "start:import": "npm run build && npm run -w cli start:import",

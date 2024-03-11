@@ -15,6 +15,7 @@
     { "path": "providers/ollama" },
     { "path": "providers/openai" },
     { "path": "vectorDbs/chromadb" },
-    { "path": "cli" }
+    { "path": "cli" },
+    { "path": "web" }
   ]
 }
