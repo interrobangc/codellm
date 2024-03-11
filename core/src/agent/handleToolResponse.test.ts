@@ -69,6 +69,23 @@ describe('handleToolResponse', () => {
     ]);
   });
 
+  it('should include responses from the same tool multiple times', async () => {
+    const res1 = await handleToolResponse({
+      response: fakeToolResponse,
+      toolResponses: [],
+    });
+
+    const res2 = await handleToolResponse({
+      response: fakeToolResponse,
+      toolResponses: res1,
+    });
+
+    expect(res2).toEqual([
+      { name: 'fakeTool', response: fakeToolResponseContent },
+      { name: 'fakeTool', response: fakeToolResponseContent },
+    ]);
+  });
+
   it('should handle an error when the tool is not found', async () => {
     getToolSpy.mockImplementation(
       () => new error.CodeLlmError({ code: 'tool:notFound' }),
