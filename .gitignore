@@ -2,6 +2,7 @@
 .vscode
 *.code-workspace
 .DS_Store
+vscode-profile*
 
 **/node_modules/
 **/dist/

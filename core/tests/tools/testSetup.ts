@@ -2,11 +2,16 @@ import { vi } from 'vitest';
 
 import * as log from '@/log/index.js';
 
-const logSpy = vi.spyOn(log, 'log').mockImplementation(() => {});
-const consoleLogSpy = vi.spyOn(console, 'log');
-const consoleErrorSpy = vi.spyOn(console, 'error');
+export type TestSetupParams = {
+  disableLog?: boolean;
+};
 
-export const testSetup = () => {
+export const testSetup = ({ disableLog = true }: TestSetupParams = {}) => {
+  const logSpy = vi.spyOn(log, 'log');
+  if (disableLog) logSpy.mockImplementation(() => {});
+  const consoleLogSpy = vi.spyOn(console, 'log');
+  const consoleErrorSpy = vi.spyOn(console, 'error');
+
   return {
     consoleErrorSpy,
     consoleLogSpy,

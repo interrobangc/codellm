@@ -1,26 +1,15 @@
-import type { LlmClient, MessageList } from '@/.';
+import type { MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
 import { CodeLlmError, isError, mayFail } from '@/error/index.js';
-import { conversation, getLlm } from '@/llm/index.js';
+import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
+import { AGENT_RECURSION_DEPTH_MAX } from './constants.js';
 import * as agentTypes from './types.js';
 import { handleToolResponse } from './handleToolResponse.js';
 
 const prompt = newPrompt();
-
-/**
- * Send a chat message to the LLM
- *
- * @param {LlmClient} llm - Llm Client to use
- * @param {MessageList} messages - Messages to send
- *
- * @returns - The response from the LLM
- */
-export const sendChat = async (llm: LlmClient, messages: MessageList) => {
-  return llm.chat(messages);
-};
 
 /**
  * Decode the response from the agent into an AgentSelectToolResponse type
@@ -55,12 +44,12 @@ export const getToolResponses = (
     .join('\n');
 };
 
-export const handleQuestion = async ({
-  depth = 0,
-  error = null,
+export const sendUserMessage = async ({
+  agentLlm,
+  error,
   question,
   toolResponses = {},
-}: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
+}: agentTypes.AgentHandleQuestionParams) => {
   const messages: MessageList = [];
 
   const content = await prompt.get('agentQuestion', {
@@ -75,17 +64,27 @@ export const handleQuestion = async ({
     role: 'user',
   });
 
-  const agentLlm = getLlm('agent');
-  if (isError(agentLlm)) return agentLlm;
+  return decodeResponse(await agentLlm.chat(messages));
+};
 
-  const response = decodeResponse(await sendChat(agentLlm, messages));
-  log(`conversation.getHistory('agent')`, 'debug', {
-    history: conversation.getHistory('agent'),
+export const handleQuestionRecursive = async ({
+  agentLlm,
+  depth = 0,
+  error = null,
+  question,
+  toolResponses = {},
+}: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
+  const response = await sendUserMessage({
+    agentLlm,
+    error,
+    question,
+    toolResponses,
   });
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
     // If we had a decode error, we add the error to the response and try again
-    return handleQuestion({
+    return exports.handleQuestionRecursive({
+      agentLlm,
       depth: depth + 1,
       error: `${response.message} - ${response.cause}`,
       question,
@@ -97,7 +96,7 @@ export const handleQuestion = async ({
     return response;
   }
 
-  if (depth >= 5) {
+  if (depth >= AGENT_RECURSION_DEPTH_MAX) {
     return new CodeLlmError({
       code: 'agent:maxDepthExceeded',
     });
@@ -107,11 +106,11 @@ export const handleQuestion = async ({
     response,
     toolResponses,
   });
-
   if (isError(toolResponse)) return toolResponse;
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
-  return handleQuestion({
+  return exports.handleQuestionRecursive({
+    agentLlm,
     depth: depth + 1,
     question,
     toolResponses: toolResponse,
@@ -128,7 +127,11 @@ export const handleQuestion = async ({
  */
 export const chat = async (question: string) => {
   log('chat', 'debug', { question });
-  return handleQuestion({
+  const agentLlm = getLlm('agent');
+  if (isError(agentLlm)) return agentLlm;
+
+  return handleQuestionRecursive({
+    agentLlm,
     question,
   });
 };
