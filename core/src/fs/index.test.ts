@@ -1,15 +1,16 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { resolve } from 'path';
 
-import { unitTestConfig } from '@tests/mocks';
+import {
+  invalidFilePath,
+  unitTestConfig,
+  validCacheFilePath,
+  validProjectFilePath,
+} from '@tests/mocks';
 import { expectError } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
 import * as fsPromises from 'fs/promises';
 import * as fs from './index.js';
-
-const invalidFilePath = '/someFile';
-const validCacheFilePath = `${unitTestConfig.paths.cache}/someFile`;
-const validProjectFilePath = `${unitTestConfig.paths!.project}/someFile`;
 
 const invalidPathErrorCode = 'fs:invalidPath';
 
