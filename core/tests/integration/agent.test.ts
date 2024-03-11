@@ -30,7 +30,9 @@ describe('chat', () => {
     const getToolSpy = vi.spyOn(tool, 'getTool').mockReturnValue({
       run: async () => toolResponse,
     });
-    const response = await agent.chat(toolResponse);
+    const response = await agent.chat(
+      'Can you get me the content of the readme file?',
+    );
 
     expect(getToolSpy).toHaveBeenCalled();
 

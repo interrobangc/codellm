@@ -115,6 +115,8 @@ export const vectorizeFile = async ({
   basePath,
   cacheDir,
   collectionName,
+  countCurrent,
+  countTotal,
   dbClient,
   fileContent,
   fileContentHash,
@@ -123,6 +125,7 @@ export const vectorizeFile = async ({
   idPrefix,
   llm,
   prompt,
+  toolName,
 }: VectorizeFileParams) => {
   // TODO: dynamic for different passes in a single run
   const id = getId(idPrefix, filePath);
@@ -151,9 +154,14 @@ export const vectorizeFile = async ({
     // @ts-expect-error - types aren't in place yet
     existingDocument.metadatas[0].fileContentHash === fileContentHash
   ) {
-    log(`Document ${id} is already up to date, skipping`);
+    log(
+      `${toolName} ${countCurrent}/${countTotal} - ${id} is already up to date, skipping`,
+    );
     return;
   }
+  log(
+    `${toolName} ${countCurrent}/${countTotal} - ${id} is not up to date, updating...`,
+  );
 
   // We want to use the full path for ids to prevent overlap if different projects have the same structure,
   // but only deal with relative paths for the rest of the metadata and document
@@ -288,6 +296,7 @@ export const vectorizeFiles = async ({
         idPrefix,
         llm,
         prompt: prompts.summarize,
+        toolName,
         ...params,
       });
 
