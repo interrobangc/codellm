@@ -138,6 +138,7 @@ export const DEFAULTS = {
       module: '@codellm/provider-openai',
     },
   },
+  shouldImportAsync: true,
   shouldThrow: false,
   vectorDbs: {
     chromadb: {

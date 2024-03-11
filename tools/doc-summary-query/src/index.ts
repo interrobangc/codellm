@@ -43,7 +43,7 @@ export const newTool = async (toolName: string, config: Config) => {
       await vectorizeFilesClient.vectorizeFiles({
         summarize: summarizeTaskPrompt,
       });
-      return 'Import complete';
+      return `${toolName} import complete`;
     },
     run: async ({ params }: ToolRunParamsCommon) => {
       const dbResponse = await vectorizeFilesClient.query({

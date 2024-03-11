@@ -43,10 +43,13 @@ export type VectorizeFileParams = ProcessFileHandleParams & {
   basePath: string;
   cacheDir: string;
   collectionName: string;
+  countCurrent: number;
+  countTotal: number;
   dbClient: VectorDbClient;
   idPrefix: string;
   llm: LlmClient;
   prompt: string;
+  toolName: string;
 };
 
 export type RemoveMissingFilesParams = {

@@ -48,9 +48,13 @@ export const processFiles = async ({
 
   const processFilesRes: Record<string, unknown> = {};
 
+  const countTotal = paths.length;
+  let countCurrent = 0;
   for (const filePath of paths) {
     const processFileRes = await promiseMayFail(
       processFile({
+        countCurrent: countCurrent++,
+        countTotal,
         filePath,
         handle,
         toolName,

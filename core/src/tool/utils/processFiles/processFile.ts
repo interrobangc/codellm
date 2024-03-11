@@ -16,6 +16,8 @@ import { readFile } from '@/fs/index.js';
  * @returns
  */
 export const processFile = async ({
+  countCurrent,
+  countTotal,
   filePath,
   handle,
   toolName,
@@ -32,6 +34,8 @@ export const processFile = async ({
 
   return promiseMayFail(
     handle({
+      countCurrent,
+      countTotal,
       fileContent,
       fileContentHash,
       filePath,

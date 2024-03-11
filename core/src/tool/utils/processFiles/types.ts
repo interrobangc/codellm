@@ -4,6 +4,8 @@ export type ProcessFilesToolConfig = {
 };
 
 export type ProcessFileHandleParams = {
+  countCurrent: number;
+  countTotal: number;
   fileContent: string;
   fileContentHash: string;
   filePath: string;
@@ -21,6 +23,8 @@ export type ProcessFilesParams = ProcessFilesToolConfig & {
 };
 
 export type ProcessFileParams = {
+  countCurrent: number;
+  countTotal: number;
   filePath: string;
   handle: ProcessFilesHandleFunction;
   toolName: string;

@@ -83,7 +83,7 @@ export const handleQuestionRecursive = async ({
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
     // If we had a decode error, we add the error to the response and try again
-    return exports.handleQuestionRecursive({
+    return handleQuestionRecursive({
       agentLlm,
       depth: depth + 1,
       error: `${response.message} - ${response.cause}`,
@@ -109,7 +109,7 @@ export const handleQuestionRecursive = async ({
   if (isError(toolResponse)) return toolResponse;
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
-  return exports.handleQuestionRecursive({
+  return handleQuestionRecursive({
     agentLlm,
     depth: depth + 1,
     question,
