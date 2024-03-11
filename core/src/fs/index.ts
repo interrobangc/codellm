@@ -64,13 +64,6 @@ export const readFile = async (filePath: string) => {
   );
 };
 
-export const stat = async (filePath: string) => {
-  const validatePathRes = validatePath(filePath);
-  if (isError(validatePathRes)) return validatePathRes;
-
-  return promiseMayFail(fsStat(validatePathRes), 'fs:statError', { filePath });
-};
-
 export const writeFile = async (filePath: string, data: string) => {
   const validatePathRes = validatePath(filePath);
   if (isError(validatePathRes)) return validatePathRes;
@@ -82,6 +75,13 @@ export const writeFile = async (filePath: string, data: string) => {
       filePath,
     },
   );
+};
+
+export const stat = async (filePath: string) => {
+  const validatePathRes = validatePath(filePath);
+  if (isError(validatePathRes)) return validatePathRes;
+
+  return promiseMayFail(fsStat(validatePathRes), 'fs:statError', { filePath });
 };
 
 export * from './constants.js';
