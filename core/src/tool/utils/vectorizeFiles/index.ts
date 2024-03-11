@@ -30,7 +30,6 @@ export const newVectorizeFilesClient = async ({
       });
 
       //TODO: Validate params
-
       return dbClient.query({
         collectionName: vectorDbCollectionName,
         opts,
