@@ -18,12 +18,7 @@ const fakeToolResponse = {
   type: 'tool',
 } as chat.AgentToolResponse;
 
-const fakeToolResponseContent = `a fake tool response`;
-
-const fakeToolRunResponse = {
-  content: fakeToolResponseContent,
-  success: true,
-};
+const fakeToolRunResponse = `a fake tool response`;
 
 describe('handleToolResponse', () => {
   let getToolSpy: vi.SpyInstance;
@@ -50,9 +45,7 @@ describe('handleToolResponse', () => {
 
     expect(getToolSpy).toHaveBeenCalled();
     expect(getLlmSpy).toHaveBeenCalled();
-    expect(res).toEqual([
-      { name: 'fakeTool', response: fakeToolResponseContent },
-    ]);
+    expect(res).toEqual([{ name: 'fakeTool', response: fakeToolRunResponse }]);
   });
 
   it('should append a valid tool response to existing tool responses', async () => {
@@ -65,7 +58,7 @@ describe('handleToolResponse', () => {
     expect(getLlmSpy).toHaveBeenCalled();
     expect(res).toEqual([
       { name: 'otherTool', response: 'other response' },
-      { name: 'fakeTool', response: fakeToolResponseContent },
+      { name: 'fakeTool', response: fakeToolRunResponse },
     ]);
   });
 
@@ -81,8 +74,8 @@ describe('handleToolResponse', () => {
     });
 
     expect(res2).toEqual([
-      { name: 'fakeTool', response: fakeToolResponseContent },
-      { name: 'fakeTool', response: fakeToolResponseContent },
+      { name: 'fakeTool', response: fakeToolRunResponse },
+      { name: 'fakeTool', response: fakeToolRunResponse },
     ]);
   });
 

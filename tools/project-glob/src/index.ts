@@ -6,7 +6,7 @@ import type {
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { log, toolUtils } from '@codellm/core';
+import { CodeLlmError, isError, log, toolUtils } from '@codellm/core';
 import { DEFAULT_CONFIG, description } from './constants.js';
 
 /**
@@ -27,20 +27,15 @@ export const newTool = async (toolName: string, config: Config) => {
 
   return {
     description,
-    import: async () => {
-      return {
-        content: 'unimplemented',
-        success: true,
-      };
-    },
     run: async ({ params }: ToolRunParamsCommon) => {
       const { globPatterns } = params;
 
       if (!Array.isArray(globPatterns)) {
-        return {
-          content: 'globPatterns must be an array',
-          success: false,
-        };
+        return new CodeLlmError({
+          code: 'error:unknown',
+          message: 'globPatterns must be an array',
+          meta: { globPatterns },
+        });
       }
 
       globPatterns.forEach((pattern, i) => {
@@ -51,33 +46,25 @@ export const newTool = async (toolName: string, config: Config) => {
 
       const filePaths: string[] = [];
 
-      // TODO: use mayFail and CodeLlmErrors instead of try/catch
-      try {
-        await toolUtils.processFiles({
-          exclude: toolConfig.exclude,
-          handle: async ({ filePath }: ProcessFileHandleParams) => {
-            filePaths.push(filePath);
-          },
-          include: globPatterns as string[],
-          path: projectPath,
-          toolName: 'projectGlob',
-        });
-      } catch (error) {
-        return {
-          content: String(error),
-          success: false,
-        };
-      }
+      const processFilesRes = await toolUtils.processFiles({
+        exclude: toolConfig.exclude,
+        handle: async ({ filePath }: ProcessFileHandleParams) => {
+          filePaths.push(filePath);
+        },
+        include: globPatterns as string[],
+        path: projectPath,
+        toolName: 'projectGlob',
+      });
+
+      if (isError(processFilesRes)) return processFilesRes;
 
       log('projectGlob tool finished', 'debug', { filePaths });
 
-      const content = `
+      return `
 #### Count of files that match ${globPatterns.join(', ')} in this project: ${filePaths.length}
 #### All file paths that match ${globPatterns.join(', ')} in this project:
 ${filePaths.join('\n')};
 `;
-
-      return { content, success: true };
     },
   } as Tool;
 };

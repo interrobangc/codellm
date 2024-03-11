@@ -13,16 +13,6 @@ export const validTool: Tool = {
       },
     ],
   },
-  import: async () => {
-    return {
-      content: 'fake import complete',
-      success: true,
-    };
-  },
-  run: async () => {
-    return {
-      content: 'some fake content',
-      success: true,
-    };
-  },
+  import: async () => 'fake import complete',
+  run: async () => 'some fake content',
 };

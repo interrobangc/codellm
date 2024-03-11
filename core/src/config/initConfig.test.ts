@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { PartialConfig, Provider } from '@/index.js';
 import { unitTestConfig } from '@tests/mocks';
-import { getConfig, initConfig } from './index';
+import { expectError } from '@tests/tools';
+import { getConfig } from './config.js';
+import { initConfig } from './initConfig';
 import { DEFAULTS, LLM_DEFAULTS } from './constants';
 
 describe('initConfig', () => {
@@ -33,5 +35,14 @@ describe('initConfig', () => {
     const config = getConfig();
     expect(config.llmProvider).toEqual('openai');
     expect(config.llms).toEqual(expect.objectContaining(llms));
+  });
+
+  it('should return an error if the config is missing required keys', () => {
+    const newConfig: PartialConfig = {
+      ...unitTestConfig,
+      project: {},
+    };
+    const res = initConfig(newConfig);
+    expectError(res, 'config:ValidationError');
   });
 });

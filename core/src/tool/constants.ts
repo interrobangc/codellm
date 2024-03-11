@@ -16,5 +16,8 @@ export const TOOL_ERRORS = {
   'tool:notFound': {
     message: 'Tool not found',
   },
+  'tool:run': {
+    message: 'Error running tool',
+  },
   ...TOOL_UTILS_ERRORS,
 } as const;

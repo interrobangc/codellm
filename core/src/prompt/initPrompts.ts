@@ -9,6 +9,7 @@ import isString from 'lodash/isString.js';
 import { dump as dumpYaml } from 'js-yaml';
 
 import { getConfig } from '@/config/index.js';
+import { isError } from '@/error/index.js';
 import { getTools } from '@/tool/index.js';
 import { log } from '@/log/index.js';
 import { DEFAULTS, DEFAULT_PROMPTS } from './constants.js';
@@ -28,6 +29,8 @@ export const getToolDescriptions = () => {
 
 export const initPrompts = () => {
   const config = getConfig();
+  if (isError(config)) return config;
+
   const configPrompts: PromptConfig = DEFAULT_PROMPTS;
   setBaseParam('availableTools', getToolDescriptions());
 

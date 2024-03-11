@@ -16,6 +16,8 @@ export const initTool = async ([name, toolConfig]: [
   if (isError(toolModule)) return toolModule;
 
   const config = getConfig();
+  if (isError(config)) return config;
+
   const tool = await toolModule.newTool(name, config);
   if (isError(tool)) return tool;
 
@@ -37,6 +39,7 @@ export const initTool = async ([name, toolConfig]: [
  */
 export const initTools = async () => {
   const config = getConfig();
+  if (isError(config)) return config;
   if (isEmpty(config.tools)) return getTools();
 
   const toolInitMap = Object.entries(config.tools).map(initTool);

@@ -1,4 +1,3 @@
-import type { ToolRunReturn } from '@codellm/core';
 import type { RunParams } from './types';
 
 import { log } from '@codellm/core';
@@ -17,7 +16,7 @@ export const run = async ({ llm, params }: RunParams) => {
     params,
   });
 
-  return { content: 'success', success: true } as ToolRunReturn;
+  return 'success';
 };
 
 export default run;

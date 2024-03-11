@@ -11,6 +11,7 @@ export type ErrorConsts = Record<string, ErrorConstItem>;
 export type CodeLlmErrorParams = {
   cause?: unknown;
   code: ErrorCode;
+  message?: string;
   meta?: Record<string, unknown>;
 };
 

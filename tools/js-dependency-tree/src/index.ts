@@ -19,10 +19,6 @@ export const newTool = async (toolName: string, config: Config) => {
 
   return {
     description,
-    import: async () => ({
-      content: 'unimplemented',
-      success: true,
-    }),
     run: async (params: ToolRunParamsCommon) =>
       run({
         ...params,
