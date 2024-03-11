@@ -25,15 +25,12 @@ describe('chat', () => {
   });
 
   it('when asked a question that should require a tool should call tool and return a valid response', async () => {
+    const toolResponse = 'This is the content of a really good readme file';
+
     const getToolSpy = vi.spyOn(tool, 'getTool').mockReturnValue({
-      run: async () => ({
-        content: 'This is the content of a really good readme file',
-        success: true,
-      }),
+      run: async () => toolResponse,
     });
-    const response = await agent.chat(
-      'Can you give me the current contents of the README.md file?',
-    );
+    const response = await agent.chat(toolResponse);
 
     expect(getToolSpy).toHaveBeenCalled();
 

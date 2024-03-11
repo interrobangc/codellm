@@ -25,7 +25,7 @@ describe('newImporter', () => {
     vi.clearAllMocks();
   });
 
-  it('should return an importer instance', async () => {
+  it('should return an importer instance and import', async () => {
     mocks.initTools.mockResolvedValue(new Map([['validTool', validTool]]));
     const importSpy = vi.spyOn(validTool, 'import');
     const importer = await newImporter(unitTestConfig);
@@ -36,10 +36,7 @@ describe('newImporter', () => {
 
     const importRes = await importer.import();
 
-    expect(importRes).toMatchObject({
-      content: 'fake import complete',
-      success: true,
-    });
+    expect(importRes).toMatchObject(['fake import complete']);
     expect(importSpy).toHaveBeenCalledTimes(1);
   });
 

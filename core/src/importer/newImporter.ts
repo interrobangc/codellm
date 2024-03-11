@@ -23,6 +23,8 @@ export const newImporter = async (configParam: PartialConfig) => {
   return {
     import: async () => {
       if (!tools.size) return new CodeLlmError({ code: 'importer:noTools' });
+
+      const results = [];
       for (const [toolName, tool] of tools.entries()) {
         log(`Starting import for ${toolName}`);
         log('tool', 'silly', { tool });
@@ -32,10 +34,15 @@ export const newImporter = async (configParam: PartialConfig) => {
           continue;
         }
 
-        return promiseMayFail(tool.import(), `tool:import`, { toolName });
+        const importRes = await promiseMayFail(tool.import(), `tool:import`, {
+          toolName,
+        });
+        if (isError(importRes)) return importRes;
+
+        results.push(importRes);
       }
 
-      return undefined;
+      return results;
     },
   } as Importer;
 };

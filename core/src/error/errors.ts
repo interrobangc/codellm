@@ -22,10 +22,10 @@ export class CodeLlmError extends Error {
 
   meta: CodeLlmErrorParams['meta'];
 
-  constructor({ cause, code, meta }: CodeLlmErrorParams) {
+  constructor({ cause, code, message, meta }: CodeLlmErrorParams) {
     super();
     this.code = code;
-    this.message = CODE_LLM_ERRORS[code]?.message || code;
+    this.message = message || CODE_LLM_ERRORS[code]?.message || code;
     this.cause = cause;
     this.meta = meta || {};
   }

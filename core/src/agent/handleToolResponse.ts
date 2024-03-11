@@ -1,4 +1,4 @@
-import { CodeLlmError, isError } from '@/error/index.js';
+import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { getTool } from '@/tool/index.js';
@@ -34,22 +34,27 @@ export const handleToolResponse = async ({
   if (isError(toolLlm)) return toolLlm;
 
   // TODO: move tool run response to a response or an CodeLlmError
-  let toolResponse;
-  try {
-    toolResponse = await tool.run({
+  const toolResponse = await promiseMayFail(
+    tool.run({
       llm: toolLlm,
       params: response.params,
-    });
-    log('Tool response', 'debug', { toolResponse });
-  } catch (e) {
-    log('Error running tool', 'error', { e, toolName });
+    }),
+    `agent:runTool`,
+    { response, toolName },
+  );
+  log('Tool response', 'debug', { toolResponse });
+  if (isError(toolResponse)) {
+    log('Error running tool', 'error', { toolName, toolResponse });
     return [
       ...toolResponses,
-      { name: toolName, response: 'Error running tool: ' + e },
+      {
+        name: toolName,
+        response: 'Error running tool: ' + toolResponse.message,
+      },
     ];
   }
 
   log('Tool responses', 'debug', { toolResponses });
 
-  return [...toolResponses, { name: toolName, response: toolResponse.content }];
+  return [...toolResponses, { name: toolName, response: toolResponse }];
 };

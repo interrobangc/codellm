@@ -34,7 +34,13 @@ const main = async () => {
           // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw importer;
         }
-        await importer.import();
+
+        const importRes = await importer.import();
+        if (isError(importRes)) {
+          log('Error importing', 'error', { importRes });
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          throw importRes;
+        }
 
         log('Import complete');
       },

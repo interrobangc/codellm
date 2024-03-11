@@ -2,7 +2,6 @@ import type {
   Config,
   Tool,
   ToolRunParamsCommon,
-  ToolRunReturn,
   VectorDbQueryResultItem,
 } from '@codellm/core';
 import type { ToolConfig } from './types';
@@ -36,7 +35,6 @@ export const newTool = async (toolName: string, config: Config) => {
       toolConfig,
       toolName,
     });
-
   if (isError(vectorizeFilesClient)) return vectorizeFilesClient;
 
   return {
@@ -45,7 +43,7 @@ export const newTool = async (toolName: string, config: Config) => {
       await vectorizeFilesClient.vectorizeFiles({
         summarize: summarizeTaskPrompt,
       });
-      return { content: 'Import complete', success: true };
+      return 'Import complete';
     },
     run: async ({ params }: ToolRunParamsCommon) => {
       const dbResponse = await vectorizeFilesClient.query({
@@ -53,7 +51,7 @@ export const newTool = async (toolName: string, config: Config) => {
         query: params['query'] as unknown as string,
       });
 
-      const content = dumpYaml(
+      return dumpYaml(
         dbResponse.map((d: VectorDbQueryResultItem) => ({
           distance: d.distance,
           fileContent: d.metadata['fileContent'],
@@ -61,8 +59,6 @@ export const newTool = async (toolName: string, config: Config) => {
           summary: d.document,
         })),
       );
-
-      return { content, success: true } as ToolRunReturn;
     },
   } as Tool;
 };

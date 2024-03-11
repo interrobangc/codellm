@@ -1,7 +1,7 @@
 import type { Config, Tool, ToolRunParamsCommon } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { fs, log } from '@codellm/core';
+import { CodeLlmError, fs, log } from '@codellm/core';
 import { resolve } from 'path';
 import { DEFAULT_CONFIG, description } from './constants.js';
 
@@ -23,27 +23,23 @@ export const newTool = async (toolName: string, config: Config) => {
 
   return {
     description,
-    import: async () => {
-      return {
-        content: 'unimplemented',
-        success: true,
-      };
-    },
     run: async ({ params }: ToolRunParamsCommon) => {
       const { filePaths } = params;
 
       if (!Array.isArray(filePaths)) {
-        return {
-          content: 'filePaths must be an array',
-          success: false,
-        };
+        return new CodeLlmError({
+          code: 'error:unknown',
+          message: 'filePaths must be an array',
+          meta: { filePaths },
+        });
       }
 
       if (filePaths.length > toolConfig.maxFileCount) {
-        return {
-          content: `The maximum number of files that can be read is ${toolConfig.maxFileCount}`,
-          success: false,
-        };
+        return new CodeLlmError({
+          code: 'error:unknown',
+          message: `The maximum number of files that can be read is ${toolConfig.maxFileCount}`,
+          meta: { filePaths },
+        });
       }
 
       const contents = await Promise.all(
@@ -68,7 +64,7 @@ ${fileContent}
 
       log('content', 'debug', { content });
 
-      return { content, success: true };
+      return content;
     },
   } as Tool;
 };
