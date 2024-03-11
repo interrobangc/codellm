@@ -10,13 +10,13 @@ import { log } from '@/log/index.js';
 import * as vectorDb from '@/vectorDb/index.js';
 import { vectorizeFiles } from './vectorizeFiles.js';
 
-export const newClient = async ({
+export const newVectorizeFilesClient = async ({
   config,
   toolConfig,
   toolName,
 }: VectorizeFilesNewClientParams) => {
   const { vectorDbCollectionName, vectorDbName } = toolConfig;
-  const dbClient = await vectorDb.newClient(vectorDbName, config);
+  const dbClient = await vectorDb.newVectorDbClient(vectorDbName, config);
 
   if (isError(dbClient)) return dbClient;
 

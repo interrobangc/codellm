@@ -61,8 +61,8 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
  *
  * @returns The new VectorDbClient instance.
  */
-export const newClient = async (name: VectorDb, config: Config) => {
-  log(`vectordb newClient: ${name}`, 'silly');
+export const newVectorDbClient = async (name: VectorDb, config: Config) => {
+  log(`vectordb newVectorDbClient: ${name}`, 'silly');
   if (!vectorDbs.get(name)) {
     const module = await importVectorDbModule(name, config);
     if (isError(module)) return module;

@@ -30,11 +30,12 @@ export const newTool = async (toolName: string, config: Config) => {
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),
   } as ToolConfig;
 
-  const vectorizeFilesClient = await toolUtils.vectorizeFiles.newClient({
-    config,
-    toolConfig,
-    toolName,
-  });
+  const vectorizeFilesClient =
+    await toolUtils.vectorizeFiles.newVectorizeFilesClient({
+      config,
+      toolConfig,
+      toolName,
+    });
 
   if (isError(vectorizeFilesClient)) return vectorizeFilesClient;
 
