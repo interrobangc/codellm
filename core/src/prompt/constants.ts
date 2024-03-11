@@ -1,6 +1,9 @@
 import type { Config, PromptConfig } from '@/.';
 
 export const PROMPT_ERRORS = {
+  'prompt:baseParamNotFound': {
+    message: 'Base param not found',
+  },
   'prompt:notFound': {
     message: 'Prompt not found',
   },
