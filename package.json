@@ -49,6 +49,7 @@
     "stop:datastore": "docker compose down",
     "logs:datastore": "docker compose logs -f",
     "test": "run-s lint:fix build test:unit",
+    "test:full": "run-s test test:integration",
     "test:integration": "vitest --test-timeout=120000 run 'tests/integration'",
     "test:unit": "vitest run --coverage 'src'",
     "test:unit:watch": "vitest 'src'",

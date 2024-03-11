@@ -6,7 +6,7 @@ import {
   unitTestConfig,
 } from '@tests/mocks';
 import { getConfig, initConfig } from '@/config/index.js';
-import * as newClient from './newClient.js';
+import * as newLlmClient from './newLlmClient.js';
 import * as importClient from './importClient.js';
 
 vi.spyOn(importClient, 'importClient').mockImplementation(
@@ -30,7 +30,7 @@ describe('newClient', () => {
   it('should create a new client for a given provider', async () => {
     const config = getConfig();
     const service = Object.keys(config.llms)[0];
-    const res = await newClient.newClient({
+    const res = await newLlmClient.newLlmClient({
       config,
       service,
     });

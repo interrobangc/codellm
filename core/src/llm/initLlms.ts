@@ -4,14 +4,14 @@ import { getConfig } from '@/config/index.js';
 import { isError, promiseMapMayFail, promiseMayFail } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import { getLlm, getLlms, setLlm } from './llms.js';
-import { newClient } from './newClient.js';
+import { newLlmClient } from './newLlmClient.js';
 
 export const initLlmClients = async (
   config: Config,
   servicesToInit: Service[],
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
-    const llmClient = await newClient({ config, service });
+    const llmClient = await newLlmClient({ config, service });
     if (isError(llmClient)) return llmClient;
 
     setLlm(service, llmClient);

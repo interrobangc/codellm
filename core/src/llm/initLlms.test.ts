@@ -5,15 +5,15 @@ import { expectError } from '@tests/tools';
 import { CodeLlmError } from '@/error/index.js';
 import { getConfig, initConfig } from '@/config/index.js';
 import * as initLlms from './initLlms.js';
-import * as newClient from './newClient.js';
+import * as newLlmClient from './newLlmClient.js';
 import { isError } from 'lodash';
 
 vi.mock('./newClient.js', () => ({
   newClient: vi.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const newClientSpy = vi
-  .spyOn(newClient, 'newClient')
+const newLlmClientSpy = vi
+  .spyOn(newLlmClient, 'newLlmClient')
   .mockImplementation(({ service }) =>
     Promise.resolve(getValidLlmClient({ service })),
   );
@@ -24,7 +24,7 @@ describe('initLlms', () => {
   });
 
   afterEach(() => {
-    newClientSpy.mockClear();
+    newLlmClientSpy.mockClear();
   });
 
   it('should initialize LLMs and their respective clients for later use', async () => {
@@ -33,7 +33,7 @@ describe('initLlms', () => {
 
     const initLlmClientsRes = await initLlms.initLlms(servicesToInit);
 
-    expect(newClientSpy).toHaveBeenCalledTimes(servicesToInit.length);
+    expect(newLlmClientSpy).toHaveBeenCalledTimes(servicesToInit.length);
     expect([...initLlmClientsRes].map(([n]) => n)).toEqual(servicesToInit);
     Object.entries(initLlmClientsRes).forEach(([, client]) => {
       expect(isError(client)).toBe(false);
@@ -44,13 +44,13 @@ describe('initLlms', () => {
     const config = getConfig();
     const servicesToInit = Object.keys(config.llms).map((n) => n);
 
-    newClientSpy.mockImplementation(() =>
+    newLlmClientSpy.mockImplementation(() =>
       Promise.resolve(new CodeLlmError({ code: 'llm:initClients' })),
     );
 
     const initLlmClientsRes = await initLlms.initLlms(servicesToInit);
 
-    expect(newClientSpy).toHaveBeenCalledTimes(servicesToInit.length);
+    expect(newLlmClientSpy).toHaveBeenCalledTimes(servicesToInit.length);
     expectError(initLlmClientsRes, 'llm:initClients');
   });
 });

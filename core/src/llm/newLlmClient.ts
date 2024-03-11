@@ -65,7 +65,7 @@ export const chat = async (
  *
  * @returns - The new client
  */
-export const newClient = async ({ config, service }: GetClientParams) => {
+export const newLlmClient = async ({ config, service }: GetClientParams) => {
   const { model, provider } = config.llms[service];
 
   const getClientRes = await importClient(config, provider);
