@@ -117,9 +117,17 @@ export const promiseMapMayFail = async <T>(
     });
   }
 
-  return results;
+  return results.map((item) => (item as PromiseFulfilledResult<T>).value);
 };
 
+/**
+ * Throw the error if the config is initialized and shouldThrow is true
+ *
+ * @param {CodeLlmError} e The error to handle
+ *
+ * @returns The error
+ * @throws The error if the config is initialized and shouldThrow is true
+ */
 export const throwOrReturn = (e: CodeLlmError) => {
   const config = getConfig();
   if (isError(config, 'config:NotInitialized')) throw e;
