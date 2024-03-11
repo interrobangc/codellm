@@ -6,7 +6,7 @@ import { promptUser } from './promptUser.js';
 
 type InteractiveLoop = (agent: Agent) => Promise<void>;
 
-export const interactiveLoop: InteractiveLoop = async (agent) => {
+export const handleQuestion = async (agent: Agent) => {
   const question = await promptUser(`[user] `);
 
   const spinner = ora('Considering...').start();
@@ -20,7 +20,10 @@ export const interactiveLoop: InteractiveLoop = async (agent) => {
     // eslint-disable-next-line no-console
     console.log(`[bot] ${response.content}`);
   }
+};
 
+export const interactiveLoop: InteractiveLoop = async (agent) => {
+  await handleQuestion(agent);
   return interactiveLoop(agent);
 };
 

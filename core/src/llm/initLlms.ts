@@ -2,15 +2,16 @@ import type { Config, Service } from '@/.';
 
 import { getConfig } from '@/config/index.js';
 import { isError, promiseMapMayFail, promiseMayFail } from '@/error/index.js';
-import log from '@/log/index.js';
-import { getLlm, newClient, setLlm } from './index.js';
+import { log } from '@/log/index.js';
+import { getLlm, getLlms, setLlm } from './llms.js';
+import { newLlmClient } from './newLlmClient.js';
 
 export const initLlmClients = async (
   config: Config,
   servicesToInit: Service[],
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
-    const llmClient = await newClient({ config, service });
+    const llmClient = await newLlmClient({ config, service });
     if (isError(llmClient)) return llmClient;
 
     setLlm(service, llmClient);
@@ -49,5 +50,8 @@ export const initLlms = async (servicesToInit: Service[]) => {
   const initLlmClientsRes = await initLlmClients(config, servicesToInit);
   if (isError(initLlmClientsRes)) return initLlmClientsRes;
 
-  return initLlmModels(servicesToInit);
+  const initLlmModelsRes = await initLlmModels(servicesToInit);
+  if (isError(initLlmModelsRes)) return initLlmModelsRes;
+
+  return getLlms();
 };

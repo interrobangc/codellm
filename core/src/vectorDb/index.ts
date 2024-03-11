@@ -1,6 +1,6 @@
 import type { Config, VectorDb, VectorDbs } from '@/.';
 import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 import { isVectorDbModule } from './types.js';
 
 const vectorDbs: VectorDbs = new Map();
@@ -61,8 +61,8 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
  *
  * @returns The new VectorDbClient instance.
  */
-export const newClient = async (name: VectorDb, config: Config) => {
-  log(`vectordb newClient: ${name}`, 'silly');
+export const newVectorDbClient = async (name: VectorDb, config: Config) => {
+  log(`vectordb newVectorDbClient: ${name}`, 'silly');
   if (!vectorDbs.get(name)) {
     const module = await importVectorDbModule(name, config);
     if (isError(module)) return module;

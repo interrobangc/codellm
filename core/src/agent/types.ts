@@ -1,4 +1,4 @@
-import type { CodeLlmError } from '@/.';
+import type { CodeLlmError, LlmClient } from '@/.';
 
 import { z } from 'zod';
 
@@ -63,9 +63,15 @@ export type AgentSelectToolResponse = AgentResponseResponse | AgentToolResponse;
 
 export type AgentResponse = CodeLlmError | AgentResponseResponse;
 
-export type AgentToolResponses = Record<string, string>;
+export type AgentToolResponseItem = {
+  name: string;
+  response: string;
+};
+
+export type AgentToolResponses = AgentToolResponseItem[];
 
 export type AgentHandleQuestionParams = {
+  agentLlm: LlmClient;
   depth?: number;
   error?: string | null;
   question: string;

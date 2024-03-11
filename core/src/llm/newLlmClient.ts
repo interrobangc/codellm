@@ -1,17 +1,16 @@
 import type {
-  Config,
   GetClientParams,
   LlmProviderClient,
   MessageList,
   PromptParams,
-  Provider,
   Service,
 } from '@/.';
 
-import { CodeLlmError, isError, mayFail } from '@/error/index.js';
-import log from '@/log/index.js';
+import { isError, mayFail } from '@/error/index.js';
+import { log } from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
+import { importClient } from './importClient.js';
 
 /**
  * Initialize the underlying provider/model for a given service
@@ -59,31 +58,6 @@ export const chat = async (
 };
 
 /**
- * Import the provider module for a given provider
- *
- * @param provider - The provider to import
- *
- * @returns - The provider module
- */
-const getClient = async (config: Config, provider: Provider) => {
-  const providerConfigItem = config.providers[provider];
-
-  if (!providerConfigItem) {
-    return new CodeLlmError({
-      code: 'llm:invalidProvider',
-      meta: { provider },
-    });
-  }
-
-  const { config: providerConfig, module } = providerConfigItem;
-
-  return {
-    providerConfig,
-    providerModule: await import(module),
-  };
-};
-
-/**
  * Create a new client for a given service
  *
  * @param config - The configuration to use
@@ -91,10 +65,10 @@ const getClient = async (config: Config, provider: Provider) => {
  *
  * @returns - The new client
  */
-export const newClient = async ({ config, service }: GetClientParams) => {
+export const newLlmClient = async ({ config, service }: GetClientParams) => {
   const { model, provider } = config.llms[service];
 
-  const getClientRes = await getClient(config, provider);
+  const getClientRes = await importClient(config, provider);
   if (isError(getClientRes)) return getClientRes;
 
   const { providerConfig, providerModule } = getClientRes;

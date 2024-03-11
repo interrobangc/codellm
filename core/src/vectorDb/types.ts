@@ -1,5 +1,5 @@
 import type { Document, Embedding, Metadata } from 'chromadb';
-import log from '@/log/index.js';
+import { log } from '@/log/index.js';
 
 export type VectorDb = string;
 

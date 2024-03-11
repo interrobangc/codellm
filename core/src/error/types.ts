@@ -1,6 +1,6 @@
-import type { ERRORS } from './constants';
+import type { CODE_LLM_ERRORS } from './constants';
 
-export type ErrorCode = keyof typeof ERRORS;
+export type ErrorCode = keyof typeof CODE_LLM_ERRORS;
 
 export type ErrorConstItem = {
   message: string;
