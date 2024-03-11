@@ -1,5 +1,11 @@
 # CodeLLM
 
+<p align="center">
+  <a href="https://github.com/interrobangc/codellm/actions/workflows/test.yml">
+    <img src="https://github.com/interrobangc/codellm/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests">
+  </a>
+</p>
+
 CodeLLM is an extensible LLM agent pipeline framework that can be used to build a system of AI agents, tools, and datastores that interact to solve complex problems. It was initially inspired by the [groundcrew](https://github.com/prolego-team/groundcrew) project. It is initially focused on code and codebase analysis, but could be extended to other domains.
 
 It is still very much a POC and is not ready for use beyond experimentation.
