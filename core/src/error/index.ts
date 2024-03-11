@@ -121,7 +121,10 @@ export const promiseMapMayFail = async <T>(
 };
 
 export const throwOrReturn = (e: CodeLlmError) => {
-  const { shouldThrow } = getConfig();
+  const config = getConfig();
+  if (isError(config, 'config:NotInitialized')) throw e;
+
+  const { shouldThrow } = config;
   if (shouldThrow) throw e;
 
   return e;

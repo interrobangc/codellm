@@ -47,6 +47,8 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
  */
 export const initLlms = async (servicesToInit: Service[]) => {
   const config = getConfig();
+  if (isError(config)) return config;
+
   const initLlmClientsRes = await initLlmClients(config, servicesToInit);
   if (isError(initLlmClientsRes)) return initLlmClientsRes;
 

@@ -29,6 +29,7 @@ export const newAgent = async (configParam: PartialConfig) => {
   log('newAgent tools', 'silly', { tools });
 
   const prompt = initPrompts();
+  if (isError(prompt)) return prompt;
 
   const content = await prompt.get('agentSystem');
   if (isError(content)) return content;

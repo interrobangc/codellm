@@ -1,6 +1,9 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
 export const CONFIG_ERRORS = {
+  'config:NotInitialized': {
+    message: 'Config not initialized',
+  },
   'config:ValidationError': {
     message: 'Config validation error',
   },

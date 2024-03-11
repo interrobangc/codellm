@@ -25,6 +25,7 @@ import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
  */
 export const validatePath = (filePath: string) => {
   const config = getConfig();
+  if (isError(config)) return config;
 
   const resolvedFilePath = resolve(filePath);
 
