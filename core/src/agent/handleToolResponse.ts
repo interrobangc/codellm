@@ -40,9 +40,9 @@ export const handleToolResponse = async ({
       params: response.params,
     }),
     `agent:runTool`,
-    { response, toolName },
+    { response, tool, toolName },
   );
-  log('Tool response', 'debug', { toolResponse });
+  log('handleToolResponse - Tool response', 'debug', { toolResponse });
   if (isError(toolResponse)) {
     log('Error running tool', 'error', { toolName, toolResponse });
     return [
@@ -54,7 +54,7 @@ export const handleToolResponse = async ({
     ];
   }
 
-  log('Tool responses', 'debug', { toolResponses });
+  log('handleToolResponse - Tool responses', 'debug', { toolResponses });
 
   return [...toolResponses, { name: toolName, response: toolResponse }];
 };

@@ -2,6 +2,7 @@ import type { REQUIRED_PATHS } from './constants';
 import type {
   LogFormat,
   LogLevel,
+  PartialProviderConfigs,
   Provider,
   ProviderConfigs,
   ProviderServiceItem,
@@ -45,6 +46,6 @@ export type Config = ConfigCommon & {
 
 export type PartialConfig = Partial<ConfigCommon> & {
   llms?: Partial<Record<Service, ProviderServiceItem>>;
-  providers?: ProviderConfigs;
+  providers?: PartialProviderConfigs;
   vectorDbs?: VectorDbConfigs;
 };

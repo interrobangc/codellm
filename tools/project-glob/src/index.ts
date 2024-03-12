@@ -6,7 +6,14 @@ import type {
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { CodeLlmError, isError, log, toolUtils } from '@codellm/core';
+import {
+  CodeLlmError,
+  initConfig,
+  initLogger,
+  isError,
+  log,
+  toolUtils,
+} from '@codellm/core';
 import { DEFAULT_CONFIG, description } from './constants.js';
 
 /**
@@ -18,6 +25,8 @@ import { DEFAULT_CONFIG, description } from './constants.js';
  * @returns - The new tool instance
  */
 export const newTool = async (toolName: string, config: Config) => {
+  initConfig(config);
+  initLogger(config);
   log(`Creating ${toolName} tool`, 'silly', { config });
   const toolConfig = {
     ...DEFAULT_CONFIG,
@@ -55,6 +64,8 @@ export const newTool = async (toolName: string, config: Config) => {
         path: projectPath,
         toolName: 'projectGlob',
       });
+
+      log('projectGlob tool finished', 'debug', { filePaths, processFilesRes });
 
       if (isError(processFilesRes)) return processFilesRes;
 

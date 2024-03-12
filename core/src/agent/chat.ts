@@ -23,6 +23,7 @@ export const decodeResponse = (content: string) => {
   return mayFail<agentTypes.AgentLlmResponse>(
     () => agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim())),
     'agent:decodeResponse',
+    { content },
   );
 };
 
