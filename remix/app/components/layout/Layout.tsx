@@ -25,24 +25,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </nav>
       </header>
-
       <main>{children}</main>
     </div>
   );
-
-  {
-    /* <h1 className="text-4xl font-extrabold">
-          <Link to="/">CodeLlm</Link>
-        </h1>
-        <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <Link to="/chat">Chat</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <main>{children}</main>
-    </div> */
-  }
 };
