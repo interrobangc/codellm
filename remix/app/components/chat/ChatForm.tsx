@@ -6,14 +6,11 @@ export const ChatForm = () => {
   const isSubmitting = Boolean(navigation.state === 'submitting');
   const $form = useRef<HTMLFormElement>(null);
 
-  useEffect(
-    function resetFormOnSuccess() {
-      if (navigation.state === 'idle') {
-        $form.current?.reset();
-      }
-    },
-    [navigation.state],
-  );
+  useEffect(() => {
+    if (navigation.state === 'submitting') {
+      $form.current?.reset();
+    }
+  }, [navigation.state]);
 
   const buttonClassNames = `flex-align-self-end btn btn-sm btn-accent btn-sm ${isSubmitting ? 'btn-disabled' : ''} `;
   return (

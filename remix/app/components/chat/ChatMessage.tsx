@@ -8,3 +8,5 @@ export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
     </div>
   );
 };
+
+export default ChatMessage;
