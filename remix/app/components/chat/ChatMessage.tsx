@@ -1,10 +1,12 @@
 import type { AgentHistoryItem } from '@codellm/core';
 
+const chatBubbleCommonClassNames = 'whitespace-pre-wrap p-6 chat-bubble';
+
 const chatBubbleClassNames = {
-  assistant: 'chat-bubble chat-bubble-primary',
-  error: 'chat-bubble chat-bubble-error',
-  tool: 'chat-bubble chat-bubble-accent',
-  user: 'chat-bubble',
+  assistant: `${chatBubbleCommonClassNames} chat-bubble-primary`,
+  error: `${chatBubbleCommonClassNames} chat-bubble-error`,
+  tool: `${chatBubbleCommonClassNames} chat-bubble-accent`,
+  user: `${chatBubbleCommonClassNames}`,
 };
 
 export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
@@ -18,11 +20,16 @@ export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
       return `There was an error: ${message.error.message}`;
     } else if (role === 'tool') {
       return (
-        <span>
+        <div>
           I&apos;m running the{' '}
-          <span className="font-bold text-primary">{message.name}</span> tool
-          with these parameters: {JSON.stringify(message.params)}
-        </span>
+          <div
+            className="font-bold text-primary text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
+            data-tip={JSON.stringify(message.params, null, 4)}
+          >
+            {message.name}
+          </div>{' '}
+          tool
+        </div>
       );
     } else {
       return message.content;
