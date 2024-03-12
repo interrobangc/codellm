@@ -28,8 +28,8 @@ export const SERVICES = Object.values(SERVICES_TYPE);
 export const LLM_DEFAULTS = {
   anthropic: {
     agent: {
-      model: 'claude-3-opus-20240229',
-      // model: 'claude-3-sonnet-20240229',
+      // model: 'claude-3-opus-20240229',
+      model: 'claude-3-sonnet-20240229',
 
       provider: 'anthropic',
     },

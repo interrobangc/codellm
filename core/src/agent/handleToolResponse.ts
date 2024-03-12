@@ -3,6 +3,7 @@ import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { getTool } from '@/tool/index.js';
 import * as agentTypes from './types.js';
+import { addToHistory } from './history.js';
 
 /**
  * Handle the response from a tool
@@ -21,6 +22,7 @@ export const handleToolResponse = async ({
 > => {
   if (!agentTypes.isAgentToolResponse(response)) return toolResponses || {};
   const toolName = response.name;
+  const params = response.params;
 
   const tool = getTool(toolName);
   if (isError(tool)) {
@@ -29,6 +31,12 @@ export const handleToolResponse = async ({
   }
 
   log(`Running the ${response.name} tool`);
+
+  addToHistory({
+    name: toolName,
+    params,
+    role: 'tool',
+  });
 
   const toolLlm = getLlm('tool');
   if (isError(toolLlm)) return toolLlm;

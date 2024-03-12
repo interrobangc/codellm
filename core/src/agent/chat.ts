@@ -5,9 +5,9 @@ import { CodeLlmError, isError, mayFail } from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
+import * as agentTypes from './types.js';
 import { AGENT_RECURSION_DEPTH_MAX } from './constants.js';
 import { addToHistory } from './history.js';
-import * as agentTypes from './types.js';
 import { handleToolResponse } from './handleToolResponse.js';
 
 const prompt = newPrompt();
@@ -84,6 +84,10 @@ export const handleQuestionRecursive = async ({
   });
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
+    addToHistory({
+      error: response,
+      role: 'error',
+    });
     // If we had a decode error, we add the error to the response and try again
     return handleQuestionRecursive({
       agentLlm,
@@ -104,8 +108,8 @@ export const handleQuestionRecursive = async ({
       code: 'agent:maxDepthExceeded',
     });
     addToHistory({
-      content: `error: ${e.message} - ${e.cause}`,
-      type: 'response',
+      error: e,
+      role: 'error',
     });
     return e;
   }
@@ -114,7 +118,13 @@ export const handleQuestionRecursive = async ({
     response,
     toolResponses,
   });
-  if (isError(toolResponse)) return toolResponse;
+  if (isError(toolResponse)) {
+    addToHistory({
+      error: toolResponse,
+      role: 'error',
+    });
+    return toolResponse;
+  }
 
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
   return handleQuestionRecursive({

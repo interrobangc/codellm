@@ -1,4 +1,4 @@
-import type { CodeLlmError, LlmClient } from '@/.';
+import type { CodeLlmError, LlmClient, ToolRunParamsParams } from '@/.';
 
 import { z } from 'zod';
 import { isError } from '@/error/index.js';
@@ -21,9 +21,9 @@ export const agentResponseResponseSchema = z.object({
 export type AgentResponseResponse = z.infer<typeof agentResponseResponseSchema>;
 
 export const isAgentResponseResponse = (
-  i: AgentSelectToolResponse | CodeLlmError,
+  i: unknown,
 ): i is AgentResponseResponse => {
-  return !isError(i) && i.type === 'response';
+  return !isError(i) && (i as AgentResponseResponse).type === 'response';
 };
 
 export const agentToolResponseSchema = z.object({
@@ -79,11 +79,6 @@ export type AgentHandleToolResponseParams = {
   toolResponses: AgentToolResponses;
 };
 
-export type AgentHistoryUserItem = {
-  content: string;
-  role: 'user';
-};
-
 export type AgentHistoryAssistantItem = {
   code: AgentResponseResponse['code'] | undefined;
   content: AgentResponseResponse['content'];
@@ -91,21 +86,74 @@ export type AgentHistoryAssistantItem = {
   role: 'assistant';
 };
 
-export type AgentHistoryItem = AgentHistoryUserItem | AgentHistoryAssistantItem;
+export const isAgentHistoryAssistantItem = (
+  i: unknown,
+): i is AgentHistoryAssistantItem => {
+  return (
+    'role' in (i as AgentHistoryAssistantItem) &&
+    (i as AgentHistoryAssistantItem).role === 'assistant'
+  );
+};
+
+export type AgentHistoryErrorItem = {
+  error: CodeLlmError;
+  role: 'error';
+};
+
+export const isAgentHistoryErrorItem = (
+  i: unknown,
+): i is AgentHistoryErrorItem => {
+  return (
+    'role' in (i as AgentHistoryErrorItem) &&
+    (i as AgentHistoryErrorItem).role === 'error'
+  );
+};
+
+export type AgentHistoryToolItem = {
+  name: string;
+  params: ToolRunParamsParams;
+  role: 'tool';
+};
+
+export const isAgentHistoryToolItem = (
+  i: unknown,
+): i is AgentHistoryToolItem => {
+  return (
+    'role' in (i as AgentHistoryToolItem) &&
+    (i as AgentHistoryToolItem).role === 'tool'
+  );
+};
+
+export type AgentHistoryUserItem = {
+  content: string;
+  role: 'user';
+};
+
+export const isAgentHistoryUserItem = (
+  i: unknown,
+): i is AgentHistoryUserItem => {
+  return (
+    'role' in (i as AgentHistoryUserItem) &&
+    (i as AgentHistoryUserItem).role === 'user'
+  );
+};
+
+export type AgentHistoryItem =
+  | AgentHistoryAssistantItem
+  | AgentHistoryErrorItem
+  | AgentHistoryToolItem
+  | AgentHistoryUserItem;
 
 export type AgentHistory = AgentHistoryItem[];
 
 export type AgentHistoryAddParams =
-  | AgentResponseResponse
-  | AgentHistoryUserItem;
-
-export const isAgentHistoryUserItem = (
-  i: AgentHistoryAddParams,
-): i is AgentHistoryUserItem => {
-  return 'role' in i && i.role === 'user';
-};
+  | AgentHistoryErrorItem
+  | AgentHistoryToolItem
+  | AgentHistoryUserItem
+  | AgentResponseResponse;
 
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
   getHistory: () => AgentHistory;
+  onEmit: (listener: (...args: unknown[]) => void) => void;
 };
