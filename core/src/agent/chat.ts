@@ -6,6 +6,7 @@ import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
 import { AGENT_RECURSION_DEPTH_MAX } from './constants.js';
+import { addToHistory } from './history.js';
 import * as agentTypes from './types.js';
 import { handleToolResponse } from './handleToolResponse.js';
 
@@ -93,13 +94,19 @@ export const handleQuestionRecursive = async ({
   }
 
   if (agentTypes.isAgentResponseResponse(response)) {
+    addToHistory(response);
     return response;
   }
 
   if (depth >= AGENT_RECURSION_DEPTH_MAX) {
-    return new CodeLlmError({
+    const e = new CodeLlmError({
       code: 'agent:maxDepthExceeded',
     });
+    addToHistory({
+      content: `error: ${e.message} - ${e.cause}`,
+      type: 'response',
+    });
+    return e;
   }
 
   const toolResponse = await handleToolResponse({
@@ -129,6 +136,11 @@ export const chat = async (question: string) => {
   log('chat', 'debug', { question });
   const agentLlm = getLlm('agent');
   if (isError(agentLlm)) return agentLlm;
+
+  addToHistory({
+    content: question,
+    role: 'user',
+  });
 
   return handleQuestionRecursive({
     agentLlm,

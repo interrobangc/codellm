@@ -6,6 +6,7 @@ import { log } from '@/log/index.js';
 import { initPrompts } from '@/prompt/index.js';
 import { initTools } from '@/tool/index.js';
 import chat from './chat.js';
+import { getHistory } from './history.js';
 
 /**
  * Create a new agent which is the primary interface to interact with the LLMs
@@ -43,6 +44,7 @@ export const newAgent = async (configParam: PartialConfig) => {
 
   return {
     chat,
+    getHistory: () => getHistory(),
   } as Agent;
 };
 

@@ -31,9 +31,7 @@ The system is composed of a few main components. It is designed to be extensible
 
 The system currently supports [ollama](https://ollama.com/) and [openai](https://platform.openai.com/docs/quickstart?context=python) providers. You will need to have ollama running locally or configure an API key for openai.
 
-## CLI Quickstart
-
-The CLI is a simple way to interact with the system. It is
+## Quickstart
 
 ### Setup
 
@@ -72,7 +70,9 @@ By default it will import ts code from this repository. You can change the `CODE
   npm run start:import
 ```
 
-### Ollama
+### Run the cli agent
+
+#### Ollama
 
 This assumes you have ollama running locally on the default port.
 
@@ -80,7 +80,7 @@ This assumes you have ollama running locally on the default port.
 npm start
 ```
 
-### Anthropic (Claude)
+#### Anthropic (Claude)
 
 This assumes you have an API key for anthropic set as an environment variable: `ANTHROPIC_API_KEY`.
 
@@ -88,7 +88,7 @@ This assumes you have an API key for anthropic set as an environment variable: `
 CODELLM_PROVIDER=anthropic npm start
 ```
 
-### Mistral
+#### Mistral
 
 This assumes you have an API key for mistral set as an environment variable: `MISTRAL_API_KEY`.
 
@@ -96,10 +96,18 @@ This assumes you have an API key for mistral set as an environment variable: `MI
 CODELLM_PROVIDER=mistral npm start
 ```
 
-### OpenAI
+#### OpenAI
 
 This assumes you have an API key for openai set as an environment variable: `OPENAI_API_KEY`.
 
 ```bash
 CODELLM_PROVIDER=openai npm start
+```
+
+### Run the dev remix agent
+
+The remix agent is a simple agent that takes a query and returns a remix of the query. It is a simple example of how to build a web based agent.
+
+```bash
+npm run dev
 ```

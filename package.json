@@ -10,7 +10,8 @@
     "providers/*",
     "tools/*",
     "vectorDbs/*",
-    "cli"
+    "cli",
+    "remix"
   ],
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
@@ -24,6 +25,9 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-sonarjs": "^0.24.0",
     "eslint-plugin-sort-destructure-keys": "^1.5.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
@@ -38,12 +42,18 @@
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.3.1"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.12.1"
+  },
   "scripts": {
-    "build": "run-s build:ts build:ts-alias",
+    "build": "run-s build:ts build:ts-alias build:remix",
     "build:ts": "tsc -b --verbose",
     "build:ts-alias": "npm run --workspaces --if-present build:ts-alias",
+    "build:remix": "npm run -w remix build",
+    "dev": "npm run -w remix dev",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
+    "start:remix": "npm run -w remix start",
     "start:import": "npm run build && npm run -w cli start:import",
     "start:datastore": "docker compose up -d",
     "stop:datastore": "docker compose down",

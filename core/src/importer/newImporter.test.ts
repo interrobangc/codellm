@@ -2,9 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { CodeLlmError, Config } from '@/index.js';
 import { unitTestConfig, validTool } from '@tests/mocks';
-import { expectError } from '@tests/tools';
+import { expectError, testSetup } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
 import { newImporter } from './newImporter.js';
+
+testSetup();
 
 const mocks = vi.hoisted(() => {
   return {
