@@ -1,28 +1,38 @@
 import type { AgentHistoryItem } from '@codellm/core';
 
+const chatBubbleCommonClassNames = 'whitespace-pre-wrap p-6';
+
 const chatBubbleClassNames = {
-  assistant: 'chat-bubble chat-bubble-primary',
-  error: 'chat-bubble chat-bubble-error',
-  tool: 'chat-bubble chat-bubble-accent',
-  user: 'chat-bubble',
+  assistant: `${chatBubbleCommonClassNames} chat-bubble chat-bubble-primary`,
+  error: `${chatBubbleCommonClassNames} chat-bubble chat-bubble-error`,
+  tool: `${chatBubbleCommonClassNames} card-body rounded-md chat-bubble-accent`,
+  user: `${chatBubbleCommonClassNames} chat-bubble`,
 };
 
 export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
   const role = message.role;
 
-  const wrapperClassNames =
-    role === 'user' ? 'chat chat-start' : 'chat chat-end';
+  const getWrapperClasses = () => {
+    if (role === 'user') return 'chat chat-start';
+    if (role === 'tool') return 'card items-center m-1';
+    return 'chat chat-end';
+  };
 
   const Content = () => {
     if (role === 'error') {
       return `There was an error: ${message.error.message}`;
     } else if (role === 'tool') {
       return (
-        <span>
+        <div>
           I&apos;m running the{' '}
-          <span className="font-bold text-primary">{message.name}</span> tool
-          with these parameters: {JSON.stringify(message.params)}
-        </span>
+          <div
+            className="font-bold text-primary text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
+            data-tip={JSON.stringify(message.params, null, 4)}
+          >
+            {message.name}
+          </div>{' '}
+          tool
+        </div>
       );
     } else {
       return message.content;
@@ -30,7 +40,7 @@ export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
   };
 
   return (
-    <div className={wrapperClassNames}>
+    <div className={getWrapperClasses()}>
       <div className={chatBubbleClassNames[role]}>
         <Content />
       </div>

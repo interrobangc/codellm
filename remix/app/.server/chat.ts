@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import type { Agent } from '@codellm/core';
+import type { Agent, AgentHistoryItem } from '@codellm/core';
 
 import { EventEmitter } from 'events';
 import { json } from '@remix-run/node';
@@ -7,6 +7,7 @@ import {
   CodeLlmError,
   isAgentResponseResponse,
   isError,
+  log,
   newAgent,
 } from '@codellm/core';
 import config from '../../config';
@@ -15,14 +16,14 @@ let agent: Agent | CodeLlmError;
 
 export const eventStreamEmitter = new EventEmitter();
 
-// @ts-expect-error - ignore for testing
-const onAgentEmit = (params) => eventStreamEmitter.emit('agent', params);
+const onAgentEmit = (params: AgentHistoryItem) => {
+  log('onAgentEmit emitting', 'debug', params);
+  eventStreamEmitter.emit('agent', params);
+};
 
 export const loader = async () => {
   agent = await newAgent(config);
-
   if (isError(agent)) {
-    console.dir(agent, { depth: null });
     throw agent;
   }
   agent.onEmit(onAgentEmit);
