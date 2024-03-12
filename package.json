@@ -72,6 +72,8 @@
     "lint:eslint": "eslint .",
     "lint:eslint:fix": "eslint . --fix",
     "reset:datastore": "run-s stop:datastore reset:datastore:deleteChromadb start:datastore",
-    "reset:datastore:deleteChromadb": "rm -fr ./.chromadb"
+    "reset:datastore:deleteChromadb": "rm -fr ./.chromadb",
+    "compress:chromadb": "tar -czf chromadb.tar.gz ./.chromadb",
+    "extract:chromadb": "tar -xzf chromadb.tar.gz"
   }
 }
