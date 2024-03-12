@@ -24,9 +24,9 @@ export const useChatHistory = () => {
       eventStream &&
       eventStream?.role !== 'assistant'
     ) {
-      updateCurrentMessages([...currentMessages, eventStream]);
+      updateCurrentMessages((c) => [...c, eventStream]);
     }
-  }, [currentMessages, eventStream, navigation.state]);
+  }, [eventStream, navigation.state]);
 
   // dirty hack. See https://github.com/remix-run/remix/issues/7246
   return [...(loaderData.history as AgentHistory), ...currentMessages];
