@@ -13,7 +13,11 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <Link to="/chat" prefetch="intent">
+                <Link
+                  to="/chat"
+                  prefetch="intent"
+                  className="btn btn-ghost btn-sm"
+                >
                   Chat
                 </Link>
               </li>
