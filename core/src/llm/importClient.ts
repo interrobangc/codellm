@@ -20,8 +20,10 @@ export const importClient = async (config: Config, provider: Provider) => {
 
   const { config: providerConfig, module } = providerConfigItem;
 
+  const providerModule = await import(module);
+
   return {
     providerConfig,
-    providerModule: await import(module),
+    providerModule,
   };
 };

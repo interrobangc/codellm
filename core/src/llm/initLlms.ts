@@ -12,6 +12,7 @@ export const initLlmClients = async (
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
     const llmClient = await newLlmClient({ config, service });
+    log('Initialized LLM client', 'debug', { llmClient, service });
     if (isError(llmClient)) return llmClient;
 
     setLlm(service, llmClient);
@@ -27,6 +28,8 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
     if (isError(client)) return client;
 
     log('Initializing model', 'debug', { service: client.service });
+
+    log('Initialized model', 'debug', { client });
 
     return promiseMayFail(client.initModel(), 'llm:initModel', {
       service,

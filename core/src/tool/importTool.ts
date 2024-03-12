@@ -8,4 +8,6 @@ import { promiseMayFail } from '@/error/index.js';
  * @returns {Promise<unknown | CodeLlmError>}The tool module or an error
  */
 export const importTool = async (moduleName: string) =>
-  promiseMayFail(import(moduleName), 'tool:import', { moduleName });
+  promiseMayFail(import(moduleName), 'tool:import', {
+    moduleName,
+  });

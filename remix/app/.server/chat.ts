@@ -7,22 +7,17 @@ import {
   isError,
   newAgent,
 } from '@codellm/core';
+import config from '../../config';
 
 let agent: Agent | CodeLlmError;
 
 export const loader = async () => {
-  agent = await newAgent({
-    project: {
-      name: 'CodeLlmWeb',
-    },
-    paths: {
-      project: '..',
-      cache: '../.cache',
-    },
-    // logLevel: 'debug',
-  });
+  agent = await newAgent(config);
 
-  if (isError(agent)) throw agent;
+  if (isError(agent)) {
+    console.dir(agent, { depth: null });
+    throw agent;
+  }
   const history = agent.getHistory();
   console.log(history);
   return json({ history });

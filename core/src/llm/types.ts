@@ -22,6 +22,19 @@ export type ProviderConfigItem = z.infer<typeof providerConfigItemSchema>;
 export const providerConfigsSchema = z.record(providerConfigItemSchema);
 export type ProviderConfigs = z.infer<typeof providerConfigsSchema>;
 
+export const partialProviderConfigItemSchema =
+  providerConfigItemSchema.partial();
+export type PartialProviderConfigItem = z.infer<
+  typeof partialProviderConfigItemSchema
+>;
+
+export const partialProviderConfigsSchema = z.record(
+  partialProviderConfigItemSchema,
+);
+export type PartialProviderConfigs = z.infer<
+  typeof partialProviderConfigsSchema
+>;
+
 export const providerServiceItemSchema = z.object({
   model: z.string(),
   provider: providerSchema,

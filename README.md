@@ -104,9 +104,9 @@ This assumes you have an API key for openai set as an environment variable: `OPE
 CODELLM_PROVIDER=openai npm start
 ```
 
-### Run the dev remix agent
+### Run the remix app
 
-The remix agent is a simple agent that takes a query and returns a remix of the query. It is a simple example of how to build a web based agent.
+The remix app is a simple web interface that allows you to ask questions about the codebase and see the results. It is a work in progress.
 
 ```bash
 npm run dev

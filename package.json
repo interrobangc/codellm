@@ -46,11 +46,12 @@
     "@rollup/rollup-linux-x64-gnu": "^4.12.1"
   },
   "scripts": {
-    "build": "run-s build:ts build:ts-alias build:remix",
+    "build": "run-s build:ts build:ts-alias",
     "build:ts": "tsc -b --verbose",
     "build:ts-alias": "npm run --workspaces --if-present build:ts-alias",
     "build:remix": "npm run -w remix build",
-    "dev": "npm run -w remix dev",
+    "dev": "run-s build dev:remix",
+    "dev:remix": "npm run -w remix dev",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
     "start:remix": "npm run -w remix start",
