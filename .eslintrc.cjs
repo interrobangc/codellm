@@ -15,12 +15,40 @@ const config = {
     'plugin:typescript-sort-keys/recommended',
   ],
   ignorePatterns: [
+    '**/build/**',
     '**/dist/**',
     '**/coverage/**',
     'node_modules/**',
     '**/node_modules/**',
   ],
   overrides: [
+    // React
+    {
+      extends: [
+        'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
+        'plugin:react-hooks/recommended',
+        'plugin:jsx-a11y/recommended',
+      ],
+      files: ['**/*.{js,jsx,ts,tsx}'],
+      plugins: ['react', 'jsx-a11y'],
+      settings: {
+        formComponents: ['Form'],
+        'import/resolver': {
+          typescript: {
+            project: './tsconfig.eslint.json',
+          },
+        },
+        linkComponents: [
+          { linkAttribute: 'to', name: 'Link' },
+          { linkAttribute: 'to', name: 'NavLink' },
+        ],
+        react: {
+          version: 'detect',
+        },
+      },
+    },
+
     {
       env: {
         node: true,
@@ -33,6 +61,9 @@ const config = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
     ecmaVersion: 'latest',
     project: './tsconfig.eslint.json',
     sourceType: 'module',
@@ -40,6 +71,8 @@ const config = {
   plugins: [
     '@typescript-eslint',
     'import',
+    'jsx-a11y',
+    'react',
     'sonarjs',
     'sort-destructure-keys',
     'sort-keys-fix',
@@ -60,6 +93,8 @@ const config = {
           '**/tests/**',
           '**/*.test.{ts,tsx}',
           '**/.eslintrc.cjs',
+          '**/vite.config.{js,ts}',
+          '**/tailwind.config.{js,ts}',
         ],
         optionalDependencies: false,
         packageDir: [
@@ -78,7 +113,11 @@ const config = {
   settings: {
     'import/resolver': {
       typescript: {
-        project: ['cli/tsconfig.json', 'codellm/tsconfig.json'],
+        project: [
+          'cli/tsconfig.json',
+          'codellm/tsconfig.json',
+          'remix/tsconfig.json',
+        ],
       },
     },
   },

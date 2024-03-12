@@ -6,7 +6,7 @@
       "@tests/*": ["./core/tests/*"],
       "@cli/*": ["./cli/src/*"],
       "@cliTests/*": ["./cli/tests/*"],
-      "@web/*": ["./web/app/*"]
+      "@remix/*": ["./remix/app/*"]
     }
   }
 }

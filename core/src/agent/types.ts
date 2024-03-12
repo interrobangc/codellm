@@ -1,7 +1,7 @@
 import type { CodeLlmError, LlmClient } from '@/.';
 
 import { z } from 'zod';
-
+import { isError } from '@/error/index.js';
 import { toolRunParamsParamSchema } from '@/tool/types.js';
 
 export const agentResponseResponseSchema = z.object({
@@ -21,9 +21,9 @@ export const agentResponseResponseSchema = z.object({
 export type AgentResponseResponse = z.infer<typeof agentResponseResponseSchema>;
 
 export const isAgentResponseResponse = (
-  i: AgentSelectToolResponse,
+  i: AgentSelectToolResponse | CodeLlmError,
 ): i is AgentResponseResponse => {
-  return i.type === 'response';
+  return !isError(i) && i.type === 'response';
 };
 
 export const agentToolResponseSchema = z.object({
@@ -36,9 +36,9 @@ export const agentToolResponseSchema = z.object({
 export type AgentToolResponse = z.infer<typeof agentToolResponseSchema>;
 
 export const isAgentToolResponse = (
-  i: AgentSelectToolResponse,
+  i: AgentSelectToolResponse | CodeLlmError,
 ): i is AgentToolResponse => {
-  return i.type === 'tool';
+  return !isError(i) && i.type === 'tool';
 };
 
 export const agentLlmResponseSchema = z.union([
@@ -47,10 +47,6 @@ export const agentLlmResponseSchema = z.union([
 ]);
 
 export type AgentLlmResponse = z.infer<typeof agentLlmResponseSchema>;
-
-export type Agent = {
-  chat: (message: string) => Promise<AgentResponse>;
-};
 
 export type AgentResponseCodeItem = {
   code: string;
@@ -81,4 +77,35 @@ export type AgentHandleQuestionParams = {
 export type AgentHandleToolResponseParams = {
   response: AgentSelectToolResponse;
   toolResponses: AgentToolResponses;
+};
+
+export type AgentHistoryUserItem = {
+  content: string;
+  role: 'user';
+};
+
+export type AgentHistoryAssistantItem = {
+  code: AgentResponseResponse['code'] | undefined;
+  content: AgentResponseResponse['content'];
+  reason: AgentToolResponse['reason'] | undefined;
+  role: 'assistant';
+};
+
+export type AgentHistoryItem = AgentHistoryUserItem | AgentHistoryAssistantItem;
+
+export type AgentHistory = AgentHistoryItem[];
+
+export type AgentHistoryAddParams =
+  | AgentResponseResponse
+  | AgentHistoryUserItem;
+
+export const isAgentHistoryUserItem = (
+  i: AgentHistoryAddParams,
+): i is AgentHistoryUserItem => {
+  return 'role' in i && i.role === 'user';
+};
+
+export type Agent = {
+  chat: (message: string) => Promise<AgentResponse>;
+  getHistory: () => AgentHistory;
 };

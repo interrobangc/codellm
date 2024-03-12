@@ -1,7 +1,14 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": [".eslintrc.cjs", "**/*.ts"],
+  "include": [
+    ".eslintrc.cjs",
+    "**/remix.config.js",
+    "**/vite.config.js",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "exclude": [
+    "**/build/**",
     "**/dist/**",
     "**/coverage/**",
     "node_modules/**",

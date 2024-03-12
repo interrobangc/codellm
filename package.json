@@ -11,7 +11,7 @@
     "tools/*",
     "vectorDbs/*",
     "cli",
-    "web"
+    "remix"
   ],
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
@@ -43,12 +43,14 @@
     "vitest": "^1.3.1"
   },
   "scripts": {
-    "build": "run-s build:ts build:ts-alias",
+    "build": "run-s build:ts build:ts-alias build:remix",
     "build:ts": "tsc -b --verbose",
     "build:ts-alias": "npm run --workspaces --if-present build:ts-alias",
-    "dev": "npm run -w web dev",
+    "build:remix": "npm run -w remix build",
+    "dev": "npm run -w remix dev",
     "start": "run-s build start:cli",
     "start:cli": "npm run -w cli start",
+    "start:remix": "npm run -w remix start",
     "start:import": "npm run build && npm run -w cli start:import",
     "start:datastore": "docker compose up -d",
     "stop:datastore": "docker compose down",

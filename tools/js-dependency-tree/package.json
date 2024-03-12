@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@codellm/core": "^0.0.1",
-    "crypto": "^1.0.1",
     "globby": "^14.0.1"
   }
 }

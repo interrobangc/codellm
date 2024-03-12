@@ -1,4 +1,7 @@
 export const AGENT_ERRORS = {
+  'agent:addHistory': {
+    message: 'Error adding to agent history',
+  },
   'agent:decodeResponse': {
     message: 'Error decoding agent response',
   },
