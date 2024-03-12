@@ -1,9 +1,10 @@
 import type { AgentHistory, AgentHistoryAddParams } from '@/.';
 import {
   agentResponseResponseSchema,
-  isAgentHistoryUserItem,
+  isAgentResponseResponse,
 } from '@/agent/types.js';
 import { CodeLlmError } from '@/error/index.js';
+import { emit } from '@/agent/emitter.js';
 
 const agentHistory: AgentHistory = [];
 
@@ -13,19 +14,22 @@ export const addToHistory = (params: AgentHistoryAddParams) => {
   try {
     const validAgentResponse = agentResponseResponseSchema.parse(params);
     const { code, content, reason } = validAgentResponse;
-    return agentHistory.push({
+    const historyItem = {
       code,
       content,
       reason,
       role: 'assistant',
-    });
+    } as const;
+    emit(historyItem);
+    return agentHistory.push(historyItem);
   } catch (error) {
     // ignore
   }
 
-  if (!isAgentHistoryUserItem(params)) {
+  if (isAgentResponseResponse(params)) {
     return new CodeLlmError({ code: 'agent:addHistory', meta: { params } });
   }
 
+  emit(params);
   return agentHistory.push(params);
 };
