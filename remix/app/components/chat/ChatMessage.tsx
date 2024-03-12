@@ -1,19 +1,22 @@
 import type { AgentHistoryItem } from '@codellm/core';
 
-const chatBubbleCommonClassNames = 'whitespace-pre-wrap p-6 chat-bubble';
+const chatBubbleCommonClassNames = 'whitespace-pre-wrap p-6';
 
 const chatBubbleClassNames = {
-  assistant: `${chatBubbleCommonClassNames} chat-bubble-primary`,
-  error: `${chatBubbleCommonClassNames} chat-bubble-error`,
-  tool: `${chatBubbleCommonClassNames} chat-bubble-accent`,
-  user: `${chatBubbleCommonClassNames}`,
+  assistant: `${chatBubbleCommonClassNames} chat-bubble chat-bubble-primary`,
+  error: `${chatBubbleCommonClassNames} chat-bubble chat-bubble-error`,
+  tool: `${chatBubbleCommonClassNames} card-body rounded-md chat-bubble-accent`,
+  user: `${chatBubbleCommonClassNames} chat-bubble`,
 };
 
 export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
   const role = message.role;
 
-  const wrapperClassNames =
-    role === 'user' ? 'chat chat-start' : 'chat chat-end';
+  const getWrapperClasses = () => {
+    if (role === 'user') return 'chat chat-start';
+    if (role === 'tool') return 'card items-center m-1';
+    return 'chat chat-end';
+  };
 
   const Content = () => {
     if (role === 'error') {
@@ -37,7 +40,7 @@ export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
   };
 
   return (
-    <div className={wrapperClassNames}>
+    <div className={getWrapperClasses()}>
       <div className={chatBubbleClassNames[role]}>
         <Content />
       </div>
