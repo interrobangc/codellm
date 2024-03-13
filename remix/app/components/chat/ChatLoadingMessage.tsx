@@ -1,8 +1,7 @@
-import { useNavigation } from '@remix-run/react';
+import { useChatForm } from './hooks/useChatForm';
 
 export const ChatLoadingMessage = () => {
-  const transition = useNavigation();
-  const isSubmitting = Boolean(transition.state === 'submitting');
+  const { isSubmitting } = useChatForm();
   if (!isSubmitting) return null;
 
   return (

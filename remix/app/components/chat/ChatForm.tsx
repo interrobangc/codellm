@@ -1,16 +1,8 @@
-import { Form, useNavigation } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+import { Form } from '@remix-run/react';
+import { useChatForm } from './hooks/useChatForm';
 
 export const ChatForm = () => {
-  const navigation = useNavigation();
-  const isSubmitting = Boolean(navigation.state === 'submitting');
-  const $form = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (navigation.state === 'submitting') {
-      $form.current?.reset();
-    }
-  }, [navigation.state]);
+  const { $form, isSubmitting } = useChatForm();
 
   const buttonClassNames = `flex-align-self-end btn btn-sm btn-accent btn-sm ${isSubmitting ? 'btn-disabled' : ''} `;
   return (
