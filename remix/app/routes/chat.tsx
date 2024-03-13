@@ -14,7 +14,7 @@ export default function Index() {
   // const isLoading = Boolean(transition.action?.type === 'idle');
   return (
     <div>
-      <div className="p-10 bg-base-100 ">
+      <div className="pr-10 pl-10 bg-base-100 ">
         <div className="p-5 border-2 border-primary rounded-lg">
           <ChatHistory />
           <ChatForm />

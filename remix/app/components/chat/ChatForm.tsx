@@ -8,10 +8,10 @@ export const ChatForm = () => {
   return (
     <Form method="post" ref={$form}>
       <div className="p-1">
-        <div className="flex border border-secondary rounded-lg p-2 space-x-2">
+        <div className="flex border border-accent rounded-lg p-2 space-x-2">
           <textarea
             name="userMessage"
-            className="flex-auto textarea input-accent textarea-lg"
+            className="flex-auto textarea textarea-lg"
             disabled={isSubmitting}
             placeholder="Ask a question..."
           />
