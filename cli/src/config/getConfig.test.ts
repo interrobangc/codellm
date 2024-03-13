@@ -5,6 +5,7 @@ import { dump as dumpYaml } from 'js-yaml';
 import merge from 'lodash/merge.js';
 
 import { configFileData, expectedDefaultConfig } from '@cliTests/mocks/config';
+import { PROVIDERS } from '@cli/config/constants';
 
 import getConfig from './getConfig';
 
@@ -32,6 +33,8 @@ describe('getConfig', () => {
     };
 
     const expectedConfig = merge({}, configFileData, yargv);
+    expectedConfig.providers = PROVIDERS;
+
     const result = getConfig(yargv);
     expect(result).toEqual(expectedConfig);
   });

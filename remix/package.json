@@ -12,6 +12,7 @@
   "dependencies": {
     "@codellm/core": "^0.0.1",
     "@codellm/provider-anthropic": "^0.0.1",
+    "@codellm/provider-langchain": "^0.0.1",
     "@codellm/provider-mistral": "^0.0.1",
     "@codellm/provider-ollama": "^0.0.1",
     "@codellm/provider-openai": "^0.0.1",

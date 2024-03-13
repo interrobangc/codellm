@@ -66,7 +66,10 @@ export const sendUserMessage = async ({
     role: 'user',
   });
 
-  return decodeResponse(await agentLlm.chat(messages));
+  const response = await agentLlm.chat(messages);
+  if (isError(response)) return response;
+
+  return decodeResponse((response as string).trim());
 };
 
 export const handleQuestionRecursive = async ({

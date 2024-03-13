@@ -2,6 +2,7 @@ import type { Config, Service } from '@/.';
 
 import { z } from 'zod';
 import { serviceSchema } from '@/config/types.js';
+import { codeLlmErrorSchema } from '@/error/types.js';
 import { getEnumConstValues } from '@/type/index.js';
 import { CHAT_MESSAGE_ROLES_TYPE } from './constants.js';
 
@@ -9,37 +10,6 @@ export * from './conversation/types.js';
 
 export const providerSchema = z.string();
 export type Provider = z.infer<typeof providerSchema>;
-
-export const providerConfigSchema = z.record(z.unknown());
-export type ProviderConfig = z.infer<typeof providerConfigSchema>;
-
-export const providerConfigItemSchema = z.object({
-  config: providerConfigSchema,
-  module: z.string(),
-});
-export type ProviderConfigItem = z.infer<typeof providerConfigItemSchema>;
-
-export const providerConfigsSchema = z.record(providerConfigItemSchema);
-export type ProviderConfigs = z.infer<typeof providerConfigsSchema>;
-
-export const partialProviderConfigItemSchema =
-  providerConfigItemSchema.partial();
-export type PartialProviderConfigItem = z.infer<
-  typeof partialProviderConfigItemSchema
->;
-
-export const partialProviderConfigsSchema = z.record(
-  partialProviderConfigItemSchema,
-);
-export type PartialProviderConfigs = z.infer<
-  typeof partialProviderConfigsSchema
->;
-
-export const providerServiceItemSchema = z.object({
-  model: z.string(),
-  provider: providerSchema,
-});
-export type ProviderServiceItem = z.infer<typeof providerServiceItemSchema>;
 
 export const chatMessageRoleSchema = z.enum(
   getEnumConstValues(CHAT_MESSAGE_ROLES_TYPE),
@@ -62,13 +32,41 @@ export const promptParamsSchema = z.object({
 export type PromptParams = z.infer<typeof promptParamsSchema>;
 
 export const llmProviderClientSchema = z.object({
-  chat: z.function(z.tuple([messageListSchema])).returns(z.promise(z.string())),
+  chat: z
+    .function(z.tuple([messageListSchema]))
+    .returns(z.promise(z.union([z.string(), codeLlmErrorSchema]))),
   initModel: z.function().returns(z.promise(z.void())),
   prompt: z
     .function(z.tuple([promptParamsSchema]))
     .returns(z.promise(z.string())),
 });
 export type LlmProviderClient = z.infer<typeof llmProviderClientSchema>;
+
+export const providerConfigSchema = z.record(z.unknown());
+export type ProviderConfig = z.infer<typeof providerConfigSchema>;
+
+export const providerModule = z.object({
+  newClient: z
+    .function(z.tuple([providerConfigSchema]))
+    .returns(z.promise(llmProviderClientSchema)),
+});
+
+export type ProviderModule = z.infer<typeof providerModule>;
+
+export const providerConfigItemSchema = z.object({
+  config: providerConfigSchema,
+  module: providerModule,
+});
+export type ProviderConfigItem = z.infer<typeof providerConfigItemSchema>;
+
+export const providerConfigsSchema = z.record(providerConfigItemSchema);
+export type ProviderConfigs = z.infer<typeof providerConfigsSchema>;
+
+export const providerServiceItemSchema = z.object({
+  model: z.string(),
+  provider: providerSchema,
+});
+export type ProviderServiceItem = z.infer<typeof providerServiceItemSchema>;
 
 export const llmClientSchema = llmProviderClientSchema.extend({
   service: serviceSchema,
@@ -79,7 +77,7 @@ export type Llms = Map<Service, LlmClient>;
 
 export type GetClientParams = {
   config: Config;
-  service: Service;
+  service: string;
 };
 
 export type ProviderGetClientParams = {

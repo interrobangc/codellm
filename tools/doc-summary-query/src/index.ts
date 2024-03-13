@@ -6,7 +6,7 @@ import type {
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { initConfig, initLogger, isError, toolUtils } from '@codellm/core';
+import { initConfig, isError, toolUtils } from '@codellm/core';
 import { dump as dumpYaml } from 'js-yaml';
 import {
   DEFAULT_CONFIG,
@@ -25,7 +25,6 @@ import {
  */
 export const newTool = async (toolName: string, config: Config) => {
   initConfig(config);
-  initLogger(config);
   const toolConfig = {
     ...DEFAULT_CONFIG,
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),

@@ -9,9 +9,10 @@ import { newLlmClient } from './newLlmClient.js';
 export const initLlmClients = async (
   config: Config,
   servicesToInit: Service[],
+  defaultType: string,
 ) => {
   const llmsMap = servicesToInit.map(async (service) => {
-    const llmClient = await newLlmClient({ config, service });
+    const llmClient = await newLlmClient({ config, service }, defaultType);
     log('Initialized LLM client', 'debug', { llmClient, service });
     if (isError(llmClient)) return llmClient;
 
@@ -48,11 +49,18 @@ export const initLlmModels = async (servicesToInit: Service[]) => {
  * @returns - The initialized LLM Clients
  *
  */
-export const initLlms = async (servicesToInit: Service[]) => {
+export const initLlms = async (
+  servicesToInit: Service[],
+  defaultType: string = 'chat',
+) => {
   const config = getConfig();
   if (isError(config)) return config;
 
-  const initLlmClientsRes = await initLlmClients(config, servicesToInit);
+  const initLlmClientsRes = await initLlmClients(
+    config,
+    servicesToInit,
+    defaultType,
+  );
   if (isError(initLlmClientsRes)) return initLlmClientsRes;
 
   const initLlmModelsRes = await initLlmModels(servicesToInit);

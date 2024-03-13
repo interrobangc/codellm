@@ -2,19 +2,15 @@ import type { REQUIRED_PATHS } from './constants';
 import type {
   LogFormat,
   LogLevel,
-  PartialProviderConfigs,
   Provider,
   ProviderConfigs,
   ProviderServiceItem,
   ToolConfigs,
   VectorDbConfigs,
 } from '@/.';
-
 import { z } from 'zod';
-import { SERVICES_TYPE } from './constants.js';
-import { getEnumConstValues } from '@/type/index.js';
 
-export const serviceSchema = z.enum(getEnumConstValues(SERVICES_TYPE));
+export const serviceSchema = z.string();
 export type Service = z.infer<typeof serviceSchema>;
 
 export type ConfigRequiredPaths = (typeof REQUIRED_PATHS)[number];
@@ -29,23 +25,21 @@ export type ConfigCommon = {
   cacheDir: string;
   formatInUserMessage: boolean;
   llmProvider: Provider;
+  llms: Record<Service, ProviderServiceItem>;
   logFormat: LogFormat;
   logLevel: LogLevel;
   paths: ConfigPaths;
   project: ConfigProject;
+  providers: ProviderConfigs;
   shouldImportAsync: boolean;
   shouldThrow: boolean;
   tools?: ToolConfigs;
 };
 
 export type Config = ConfigCommon & {
-  llms: Record<Service, ProviderServiceItem>;
-  providers: ProviderConfigs;
   vectorDbs: VectorDbConfigs;
 };
 
 export type PartialConfig = Partial<ConfigCommon> & {
-  llms?: Partial<Record<Service, ProviderServiceItem>>;
-  providers?: PartialProviderConfigs;
   vectorDbs?: VectorDbConfigs;
 };

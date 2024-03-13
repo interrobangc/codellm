@@ -9,7 +9,6 @@ import type { ToolConfig } from './types';
 import {
   CodeLlmError,
   initConfig,
-  initLogger,
   isError,
   log,
   toolUtils,
@@ -26,7 +25,6 @@ import { DEFAULT_CONFIG, description } from './constants.js';
  */
 export const newTool = async (toolName: string, config: Config) => {
   initConfig(config);
-  initLogger(config);
   log(`Creating ${toolName} tool`, 'silly', { config });
   const toolConfig = {
     ...DEFAULT_CONFIG,

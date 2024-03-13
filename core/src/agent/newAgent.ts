@@ -16,11 +16,14 @@ import { clearHistory, getHistory } from './history.js';
  *
  * @returns - The new agent
  */
-export const newAgent = async (configParam: PartialConfig) => {
+export const newAgent = async (
+  configParam: PartialConfig,
+  name: string = 'agent',
+) => {
   const initConfigRes = initConfig(configParam);
   if (isError(initConfigRes)) return initConfigRes;
 
-  const llms = await initLlms(['agent', 'tool']);
+  const llms = await initLlms([name, 'tool']);
   if (isError(llms)) return llms;
 
   log('newAgent LLMs', 'silly', { llms });
@@ -37,8 +40,8 @@ export const newAgent = async (configParam: PartialConfig) => {
   if (isError(content)) return content;
 
   clearHistory();
-  conversation.clearHistory('agent');
-  conversation.addMessages('agent', [
+  conversation.clearHistory(name);
+  conversation.addMessages(name, [
     {
       content,
       role: 'system',

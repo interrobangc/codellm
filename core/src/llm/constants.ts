@@ -11,6 +11,18 @@ export const LLM_ERRORS = {
   'llm:invalidProvider': {
     message: 'Invalid provider for LLM',
   },
+  'llm:newLlmProviderClient': {
+    message: 'Error creating new LLM provider client',
+  },
+  'llm:noConversationHistory': {
+    message: 'No conversation history found',
+  },
+  'llm:noProviderConfig': {
+    message: 'No provider config found',
+  },
+  'llm:noServiceConfig': {
+    message: 'No service configuration found',
+  },
   'llm:noServiceLlm': {
     message: 'No LLM initialized for service',
   },

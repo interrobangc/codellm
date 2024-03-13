@@ -6,12 +6,15 @@ import type {
   Service,
 } from '@/.';
 
-import { isError, mayFail } from '@/error/index.js';
+import {
+  CodeLlmError,
+  isError,
+  mayFail,
+  promiseMayFail,
+} from '@/error/index.js';
 import { log } from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
-import { importClient } from './importClient.js';
-
 /**
  * Initialize the underlying provider/model for a given service
  *
@@ -35,20 +38,30 @@ export const chat = async (
   client: LlmProviderClient,
   messages: MessageList,
 ) => {
+  log('llmChat send', 'debug', { messages, service });
+
   // We need to send the full conversation history to the provider
   // to ensure that the provider has all the context it needs to generate a response
   conversation.addMessages(service, messages);
 
+  let history = conversation.getHistory(service);
+  if (isError(history, 'llm:noConversationHistory')) history = [];
+  if (isError(history)) return history;
+
   log('conversationHistoryBeforeChat', 'silly', {
-    history: conversation.getHistory(service),
+    history,
   });
-  log('llmChat send', 'debug', { messages, service });
-  const response = await client.chat(conversation.getHistory(service));
+
+  const response = await client.chat(history);
   log('llmChat receive', 'debug', { response, service });
+
+  if (isError(response)) return response;
 
   // We also need to add the response to the conversation history to ensure that
   // the next message has the full context including the response
-  conversation.addMessages(service, [{ content: response, role: 'assistant' }]);
+  conversation.addMessages(service, [
+    { content: response as string, role: 'assistant' },
+  ]);
 
   log('conversationHistoryAfterChat', 'silly', {
     history: conversation.getHistory(service),
@@ -65,18 +78,42 @@ export const chat = async (
  *
  * @returns - The new client
  */
-export const newLlmClient = async ({ config, service }: GetClientParams) => {
-  const { model, provider } = config.llms[service];
+export const newLlmClient = async (
+  { config, service }: GetClientParams,
+  defaultType: string,
+) => {
+  const llmConfig = config.llms[service] ?? config.llms[defaultType];
+  if (!llmConfig) {
+    return new CodeLlmError({
+      code: 'llm:noServiceConfig',
+      meta: { defaultType, service },
+    });
+  }
+  const { model, provider } = llmConfig;
 
-  const getClientRes = await importClient(config, provider);
-  if (isError(getClientRes)) return getClientRes;
+  const providerConfigEntry = config.providers[provider];
+  if (!providerConfigEntry) {
+    return new CodeLlmError({
+      code: 'llm:noProviderConfig',
+      meta: { provider, service },
+    });
+  }
 
-  const { providerConfig, providerModule } = getClientRes;
-
-  const client = await providerModule.newClient({
-    config: providerConfig,
-    model,
-  });
+  const { config: providerConfig, module } = providerConfigEntry;
+  const client = await promiseMayFail(
+    module.newClient({
+      config: providerConfig,
+      model,
+    }),
+    'llm:newLlmProviderClient',
+    {
+      config,
+      model,
+      providerConfigEntry,
+      service,
+    },
+  );
+  if (isError(client)) return client;
 
   const validatedClient = mayFail(
     () => llmProviderClientSchema.parse(client),
