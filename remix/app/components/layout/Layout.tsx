@@ -5,23 +5,22 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     <div>
       <header className="p-5">
         <nav className="navbar bg-base-100">
-          <div className="flex-1">
+          <div className="navbar-start">
             <Link to="/" className="btn btn-ghost text-xl">
               CodeLLM
             </Link>
           </div>
-          <div className="flex-none">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <Link
-                  to="/chat"
-                  prefetch="intent"
-                  className="btn btn-ghost btn-sm"
-                >
-                  Chat
-                </Link>
-              </li>
-            </ul>
+          <div className="navbar-end">
+            <Link to="/chat" prefetch="intent" className="btn btn-ghost btn-sm">
+              Chat
+            </Link>
+            <Link
+              to="/import"
+              prefetch="intent"
+              className="btn btn-ghost btn-sm"
+            >
+              Import
+            </Link>
           </div>
         </nav>
       </header>

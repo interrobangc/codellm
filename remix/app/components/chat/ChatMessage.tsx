@@ -24,7 +24,7 @@ export const ChatMessage = ({ message }: { message: AgentHistoryItem }) => {
     } else if (role === 'tool') {
       return (
         <div>
-          I&apos;m running the{' '}
+          Running the{' '}
           <div
             className="font-bold text-primary text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
             data-tip={JSON.stringify(message.params, null, 4)}

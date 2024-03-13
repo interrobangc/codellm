@@ -1,12 +1,9 @@
 import type { MetaFunction } from '@remix-run/node';
 
-import ChatForm from '@remix/components/chat/ChatForm';
-import ChatHistory from '@remix/components/chat/ChatHistory';
-
 export const meta: MetaFunction = () => {
   return [
-    { title: 'CodeLLM - Chat' },
-    { content: 'Chat with CodeLLM', name: 'description' },
+    { title: 'CodeLLM - Importer' },
+    { content: 'CodeLLM Importer', name: 'description' },
   ];
 };
 
@@ -15,10 +12,7 @@ export default function Index() {
   return (
     <div>
       <div className="pr-10 pl-10 bg-base-100 ">
-        <div className="p-5 border-2 border-primary rounded-lg">
-          <ChatHistory />
-          <ChatForm />
-        </div>
+        <div className="p-5 border-2 border-primary rounded-lg"></div>
       </div>
     </div>
   );

@@ -1,25 +1,17 @@
-import { Form, useNavigation } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+import { Form } from '@remix-run/react';
+import { useChatForm } from './hooks/useChatForm';
 
 export const ChatForm = () => {
-  const navigation = useNavigation();
-  const isSubmitting = Boolean(navigation.state === 'submitting');
-  const $form = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (navigation.state === 'submitting') {
-      $form.current?.reset();
-    }
-  }, [navigation.state]);
+  const { $form, isSubmitting } = useChatForm();
 
   const buttonClassNames = `flex-align-self-end btn btn-sm btn-accent btn-sm ${isSubmitting ? 'btn-disabled' : ''} `;
   return (
     <Form method="post" ref={$form}>
       <div className="p-1">
-        <div className="flex border border-secondary rounded-lg p-2 space-x-2">
+        <div className="flex border border-accent rounded-lg p-2 space-x-2">
           <textarea
             name="userMessage"
-            className="flex-auto textarea input-accent textarea-lg"
+            className="flex-auto textarea textarea-lg"
             disabled={isSubmitting}
             placeholder="Ask a question..."
           />
