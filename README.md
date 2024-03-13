@@ -62,6 +62,16 @@ npm run logs:datastore
 
 ### Import embeddings
 
+#### Use the archived chromadb
+
+If you have [git-lfs](https://git-lfs.github.com/) installed, you can use the archived chromadb to import the embeddings. This is the fastest way to get started.
+
+```bash
+npm run extract:chromadb
+```
+
+#### Run the importer
+
 The first step is to import the embeddings for your codebase. We use a locally running chromadb instance as a vector db. The initial import will take a while. It can be run again to update the embeddings and will only import updated and new files.
 
 By default it will import ts code from this repository. You can change the `CODELLM_IMPORT_PATH` environment variable to point to a different codebase, modify the `cli/config.yml` file, or create a new yaml config file and set the `CODELLM_CONFIG` environment variable to point to it.
