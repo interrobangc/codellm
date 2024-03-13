@@ -20,6 +20,7 @@ export const ChatForm = () => {
       <div className="p-1">
         <div className="flex border border-accent rounded-lg space-x-2">
           <TextareaAutosize
+            autoFocus
             name="userMessage"
             className="flex-auto textarea textarea-ghost resize-none focus:outline-none focus:border-none "
             disabled={isSubmitting}

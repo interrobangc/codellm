@@ -11,7 +11,11 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   // const isLoading = Boolean(transition.action?.type === 'idle');
-  return <ContentWrapper />;
+  return (
+    <ContentWrapper>
+      <p>Import your project into CodeLLM</p>
+    </ContentWrapper>
+  );
 }
 
 export { action, loader } from '@remix/.server/chat';
