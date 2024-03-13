@@ -13,6 +13,10 @@ const config = {
     'prettier',
     'plugin:sonarjs/recommended',
     'plugin:typescript-sort-keys/recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
   ],
   ignorePatterns: [
     '**/build/**',
@@ -24,14 +28,7 @@ const config = {
   overrides: [
     // React
     {
-      extends: [
-        'plugin:react/recommended',
-        'plugin:react/jsx-runtime',
-        'plugin:react-hooks/recommended',
-        'plugin:jsx-a11y/recommended',
-      ],
       files: ['**/*.{js,jsx,ts,tsx}'],
-      plugins: ['react', 'jsx-a11y'],
       settings: {
         formComponents: ['Form'],
         'import/resolver': {
@@ -48,7 +45,6 @@ const config = {
         },
       },
     },
-
     {
       env: {
         node: true,
@@ -71,12 +67,13 @@ const config = {
   plugins: [
     '@typescript-eslint',
     'import',
-    'jsx-a11y',
     'react',
     'sonarjs',
     'sort-destructure-keys',
     'sort-keys-fix',
     'typescript-sort-keys',
+    'react',
+    'jsx-a11y',
   ],
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
@@ -103,6 +100,7 @@ const config = {
         ],
       },
     ],
+    'jsx-a11y/no-autofocus': 'off',
     'no-console': 'error',
     'sonarjs/prefer-single-boolean-return': 'off',
     'sort-destructure-keys/sort-destructure-keys': 2,

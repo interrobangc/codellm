@@ -155,5 +155,6 @@ export type AgentHistoryAddParams =
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
   getHistory: () => AgentHistory;
+  offEmit: (listener: (params: AgentHistoryItem) => void) => void;
   onEmit: (listener: (params: AgentHistoryItem) => void) => void;
 };

@@ -12,3 +12,7 @@ export const getHistory = (service: Service) =>
 export const addMessages = (service: Service, messages: MessageList) => {
   conversationHistory[service] = [...conversationHistory[service], ...messages];
 };
+
+export const clearHistory = (service: Service) => {
+  conversationHistory[service] = [];
+};
