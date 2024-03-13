@@ -14,6 +14,7 @@ const onAgentEmit = (params: AgentHistoryItem) => {
 };
 
 export const initAgent = async () => {
+  log('initAgent', 'debug', { agent });
   if (agent) agent.offEmit(onAgentEmit);
 
   const agentRes = await newAgent(config);

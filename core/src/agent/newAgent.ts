@@ -7,7 +7,7 @@ import { initPrompts } from '@/prompt/index.js';
 import { initTools } from '@/tool/index.js';
 import chat from './chat.js';
 import { off, on } from './emitter.js';
-import { getHistory } from './history.js';
+import { clearHistory, getHistory } from './history.js';
 
 /**
  * Create a new agent which is the primary interface to interact with the LLMs
@@ -36,6 +36,8 @@ export const newAgent = async (configParam: PartialConfig) => {
   const content = await prompt.get('agentSystem');
   if (isError(content)) return content;
 
+  clearHistory();
+  conversation.clearHistory('agent');
   conversation.addMessages('agent', [
     {
       content,

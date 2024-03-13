@@ -33,3 +33,7 @@ export const addToHistory = (params: AgentHistoryAddParams) => {
   emit(params);
   return agentHistory.push(params);
 };
+
+export const clearHistory = () => {
+  agentHistory.length = 0;
+};
