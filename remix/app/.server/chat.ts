@@ -1,18 +1,10 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import type { Agent, AgentHistoryItem } from '@codellm/core';
+import type { AgentHistoryItem } from '@codellm/core';
 
 import { EventEmitter } from 'events';
 import { json } from '@remix-run/node';
-import {
-  CodeLlmError,
-  isAgentResponseResponse,
-  isError,
-  log,
-  newAgent,
-} from '@codellm/core';
-import config from '../../config';
-
-let agent: Agent | CodeLlmError;
+import { isAgentResponseResponse, isError, log } from '@codellm/core';
+import { getAgent } from './agent';
 
 export const eventStreamEmitter = new EventEmitter();
 
@@ -22,10 +14,7 @@ const onAgentEmit = (params: AgentHistoryItem) => {
 };
 
 export const loader = async () => {
-  agent = await newAgent(config);
-  if (isError(agent)) {
-    throw agent;
-  }
+  const agent = await getAgent();
   agent.onEmit(onAgentEmit);
 
   const history = agent.getHistory();
@@ -37,8 +26,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     error: null,
     llmResponse: null,
   };
-  if (!agent || isError(agent)) return;
 
+  const agent = await getAgent();
   const formData = await request.clone().formData();
   const agentResponse = await agent.chat(formData.get('userMessage') as string);
   if (isError(agentResponse)) return { ...result, error: agentResponse };
