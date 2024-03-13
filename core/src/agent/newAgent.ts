@@ -6,7 +6,7 @@ import { log } from '@/log/index.js';
 import { initPrompts } from '@/prompt/index.js';
 import { initTools } from '@/tool/index.js';
 import chat from './chat.js';
-import { on } from './emitter.js';
+import { off, on } from './emitter.js';
 import { getHistory } from './history.js';
 
 /**
@@ -46,6 +46,7 @@ export const newAgent = async (configParam: PartialConfig) => {
   return {
     chat,
     getHistory: () => getHistory(),
+    offEmit: off,
     onEmit: on,
   } as Agent;
 };

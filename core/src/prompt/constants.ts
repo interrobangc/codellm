@@ -83,7 +83,7 @@ params:
 
 type: "response" # Do not change this
 content: |
-  <Write the text of your response here. You must use properly escaped and indented {responseFormat}.>
+  <Write the text of your response here. You must use properly escaped and indented {responseFormat} with no wrapping quotes.>
 `,
 
   toolResponseBlock: `
