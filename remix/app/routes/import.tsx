@@ -1,5 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
 
+import ContentWrapper from '@remix/components/common/ContentWrapper';
+
 export const meta: MetaFunction = () => {
   return [
     { title: 'CodeLLM - Importer' },
@@ -9,13 +11,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   // const isLoading = Boolean(transition.action?.type === 'idle');
-  return (
-    <div>
-      <div className="pr-10 pl-10 bg-base-100 ">
-        <div className="p-5 border-2 border-primary rounded-lg"></div>
-      </div>
-    </div>
-  );
+  return <ContentWrapper />;
 }
 
 export { action, loader } from '@remix/.server/chat';
