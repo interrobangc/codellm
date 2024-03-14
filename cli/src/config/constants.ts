@@ -1,10 +1,4 @@
-import type { ProviderConfigs, ProviderModule } from '@codellm/core';
-
-import * as anthropic from '@codellm/provider-anthropic';
-import * as langchain from '@codellm/provider-langchain';
-import * as mistral from '@codellm/provider-mistral';
-import * as ollama from '@codellm/provider-ollama';
-import * as openai from '@codellm/provider-openai';
+import type { ProviderConfigs } from '@codellm/core';
 
 export const DEFAULTS = {
   configFile: './config.yml',
@@ -65,7 +59,7 @@ export const PROVIDERS: ProviderConfigs = {
     config: {
       apiKey: '',
     },
-    module: anthropic as unknown as ProviderModule,
+    module: '@codellm/provider-anthropic',
   },
   langchain: {
     config: {
@@ -73,25 +67,25 @@ export const PROVIDERS: ProviderConfigs = {
       config: {},
       module: '',
     },
-    module: langchain as unknown as ProviderModule,
+    module: '@codellm/provider-langchain',
   },
   mistral: {
     config: {
       apiKey: '',
     },
-    module: mistral as unknown as ProviderModule,
+    module: '@codellm/provider-mistral',
   },
   ollama: {
     config: {
       host: 'http://localhost:11434',
     },
-    module: ollama as unknown as ProviderModule,
+    module: '@codellm/provider-ollama',
   },
   openai: {
     config: {
       apiKey: '',
     },
-    module: openai as unknown as ProviderModule,
+    module: '@codellm/provider-openai',
   },
 } as const;
 
