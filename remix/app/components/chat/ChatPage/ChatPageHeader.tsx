@@ -1,5 +1,5 @@
 import ChatRenameButton from './ChatRenameButton';
-import ChatResetButton from './ChatResetButton';
+import ChatDeleteButton from './ChatDeleteButton';
 
 export const ChatPageHeader = () => {
   return (
@@ -8,7 +8,7 @@ export const ChatPageHeader = () => {
         <ChatRenameButton buttonClassName="btn-sm btn-secondary" />
       </div>
       <div>
-        <ChatResetButton buttonClassName="btn-sm btn-secondary" />
+        <ChatDeleteButton buttonClassName="btn-sm btn-secondary" />
       </div>
     </div>
   );

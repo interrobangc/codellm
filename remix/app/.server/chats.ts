@@ -68,6 +68,14 @@ export const getChat = (id: string) => {
   return initChat(id);
 };
 
+export const deleteChat = (id: string) => {
+  const chat = chats.get(id);
+  if (chat) {
+    chat.client.offEmit(onAgentEmit(id));
+    chats.delete(id);
+  }
+};
+
 export const getClientSafeChat = (id: string) => {
   const chat = chats.get(id);
   if (!chat) {
