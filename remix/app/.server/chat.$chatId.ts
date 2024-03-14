@@ -10,9 +10,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { chatId } = params;
 
   const currentChat = await getChat(chatId);
-
-  console.dir(currentChat, { depth: null });
-
   const history = currentChat.client.getHistory();
 
   return json({ currentChat: getClientSafeChat(chatId), history });
@@ -57,12 +54,11 @@ export const renameChat = async (chatId: string, newName: string) => {
 };
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
-  const formData = await request.clone().formData();
-  const intent = formData.get('intent');
-
   const { chatId } = params;
   if (!chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
 
+  const formData = await request.clone().formData();
+  const intent = formData.get('intent');
   switch (intent) {
     case 'clearAgent':
       return clearAgent(chatId);

@@ -1,4 +1,4 @@
-import type { LogLevel, PartialConfig, ProviderModule } from '@codellm/core';
+import type { LogLevel, PartialConfig } from '@codellm/core';
 
 export const getConfig = async (): Promise<PartialConfig> => ({
   formatInUserMessage: true,
@@ -16,9 +16,7 @@ export const getConfig = async (): Promise<PartialConfig> => ({
       config: {
         apiKey: process.env.ANTHROPIC_API_KEY,
       },
-      module: (await import(
-        '@codellm/provider-anthropic'
-      )) as unknown as ProviderModule,
+      module: '@codellm/provider-anthropic',
     },
     langchain: {
       config: {
@@ -26,33 +24,25 @@ export const getConfig = async (): Promise<PartialConfig> => ({
         config: {},
         module: '',
       },
-      module: (await import(
-        '@codellm/provider-langchain'
-      )) as unknown as ProviderModule,
+      module: '@codellm/provider-langchain',
     },
     mistral: {
       config: {
         apiKey: process.env.MISTRAL_API_KEY,
       },
-      module: (await import(
-        '@codellm/provider-mistral'
-      )) as unknown as ProviderModule,
+      module: '@codellm/provider-mistral',
     },
     ollama: {
       config: {
         host: process.env.OLLAMA_HOST ?? 'http://localhost:11434',
       },
-      module: (await import(
-        '@codellm/provider-ollama'
-      )) as unknown as ProviderModule,
+      module: '@codellm/provider-ollama',
     },
     openai: {
       config: {
         apiKey: process.env.OPENAI_API_KEY,
       },
-      module: (await import(
-        '@codellm/provider-openai'
-      )) as unknown as ProviderModule,
+      module: '@codellm/provider-openai',
     },
   },
   tools: {

@@ -45,11 +45,14 @@ export type LlmProviderClient = z.infer<typeof llmProviderClientSchema>;
 export const providerConfigSchema = z.record(z.unknown());
 export type ProviderConfig = z.infer<typeof providerConfigSchema>;
 
-export const providerModule = z.object({
-  newClient: z
-    .function(z.tuple([providerConfigSchema]))
-    .returns(z.promise(llmProviderClientSchema)),
-});
+export const providerModule = z.union([
+  z.string(),
+  z.object({
+    newClient: z
+      .function(z.tuple([providerConfigSchema]))
+      .returns(z.promise(llmProviderClientSchema)),
+  }),
+]);
 
 export type ProviderModule = z.infer<typeof providerModule>;
 

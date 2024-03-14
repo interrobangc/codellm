@@ -18,20 +18,17 @@ const ChatNav = () => {
   return (
     <div key={chatId} className="navbar bg-base-100 pl-6 pr-10">
       <div className="navbar-start">
-        <Link to="./" className="btn btn-ghost text-xl">
-          Chat
-        </Link>
-        <div className="dropdown dropdown-bottom">
+        <div className="dropdown dropdown-right">
           <div
             key={chatId}
             tabIndex={0}
             role="button"
-            className="m-1 btn btn-sm btn-accent"
+            className="m-1 btn btn-sm btn-primary"
           >
             {currentChatName}
             <ul
               key={chatId}
-              className="menu menu-sm dropdown-content z-[1] p-2 bg-accent shadow rounded-box min-w-[10rem]"
+              className="menu menu-sm dropdown-content z-[1] p-2 bg-primary shadow rounded-box min-w-[10rem]"
             >
               {loaderData.chats.map((chat) => (
                 <li key={chat.id}>

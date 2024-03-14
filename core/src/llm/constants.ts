@@ -1,4 +1,7 @@
 export const LLM_ERRORS = {
+  'llm:importProviderModule': {
+    message: 'Error importing LLM provider module',
+  },
   'llm:initClients': {
     message: 'Error initializing LLM clients',
   },

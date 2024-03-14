@@ -15,6 +15,7 @@ import {
 import { log } from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
+import { importClient } from './importClient.js';
 /**
  * Initialize the underlying provider/model for a given service
  *
@@ -99,9 +100,13 @@ export const newLlmClient = async (
     });
   }
 
-  const { config: providerConfig, module } = providerConfigEntry;
+  const importRes = await importClient(config, provider);
+  if (isError(importRes)) return importRes;
+
+  const { providerConfig, providerModule } = importRes;
+
   const client = await promiseMayFail(
-    module.newClient({
+    providerModule.newClient({
       config: providerConfig,
       model,
     }),

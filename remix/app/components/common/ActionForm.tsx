@@ -29,6 +29,9 @@ export const ActionForm = ({
   return (
     <Form method={method} className={className} onSubmit={onSubmit}>
       {children}
+      {shouldHideSubmitButton && (
+        <input type="hidden" name="intent" value={intent} />
+      )}
       {!shouldHideSubmitButton && (
         <button className={buttonClass} name="intent" value={intent}>
           {submitButtonChildren}
