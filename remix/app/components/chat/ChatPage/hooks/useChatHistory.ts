@@ -1,9 +1,8 @@
-import type { ChatLoaderData } from '@remix/.server/chat/$chatId';
 import { useLoaderData, useNavigation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { useEventStream } from '@remix-sse/client';
 import { AgentHistory, AgentHistoryItem } from '@codellm/core';
-import { loader } from '@remix/routes/emitter';
+import type { ChatLoaderData } from '@remix/components/chat/types';
 
 export const useChatHistory = () => {
   const loaderData = useLoaderData<ChatLoaderData>();
@@ -16,8 +15,6 @@ export const useChatHistory = () => {
     deserialize: (raw) => JSON.parse(raw) as AgentHistoryItem,
     returnLatestOnly: true,
   });
-
-  console.dir(loaderData, { depth: null });
 
   useEffect(() => {
     if (navigation.state === 'idle') {

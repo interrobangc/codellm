@@ -19,7 +19,3 @@ export const loader: LoaderFunction = async ({
     return redirect('/chat');
   }
 };
-export type ChatLayoutLoaderData = {
-  chats: ReturnType<typeof getClientSafeChats>;
-  currentChat?: ReturnType<typeof getClientSafeChat>;
-};

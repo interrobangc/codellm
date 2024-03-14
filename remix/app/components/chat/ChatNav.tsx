@@ -1,5 +1,5 @@
-import type { ChatLayoutLoaderData } from '@remix/.server/chat/layout';
 import { Link, useLoaderData, useParams } from '@remix-run/react';
+import type { ChatLayoutLoaderData } from '@remix/components/chat/types';
 
 const ChatNav = () => {
   const loaderData = useLoaderData<ChatLayoutLoaderData>();
