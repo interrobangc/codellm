@@ -1,6 +1,6 @@
 import type { LogLevel, PartialConfig } from '@codellm/core';
 
-const config: PartialConfig = {
+export const getConfig = async (): Promise<PartialConfig> => ({
   formatInUserMessage: true,
   llmProvider: process.env.CODELLM_PROVIDER ?? 'ollama',
   logLevel: (process.env.CODELLM_LOG_LEVEL as LogLevel) ?? 'info',
@@ -16,21 +16,33 @@ const config: PartialConfig = {
       config: {
         apiKey: process.env.ANTHROPIC_API_KEY,
       },
+      module: '@codellm/provider-anthropic',
+    },
+    langchain: {
+      config: {
+        chatClass: '',
+        config: {},
+        module: '',
+      },
+      module: '@codellm/provider-langchain',
     },
     mistral: {
       config: {
         apiKey: process.env.MISTRAL_API_KEY,
       },
+      module: '@codellm/provider-mistral',
     },
     ollama: {
       config: {
         host: process.env.OLLAMA_HOST ?? 'http://localhost:11434',
       },
+      module: '@codellm/provider-ollama',
     },
     openai: {
       config: {
         apiKey: process.env.OPENAI_API_KEY,
       },
+      module: '@codellm/provider-openai',
     },
   },
   tools: {
@@ -58,6 +70,4 @@ const config: PartialConfig = {
       module: '@codellm/tool-project-glob',
     },
   },
-};
-
-export default config;
+});

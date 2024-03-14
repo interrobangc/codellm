@@ -5,7 +5,13 @@ export const vectorDbCollectionName = 'docSummary' as const;
 export const numResults = 8;
 
 export const DEFAULT_CONFIG: ToolConfig = {
-  exclude: ['**/node_modules/**', '**/dist/**'],
+  exclude: [
+    '**/build/**',
+    '**/cdk.out/**',
+    '**/coverage/**',
+    '**/dist/**',
+    '**/node_modules/**',
+  ],
   include: ['**/*.md', '**/*.txt'],
   vectorDbCollectionName,
   vectorDbName: 'chromadb',

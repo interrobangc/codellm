@@ -1,5 +1,7 @@
 import type { Config, Provider } from '@/index.js';
-import { CodeLlmError } from '@/error/index.js';
+
+import isString from 'lodash/isString.js';
+import { CodeLlmError, promiseMayFail } from '@/error/index.js';
 
 /**
  * Import the provider module for a given provider
@@ -20,7 +22,18 @@ export const importClient = async (config: Config, provider: Provider) => {
 
   const { config: providerConfig, module } = providerConfigItem;
 
-  const providerModule = await import(module);
+  if (!isString(module)) {
+    return {
+      providerConfig,
+      providerModule: module,
+    };
+  }
+
+  const providerModule = await promiseMayFail(
+    import(module),
+    'llm:importProviderModule',
+    { providerConfigItem },
+  );
 
   return {
     providerConfig,

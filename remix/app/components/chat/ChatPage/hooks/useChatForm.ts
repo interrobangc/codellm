@@ -1,5 +1,6 @@
 import { useNavigation } from '@remix-run/react';
 import { useEffect, useRef } from 'react';
+import { useCurrentChat } from './useCurrentChat';
 
 export const useChatForm = () => {
   const navigation = useNavigation();
@@ -12,5 +13,7 @@ export const useChatForm = () => {
     }
   }, [isSubmitting]);
 
-  return { $form, isSubmitting };
+  const currentChat = useCurrentChat();
+
+  return { $form, currentChat, isSubmitting };
 };

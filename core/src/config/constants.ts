@@ -16,42 +16,20 @@ export const REQUIRED_KEYS = [
   'project.name',
 ];
 
-export const SERVICES_TYPE = {
-  agent: 'agent',
-  embedding: 'embedding',
-  summarize: 'summarize',
-  tool: 'tool',
-} as const;
-
-export const SERVICES = Object.values(SERVICES_TYPE);
-
 export const LLM_DEFAULTS = {
   anthropic: {
-    agent: {
+    chat: {
       // model: 'claude-3-opus-20240229',
       model: 'claude-3-sonnet-20240229',
-
       provider: 'anthropic',
     },
     embedding: {
       model: 'davinci-codex',
       provider: 'anthropic',
     },
-    summarize: {
-      // model: 'claude-3-opus-20240229',
-      model: 'claude-3-sonnet-20240229',
-
-      provider: 'anthropic',
-    },
-    tool: {
-      // model: 'claude-3-opus-20240229',
-      model: 'claude-3-sonnet-20240229',
-
-      provider: 'anthropic',
-    },
   },
   mistral: {
-    agent: {
+    chat: {
       model: 'mistral-large-latest',
       provider: 'mistral',
     },
@@ -59,17 +37,9 @@ export const LLM_DEFAULTS = {
       model: 'mistral-embed',
       provider: 'mistral',
     },
-    summarize: {
-      model: 'open-mixtral-8x7b',
-      provider: 'mistral',
-    },
-    tool: {
-      model: 'open-mixtral-8x7b',
-      provider: 'mistral',
-    },
   },
   ollama: {
-    agent: {
+    chat: {
       model: 'mixtral:8x7b',
       provider: 'ollama',
     },
@@ -77,30 +47,14 @@ export const LLM_DEFAULTS = {
       model: 'nomic-embed-text',
       provider: 'ollama',
     },
-    summarize: {
-      model: 'mixtral:8x7b',
-      provider: 'ollama',
-    },
-    tool: {
-      model: 'mixtral:8x7b',
-      provider: 'ollama',
-    },
   },
   openai: {
-    agent: {
+    chat: {
       model: 'gpt-4-turbo-preview',
       provider: 'openai',
     },
     embedding: {
       model: 'text-davinci-003',
-      provider: 'openai',
-    },
-    summarize: {
-      model: 'gpt-4-turbo-preview',
-      provider: 'openai',
-    },
-    tool: {
-      model: 'gpt-4-turbo-preview',
       provider: 'openai',
     },
   },
@@ -111,33 +65,6 @@ export const DEFAULTS = {
   llmProvider: 'ollama',
   logFormat: 'cli',
   logLevel: 'info',
-  providers: {
-    anthropic: {
-      config: {
-        apiKey: '',
-      },
-      module: '@codellm/provider-anthropic',
-    },
-    mistral: {
-      config: {
-        apiKey: '',
-        endpoint: 'https://api.mistral.ai',
-      },
-      module: '@codellm/provider-mistral',
-    },
-    ollama: {
-      config: {
-        host: 'http://localhost:11434',
-      },
-      module: '@codellm/provider-ollama',
-    },
-    openai: {
-      config: {
-        apiKey: '',
-      },
-      module: '@codellm/provider-openai',
-    },
-  },
   shouldImportAsync: true,
   shouldThrow: false,
   vectorDbs: {
@@ -145,6 +72,6 @@ export const DEFAULTS = {
       module: '@codellm/vectordb-chromadb',
     },
   },
-} as const;
+};
 
 /* eslint-enable sonarjs/no-duplicate-string */

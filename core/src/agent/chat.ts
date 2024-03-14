@@ -1,7 +1,12 @@
 import type { MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import { CodeLlmError, isError, mayFail } from '@/error/index.js';
+import {
+  CodeLlmError,
+  isError,
+  mayFail,
+  promiseMayFail,
+} from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -66,25 +71,46 @@ export const sendUserMessage = async ({
     role: 'user',
   });
 
-  return decodeResponse(await agentLlm.chat(messages));
+  const response = await promiseMayFail(
+    agentLlm.chat(messages),
+    'agent:chat:sendUserMessage',
+    { agentLlm, messages },
+  );
+  if (isError(response)) return response;
+
+  return decodeResponse((response as string).trim());
 };
 
 export const handleQuestionRecursive = async ({
   agentLlm,
   depth = 0,
   error = null,
+  id,
   question,
   toolResponses = [],
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const response = await sendUserMessage({
     agentLlm,
     error,
+    id,
     question,
     toolResponses,
   });
+
+  if (depth >= AGENT_RECURSION_DEPTH_MAX) {
+    const e = new CodeLlmError({
+      code: 'agent:maxDepthExceeded',
+    });
+    addToHistory(id, {
+      error: e,
+      role: 'error',
+    });
+    return e;
+  }
+
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
-    addToHistory({
+    addToHistory(id, {
       error: response,
       role: 'error',
     });
@@ -93,33 +119,24 @@ export const handleQuestionRecursive = async ({
       agentLlm,
       depth: depth + 1,
       error: `${response.message} - ${response.cause}`,
+      id,
       question,
       toolResponses,
     });
   }
 
   if (agentTypes.isAgentResponseResponse(response)) {
-    addToHistory(response);
+    addToHistory(id, response);
     return response;
   }
 
-  if (depth >= AGENT_RECURSION_DEPTH_MAX) {
-    const e = new CodeLlmError({
-      code: 'agent:maxDepthExceeded',
-    });
-    addToHistory({
-      error: e,
-      role: 'error',
-    });
-    return e;
-  }
-
   const toolResponse = await handleToolResponse({
+    id,
     response,
     toolResponses,
   });
   if (isError(toolResponse)) {
-    addToHistory({
+    addToHistory(id, {
       error: toolResponse,
       role: 'error',
     });
@@ -130,6 +147,7 @@ export const handleQuestionRecursive = async ({
   return handleQuestionRecursive({
     agentLlm,
     depth: depth + 1,
+    id,
     question,
     toolResponses: toolResponse,
   });
@@ -143,18 +161,19 @@ export const handleQuestionRecursive = async ({
  *
  * @returns - The response from the LLM
  */
-export const chat = async (question: string) => {
+export const chat = (id: string) => async (question: string) => {
   log('chat', 'debug', { question });
-  const agentLlm = getLlm('agent');
+  const agentLlm = getLlm(id);
   if (isError(agentLlm)) return agentLlm;
 
-  addToHistory({
+  addToHistory(id, {
     content: question,
     role: 'user',
   });
 
   return handleQuestionRecursive({
     agentLlm,
+    id,
     question,
   });
 };

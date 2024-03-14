@@ -1,6 +1,6 @@
 import merge from 'lodash/merge.js';
 
-import { DEFAULTS } from '@cli/config/constants.js';
+import { DEFAULTS, PROVIDERS } from '@cli/config/constants.js';
 
 export const configFileData = {
   llmProvider: 'ollama',
@@ -11,4 +11,6 @@ export const configFileData = {
   },
 };
 
-export const expectedDefaultConfig = merge({}, DEFAULTS, configFileData);
+export const expectedDefaultConfig = merge({}, DEFAULTS, configFileData, {
+  providers: PROVIDERS,
+});

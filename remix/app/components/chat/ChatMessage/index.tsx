@@ -23,7 +23,13 @@ const chatMessageComponents: ChatMessageComponents = {
     const message = m as AgentHistoryErrorItem;
     return (
       <ChatMessageAlert innerClass="chat-bubble-error">
-        There was an error: {message.error.message}
+        There was an error:{' '}
+        <div
+          className="font-bold text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
+          data-tip={JSON.stringify(message.error, null, 4)}
+        >
+          {message.error.message}
+        </div>
       </ChatMessageAlert>
     );
   },

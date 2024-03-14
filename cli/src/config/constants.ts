@@ -1,3 +1,11 @@
+import type { ProviderConfigs, ProviderModule } from '@codellm/core';
+
+import * as anthropic from '@codellm/provider-anthropic';
+import * as langchain from '@codellm/provider-langchain';
+import * as mistral from '@codellm/provider-mistral';
+import * as ollama from '@codellm/provider-ollama';
+import * as openai from '@codellm/provider-openai';
+
 export const DEFAULTS = {
   configFile: './config.yml',
 } as const;
@@ -49,6 +57,41 @@ export const OPTIONS = {
     default: process.env['OPENAI_API_KEY'],
     description: 'OpenAI API key',
     type: 'string',
+  },
+} as const;
+
+export const PROVIDERS: ProviderConfigs = {
+  anthropic: {
+    config: {
+      apiKey: '',
+    },
+    module: anthropic as unknown as ProviderModule,
+  },
+  langchain: {
+    config: {
+      chatClass: '',
+      config: {},
+      module: '',
+    },
+    module: langchain as unknown as ProviderModule,
+  },
+  mistral: {
+    config: {
+      apiKey: '',
+    },
+    module: mistral as unknown as ProviderModule,
+  },
+  ollama: {
+    config: {
+      host: 'http://localhost:11434',
+    },
+    module: ollama as unknown as ProviderModule,
+  },
+  openai: {
+    config: {
+      apiKey: '',
+    },
+    module: openai as unknown as ProviderModule,
   },
 } as const;
 

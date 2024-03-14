@@ -6,7 +6,7 @@ import { log } from '@/log/index.js';
 import { initPrompts } from '@/prompt/index.js';
 import { initTools } from '@/tool/index.js';
 import chat from './chat.js';
-import { off, on } from './emitter.js';
+import { getEmitter } from './emitter.js';
 import { clearHistory, getHistory } from './history.js';
 
 /**
@@ -16,11 +16,14 @@ import { clearHistory, getHistory } from './history.js';
  *
  * @returns - The new agent
  */
-export const newAgent = async (configParam: PartialConfig) => {
+export const newAgent = async (
+  configParam: PartialConfig,
+  id: string = 'agent',
+) => {
   const initConfigRes = initConfig(configParam);
   if (isError(initConfigRes)) return initConfigRes;
 
-  const llms = await initLlms(['agent', 'tool']);
+  const llms = await initLlms([id, 'tool']);
   if (isError(llms)) return llms;
 
   log('newAgent LLMs', 'silly', { llms });
@@ -36,9 +39,12 @@ export const newAgent = async (configParam: PartialConfig) => {
   const content = await prompt.get('agentSystem');
   if (isError(content)) return content;
 
+  const emitter = getEmitter(id);
+  if (isError(emitter)) return emitter;
+
   clearHistory();
-  conversation.clearHistory('agent');
-  conversation.addMessages('agent', [
+  conversation.clearHistory(id);
+  conversation.addMessages(id, [
     {
       content,
       role: 'system',
@@ -46,10 +52,10 @@ export const newAgent = async (configParam: PartialConfig) => {
   ]);
 
   return {
-    chat,
-    getHistory: () => getHistory(),
-    offEmit: off,
-    onEmit: on,
+    chat: chat(id),
+    getHistory: () => getHistory(id),
+    offEmit: emitter.off,
+    onEmit: emitter.on,
   } as Agent;
 };
 

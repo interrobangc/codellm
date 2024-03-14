@@ -1,5 +1,23 @@
-export { action, loader } from '@remix/.server/chat';
+import { Outlet, ShouldRevalidateFunction } from '@remix-run/react';
+import ChatNav from '@remix/components/chat/ChatNav';
 
-export { meta } from '@remix/components/chat/ChatPage';
-import ChatPage from '@remix/components/chat/ChatPage';
-export default ChatPage;
+export default function ChatLayout() {
+  return (
+    <div>
+      <ChatNav />
+      <Outlet />
+    </div>
+  );
+}
+
+export { loader } from '@remix/.server/chat';
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentParams,
+  defaultShouldRevalidate,
+  nextParams,
+}) => {
+  if (currentParams.chatId !== nextParams.chatId) return true;
+
+  return defaultShouldRevalidate;
+};

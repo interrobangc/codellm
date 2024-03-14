@@ -15,6 +15,7 @@ import { addToHistory } from './history.js';
  * @returns - The tool responses or an error
  */
 export const handleToolResponse = async ({
+  id,
   response,
   toolResponses,
 }: agentTypes.AgentHandleToolResponseParams): Promise<
@@ -32,7 +33,7 @@ export const handleToolResponse = async ({
 
   log(`Running the ${response.name} tool`);
 
-  addToHistory({
+  addToHistory(id, {
     name: toolName,
     params,
     role: 'tool',

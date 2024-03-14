@@ -12,6 +12,7 @@
   "dependencies": {
     "@codellm/core": "^0.0.1",
     "@codellm/provider-anthropic": "^0.0.1",
+    "@codellm/provider-langchain": "^0.0.1",
     "@codellm/provider-mistral": "^0.0.1",
     "@codellm/provider-ollama": "^0.0.1",
     "@codellm/provider-openai": "^0.0.1",
@@ -27,6 +28,7 @@
     "@remix-sse/client": "^1.0.1",
     "@remix-sse/server": "^1.0.1",
     "isbot": "^4.1.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-textarea-autosize": "^8.5.3"

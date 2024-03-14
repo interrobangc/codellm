@@ -3,10 +3,11 @@ import type { ToolConfig } from './types';
 
 export const DEFAULT_CONFIG: ToolConfig = {
   exclude: [
-    '**/node_modules/**',
+    '**/build/**',
     '**/cdk.out/**',
     '**/coverage/**',
     '**/dist/**',
+    '**/node_modules/**',
   ],
 } as const;
 

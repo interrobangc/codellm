@@ -17,6 +17,8 @@ const main = async () => {
         const agent = await newAgent(getConfig(argv));
         if (isError(agent)) {
           log('Error creating agent', 'error', { agent });
+          // eslint-disable-next-line no-console
+          console.dir(agent, { depth: null });
           // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw agent;
         }
@@ -31,6 +33,8 @@ const main = async () => {
         const importer = await newImporter(getConfig(argv));
         if (isError(importer)) {
           log('Error creating importer', 'error', { importer });
+          // eslint-disable-next-line no-console
+          console.dir(importer, { depth: null });
           // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw importer;
         }
@@ -38,6 +42,8 @@ const main = async () => {
         const importRes = await importer.import();
         if (isError(importRes)) {
           log('Error importing', 'error', { importRes });
+          // eslint-disable-next-line no-console
+          console.dir(importRes, { depth: null });
           // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw importRes;
         }

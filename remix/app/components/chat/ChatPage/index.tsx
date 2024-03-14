@@ -3,7 +3,7 @@ import type { MetaFunction } from '@remix-run/node';
 import ContentWrapper from '@remix/components/common/ContentWrapper';
 import ChatForm from './ChatForm';
 import ChatHistory from './ChatHistory';
-import ChatResetButton from './ChatResetButton';
+import ChatPageHeader from './ChatPageHeader';
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,10 +16,7 @@ export const ChatPage = () => {
   return (
     <>
       <ContentWrapper>
-        <ChatResetButton
-          buttonClassName="btn-sm btn-secondary"
-          formClassName="flex flex-row justify-end"
-        />
+        <ChatPageHeader />
         <ChatHistory />
         <ChatForm />
       </ContentWrapper>

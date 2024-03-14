@@ -1,5 +1,5 @@
 import type { Config, Tool, ToolRunParamsCommon } from '@codellm/core';
-import { initConfig, initLogger } from '@codellm/core';
+import { initConfig } from '@codellm/core';
 import type { ToolConfig } from './types';
 
 import { DEFAULT_CONFIG, description } from './constants.js';
@@ -14,7 +14,6 @@ import run from './run.js';
  */
 export const newTool = async (toolName: string, config: Config) => {
   initConfig(config);
-  initLogger(config);
   const toolConfig = {
     ...DEFAULT_CONFIG,
     ...(config.tools?.[toolName]?.config as Partial<ToolConfig>),

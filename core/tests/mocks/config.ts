@@ -1,4 +1,5 @@
 import type { PartialConfig } from '@/.';
+import { getValidLlmProviderClient } from './llms';
 
 export const unitTestConfig: PartialConfig = {
   paths: {
@@ -7,6 +8,16 @@ export const unitTestConfig: PartialConfig = {
   },
   project: {
     name: 'testProject',
+  },
+  providers: {
+    ollama: {
+      config: {
+        fakeProviderConfig: 'fakeProvider',
+      },
+      module: {
+        newClient: () => getValidLlmProviderClient(),
+      },
+    },
   },
   tools: {
     fakeToolName: {

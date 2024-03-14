@@ -9,7 +9,7 @@ export const getLlm = (service: Service) => {
   if (!llm) {
     return new CodeLlmError({
       code: 'llm:noServiceLlm',
-      meta: { service },
+      meta: { llms: Object.fromEntries(llms), service },
     });
   }
   return llm;
