@@ -11,7 +11,9 @@ export const useChatHistory = () => {
     [],
   );
 
-  const eventStream = useEventStream('/emitter', {
+  const { id } = loaderData.currentChat;
+
+  const eventStream = useEventStream(`/chat/${id}/emitter`, {
     deserialize: (raw) => JSON.parse(raw) as AgentHistoryItem,
     returnLatestOnly: true,
   });
