@@ -1,7 +1,12 @@
 import type { MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import { CodeLlmError, isError, mayFail } from '@/error/index.js';
+import {
+  CodeLlmError,
+  isError,
+  mayFail,
+  promiseMayFail,
+} from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -66,7 +71,11 @@ export const sendUserMessage = async ({
     role: 'user',
   });
 
-  const response = await agentLlm.chat(messages);
+  const response = await promiseMayFail(
+    agentLlm.chat(messages),
+    'agent:chat:sendUserMessage',
+    { agentLlm, messages },
+  );
   if (isError(response)) return response;
 
   return decodeResponse((response as string).trim());
@@ -87,6 +96,18 @@ export const handleQuestionRecursive = async ({
     question,
     toolResponses,
   });
+
+  if (depth >= AGENT_RECURSION_DEPTH_MAX) {
+    const e = new CodeLlmError({
+      code: 'agent:maxDepthExceeded',
+    });
+    addToHistory(id, {
+      error: e,
+      role: 'error',
+    });
+    return e;
+  }
+
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
     addToHistory(id, {
@@ -107,17 +128,6 @@ export const handleQuestionRecursive = async ({
   if (agentTypes.isAgentResponseResponse(response)) {
     addToHistory(id, response);
     return response;
-  }
-
-  if (depth >= AGENT_RECURSION_DEPTH_MAX) {
-    const e = new CodeLlmError({
-      code: 'agent:maxDepthExceeded',
-    });
-    addToHistory(id, {
-      error: e,
-      role: 'error',
-    });
-    return e;
   }
 
   const toolResponse = await handleToolResponse({

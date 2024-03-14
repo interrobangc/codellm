@@ -2,6 +2,9 @@ export const AGENT_ERRORS = {
   'agent:addHistory': {
     message: 'Error adding to agent history',
   },
+  'agent:chat:sendUserMessage': {
+    message: 'Error sending user message to llm client',
+  },
   'agent:decodeResponse': {
     message: 'Error decoding agent response',
   },
