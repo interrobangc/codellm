@@ -8,14 +8,15 @@ import { getChat, initChat } from './chats';
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
 
-  const agent = await getChat(params.chatId);
+  const currentChat = await getChat(params.chatId);
 
-  console.dir(agent, { depth: null });
+  console.dir(currentChat, { depth: null });
 
-  const history = agent.client.getHistory();
-  return json({ history });
+  const history = currentChat.client.getHistory();
+  return json({ currentChat, history });
 };
 export type ChatLoaderData = {
+  currentChat: ReturnType<typeof getChat>;
   history: AgentHistory;
 };
 
@@ -47,6 +48,12 @@ export const clearAgent = async (chatId: string) => {
   return { ok: true };
 };
 
+export const renameChat = async (chatId: string, newName: string) => {
+  const chat = await getChat(chatId);
+  chat.name = newName;
+  return { ok: true };
+};
+
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const formData = await request.clone().formData();
   const intent = formData.get('intent');
@@ -57,6 +64,8 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   switch (intent) {
     case 'clearAgent':
       return clearAgent(chatId);
+    case 'renameChat':
+      return renameChat(chatId, formData.get('name') as string);
     case 'sendChat':
       return sendChatAction(chatId, formData);
     default:

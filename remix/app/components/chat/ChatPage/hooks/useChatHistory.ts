@@ -1,4 +1,4 @@
-import type { ChatLoaderData } from '@remix/.server/chat/chat';
+import type { ChatLoaderData } from '@remix/.server/chat/chatPage';
 import { useLoaderData, useNavigation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { useEventStream } from '@remix-sse/client';

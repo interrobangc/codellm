@@ -1,5 +1,5 @@
 import useChatHistory from './hooks/useChatHistory';
-import ChatMessage from './ChatMessage';
+import ChatMessage from '../ChatMessage';
 import ChatLoadingMessage from './ChatLoadingMessage';
 
 export const ChatHistory = () => {
