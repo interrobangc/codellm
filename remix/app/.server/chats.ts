@@ -3,7 +3,7 @@ import type { Agent, AgentHistoryItem } from '@codellm/core';
 import { EventEmitter } from 'events';
 import { isError, log, newAgent } from '@codellm/core';
 import omit from 'lodash/omit';
-import config from './config';
+import { getConfig } from './config';
 
 export type ChatItem = {
   client: Agent;
@@ -14,8 +14,9 @@ export type ChatItem = {
 export type Chats = Map<string, ChatItem>;
 
 const chats: Chats = new Map();
-export const eventStreamEmitter = new EventEmitter();
+const eventStreamEmitter = new EventEmitter();
 
+export const getEventStreamEmitter = () => eventStreamEmitter;
 export const getChatsLength = () => chats.size;
 
 // TODO: we're going to need channels for this eventually
@@ -40,7 +41,7 @@ export const initChat = async (id?: string) => {
     currentId = crypto.randomUUID();
   }
 
-  const agentRes = await newAgent(config, currentId);
+  const agentRes = await newAgent(await getConfig(), currentId);
   if (isError(agentRes)) {
     throw agentRes;
   }
