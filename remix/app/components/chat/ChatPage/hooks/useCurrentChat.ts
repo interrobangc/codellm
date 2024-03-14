@@ -1,4 +1,4 @@
-import type { ChatLoaderData } from '@remix/.server/chat/chatPage';
+import type { ChatLoaderData } from '@remix/.server/chat/$chatId';
 import { useLoaderData } from '@remix-run/react';
 
 export const useCurrentChat = () => {

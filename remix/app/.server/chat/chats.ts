@@ -2,7 +2,8 @@ import type { Agent, AgentHistoryItem } from '@codellm/core';
 
 import { EventEmitter } from 'events';
 import { isError, log, newAgent } from '@codellm/core';
-import config from '../../../config';
+import omit from 'lodash/omit';
+import config from './config';
 
 export type ChatItem = {
   client: Agent;
@@ -13,7 +14,6 @@ export type ChatItem = {
 export type Chats = Map<string, ChatItem>;
 
 const chats: Chats = new Map();
-
 export const eventStreamEmitter = new EventEmitter();
 
 export const getChatsLength = () => chats.size;
@@ -67,7 +67,20 @@ export const getChat = (id: string) => {
   return initChat(id);
 };
 
+export const getClientSafeChat = (id: string) => {
+  const chat = chats.get(id);
+  if (!chat) {
+    throw new Error('Chat not found');
+  }
+
+  return omit(chat, 'client');
+};
+
 export const getChats = () => Array.from(chats.values());
+
+export const getClientSafeChats = () => {
+  return getChats().map((chat) => getClientSafeChat(chat.id));
+};
 
 export const getMostRecentChat = () => {
   const chatIds = Array.from(chats.keys());

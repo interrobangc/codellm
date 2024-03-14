@@ -1,4 +1,4 @@
-import type { ChatLayoutLoaderData } from '@remix/.server/chat/chatLayout';
+import type { ChatLayoutLoaderData } from '@remix/.server/chat/layout';
 import { Link, useLoaderData, useParams } from '@remix-run/react';
 
 const ChatNav = () => {
@@ -6,7 +6,6 @@ const ChatNav = () => {
   const params = useParams();
   const chatId = params.chatId;
 
-  // @ts-expect-error - TS doesn't know that loaderData is defined
   const currentChatName = loaderData.currentChat?.name;
 
   const handleClick = (event: React.MouseEvent) => {

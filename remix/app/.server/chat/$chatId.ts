@@ -3,20 +3,22 @@ import type { AgentHistory } from '@codellm/core';
 
 import { json } from '@remix-run/node';
 import { isAgentResponseResponse, isError } from '@codellm/core';
-import { getChat, initChat } from './chats';
+import { getChat, getClientSafeChat, initChat } from './chats';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
+  const { chatId } = params;
 
-  const currentChat = await getChat(params.chatId);
+  const currentChat = await getChat(chatId);
 
   console.dir(currentChat, { depth: null });
 
   const history = currentChat.client.getHistory();
-  return json({ currentChat, history });
+
+  return json({ currentChat: getClientSafeChat(chatId), history });
 };
 export type ChatLoaderData = {
-  currentChat: ReturnType<typeof getChat>;
+  currentChat: ReturnType<typeof getClientSafeChat>;
   history: AgentHistory;
 };
 
@@ -35,12 +37,12 @@ export const sendChatAction = async (
   );
   if (isError(agentResponse)) return { ...result, error: agentResponse };
 
-  return {
+  return json({
     ...result,
     llmResponse: isAgentResponseResponse(agentResponse)
       ? agentResponse.content
       : null,
-  };
+  });
 };
 
 export const clearAgent = async (chatId: string) => {

@@ -6,12 +6,9 @@ export const ChatRenameButton = ({
   buttonClassName,
 }: { buttonClassName?: string; formClassName?: string } = {}) => {
   const { currentChat, isSubmitting } = useChatForm();
-
-  const buttonClasses = `btn ${buttonClassName} ${isSubmitting ? 'btn-disabled' : ''}`;
-
   const $modal = useRef<HTMLDialogElement>(null);
 
-  // @ts-expect-error - TS doesn't know about the name property on the chat object
+  const buttonClasses = `btn ${buttonClassName} ${isSubmitting ? 'btn-disabled' : ''}`;
   const chatName = currentChat.name || 'new name';
 
   const closeModal = () => {
