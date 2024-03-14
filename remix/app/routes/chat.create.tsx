@@ -1,1 +1,1 @@
-export { loader } from '@remix/.server/chat/create';
+export { loader } from '@remix/.server/chat.create';

@@ -18,4 +18,4 @@ export default function Index() {
   );
 }
 
-export { action, loader } from '@remix/.server/chat/$chatId';
+export { action, loader } from '@remix/.server/chat.$chatId';

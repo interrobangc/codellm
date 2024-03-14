@@ -10,7 +10,7 @@ export default function ChatLayout() {
   );
 }
 
-export { loader } from '@remix/.server/chat/layout';
+export { loader } from '@remix/.server/chat';
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentParams,
