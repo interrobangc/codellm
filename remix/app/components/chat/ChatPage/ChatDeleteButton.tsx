@@ -1,7 +1,7 @@
 import ActionButton from '@remix/components/common/ActionButton';
 import { useChatForm } from './hooks/useChatForm';
 
-export const ChatResetButton = ({
+export const ChatDeleteButton = ({
   buttonClassName,
   formClassName,
 }: { buttonClassName?: string; formClassName?: string } = {}) => {
@@ -11,13 +11,13 @@ export const ChatResetButton = ({
     <ActionButton
       buttonClassName={buttonClassName}
       formClassName={formClassName}
-      intent="resetAgent"
+      intent="deleteChat"
       isSubmitting={isSubmitting}
       method="post"
     >
-      reset
+      delete
     </ActionButton>
   );
 };
 
-export default ChatResetButton;
+export default ChatDeleteButton;

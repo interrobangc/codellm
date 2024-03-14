@@ -1,9 +1,14 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import type { AgentHistory } from '@codellm/core';
 
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { isAgentResponseResponse, isError } from '@codellm/core';
-import { getChat, getClientSafeChat, initChat } from './chats';
+import {
+  deleteChat,
+  getChat,
+  getClientSafeChat,
+  getMostRecentChat,
+} from './chats';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
@@ -42,9 +47,12 @@ export const sendChatAction = async (
   });
 };
 
-export const clearAgent = async (chatId: string) => {
-  await initChat(chatId);
-  return { ok: true };
+export const deleteChatAction = (chatId: string) => {
+  deleteChat(chatId);
+  const mostRecentChat = getMostRecentChat();
+  if (mostRecentChat) return redirect(`/chat/${mostRecentChat.id}`);
+
+  return redirect('/chat');
 };
 
 export const renameChat = async (chatId: string, newName: string) => {
@@ -60,8 +68,8 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   const formData = await request.clone().formData();
   const intent = formData.get('intent');
   switch (intent) {
-    case 'clearAgent':
-      return clearAgent(chatId);
+    case 'deleteChat':
+      return deleteChatAction(chatId);
     case 'renameChat':
       return renameChat(chatId, formData.get('name') as string);
     case 'sendChat':

@@ -20,9 +20,9 @@ export const getEventStreamEmitter = () => eventStreamEmitter;
 export const getChatsLength = () => chats.size;
 
 // TODO: we're going to need channels for this eventually
-const onAgentEmit = (params: AgentHistoryItem) => {
+const onAgentEmit = (chatId: string) => (params: AgentHistoryItem) => {
   log('onAgentEmit emitting', 'debug', params);
-  eventStreamEmitter.emit('agent', params);
+  eventStreamEmitter.emit(`agent:${chatId}`, params);
 };
 
 export const initChat = async (id?: string) => {
@@ -34,7 +34,7 @@ export const initChat = async (id?: string) => {
   if (id) {
     currentChat = chats.get(id);
     if (currentChat) {
-      currentChat.client.offEmit(onAgentEmit);
+      currentChat.client.offEmit(onAgentEmit(id));
     }
     currentId = id;
   } else {
@@ -46,7 +46,7 @@ export const initChat = async (id?: string) => {
     throw agentRes;
   }
 
-  agentRes.onEmit(onAgentEmit);
+  agentRes.onEmit(onAgentEmit(currentId));
   const name = currentChat?.name || `chat-${getChatsLength() + 1}`;
   chats.set(currentId, {
     id: currentId,
@@ -66,6 +66,14 @@ export const getChat = (id: string) => {
   if (agent) return agent;
 
   return initChat(id);
+};
+
+export const deleteChat = (id: string) => {
+  const chat = chats.get(id);
+  if (chat) {
+    chat.client.offEmit(onAgentEmit(id));
+    chats.delete(id);
+  }
 };
 
 export const getClientSafeChat = (id: string) => {

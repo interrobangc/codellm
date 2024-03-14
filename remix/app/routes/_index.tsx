@@ -12,11 +12,13 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   // const isLoading = Boolean(transition.action?.type === 'idle');
   return (
-    <ContentWrapper>
-      <h1 className="text-4xl">Welcome to CodeLLM!</h1>
-      <p className="text-lg">
-        This is a chatbot that can answer your questions about a code project.
-      </p>
-    </ContentWrapper>
+    <div className="pl-5 pr-5">
+      <ContentWrapper>
+        <h1 className="text-4xl">Welcome to CodeLLM!</h1>
+        <p className="text-lg">
+          This is a chatbot that can answer your questions about a code project.
+        </p>
+      </ContentWrapper>
+    </div>
   );
 }

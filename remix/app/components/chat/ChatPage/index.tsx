@@ -14,13 +14,13 @@ export const meta: MetaFunction = () => {
 
 export const ChatPage = () => {
   return (
-    <>
+    <div className="pr-4">
       <ContentWrapper>
         <ChatPageHeader />
         <ChatHistory />
         <ChatForm />
       </ContentWrapper>
-    </>
+    </div>
   );
 };
 
