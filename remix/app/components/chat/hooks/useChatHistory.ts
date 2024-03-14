@@ -1,8 +1,8 @@
+import type { ChatLoaderData } from '@remix/.server/chat/chat';
 import { useLoaderData, useNavigation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { useEventStream } from '@remix-sse/client';
 import { AgentHistory, AgentHistoryItem } from '@codellm/core';
-import type { ChatLoaderData } from '@remix/components/chat/types';
 
 export const useChatHistory = () => {
   const loaderData = useLoaderData<ChatLoaderData>();

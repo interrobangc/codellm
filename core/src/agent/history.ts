@@ -1,16 +1,18 @@
-import type { AgentHistory, AgentHistoryAddParams } from '@/.';
+import type { AgentHistories, AgentHistoryAddParams } from '@/.';
 import {
   agentResponseResponseSchema,
   isAgentResponseResponse,
 } from '@/agent/types.js';
-import { CodeLlmError } from '@/error/index.js';
-import { emit } from '@/agent/emitter.js';
+import { CodeLlmError, isError } from '@/error/index.js';
+import { getEmitter } from '@/agent/emitter.js';
 
-const agentHistory: AgentHistory = [];
+const agentHistories: AgentHistories = new Map();
 
-export const getHistory = () => agentHistory;
-
-export const addToHistory = (params: AgentHistoryAddParams) => {
+export const addToHistory = (id: string, params: AgentHistoryAddParams) => {
+  const emitter = getEmitter(id);
+  if (isError(emitter)) {
+    return emitter;
+  }
   try {
     const validAgentResponse = agentResponseResponseSchema.parse(params);
     const { code, content, reason } = validAgentResponse;
@@ -20,8 +22,11 @@ export const addToHistory = (params: AgentHistoryAddParams) => {
       reason,
       role: 'assistant',
     } as const;
-    emit(historyItem);
-    return agentHistory.push(historyItem);
+    emitter.emit(historyItem);
+    return agentHistories.set(id, [
+      ...(agentHistories.get(id) || []),
+      historyItem,
+    ]);
   } catch (error) {
     // ignore
   }
@@ -30,10 +35,17 @@ export const addToHistory = (params: AgentHistoryAddParams) => {
     return new CodeLlmError({ code: 'agent:addHistory', meta: { params } });
   }
 
-  emit(params);
-  return agentHistory.push(params);
+  emitter.emit(params);
+  const historyItem = [...(agentHistories.get(id) || []), params];
+  return agentHistories.set(id, historyItem);
 };
 
 export const clearHistory = () => {
-  agentHistory.length = 0;
+  agentHistories.clear();
+};
+
+export const getHistories = () => agentHistories;
+
+export const getHistory = (id: string) => {
+  return agentHistories.get(id) || [];
 };

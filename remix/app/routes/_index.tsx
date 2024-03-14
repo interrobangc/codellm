@@ -20,5 +20,3 @@ export default function Index() {
     </ContentWrapper>
   );
 }
-
-export { action, loader } from '@remix/.server/chat';

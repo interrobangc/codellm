@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { EventStream } from '@remix-sse/server';
-import { eventStreamEmitter } from '@remix/.server/agent.js';
+import { eventStreamEmitter } from '@remix/.server/chat/chats.js';
 
 export const loader: LoaderFunction = ({ request }) => {
   // Return the EventStream from your route loader

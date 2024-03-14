@@ -76,18 +76,20 @@ export const handleQuestionRecursive = async ({
   agentLlm,
   depth = 0,
   error = null,
+  id,
   question,
   toolResponses = [],
 }: agentTypes.AgentHandleQuestionParams): Promise<agentTypes.AgentResponse> => {
   const response = await sendUserMessage({
     agentLlm,
     error,
+    id,
     question,
     toolResponses,
   });
   if (isError(response)) {
     log('Error decoding response', 'error', { response });
-    addToHistory({
+    addToHistory(id, {
       error: response,
       role: 'error',
     });
@@ -96,13 +98,14 @@ export const handleQuestionRecursive = async ({
       agentLlm,
       depth: depth + 1,
       error: `${response.message} - ${response.cause}`,
+      id,
       question,
       toolResponses,
     });
   }
 
   if (agentTypes.isAgentResponseResponse(response)) {
-    addToHistory(response);
+    addToHistory(id, response);
     return response;
   }
 
@@ -110,7 +113,7 @@ export const handleQuestionRecursive = async ({
     const e = new CodeLlmError({
       code: 'agent:maxDepthExceeded',
     });
-    addToHistory({
+    addToHistory(id, {
       error: e,
       role: 'error',
     });
@@ -118,11 +121,12 @@ export const handleQuestionRecursive = async ({
   }
 
   const toolResponse = await handleToolResponse({
+    id,
     response,
     toolResponses,
   });
   if (isError(toolResponse)) {
-    addToHistory({
+    addToHistory(id, {
       error: toolResponse,
       role: 'error',
     });
@@ -133,6 +137,7 @@ export const handleQuestionRecursive = async ({
   return handleQuestionRecursive({
     agentLlm,
     depth: depth + 1,
+    id,
     question,
     toolResponses: toolResponse,
   });
@@ -146,18 +151,19 @@ export const handleQuestionRecursive = async ({
  *
  * @returns - The response from the LLM
  */
-export const chat = async (question: string) => {
+export const chat = (id: string) => async (question: string) => {
   log('chat', 'debug', { question });
-  const agentLlm = getLlm('agent');
+  const agentLlm = getLlm(id);
   if (isError(agentLlm)) return agentLlm;
 
-  addToHistory({
+  addToHistory(id, {
     content: question,
     role: 'user',
   });
 
   return handleQuestionRecursive({
     agentLlm,
+    id,
     question,
   });
 };

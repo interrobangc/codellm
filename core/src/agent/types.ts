@@ -70,11 +70,13 @@ export type AgentHandleQuestionParams = {
   agentLlm: LlmClient;
   depth?: number;
   error?: string | null;
+  id: string;
   question: string;
   toolResponses?: AgentToolResponses;
 };
 
 export type AgentHandleToolResponseParams = {
+  id: string;
   response: AgentSelectToolResponse;
   toolResponses: AgentToolResponses;
 };
@@ -145,6 +147,8 @@ export type AgentHistoryItem =
   | AgentHistoryUserItem;
 
 export type AgentHistory = AgentHistoryItem[];
+
+export type AgentHistories = Map<string, AgentHistory>;
 
 export type AgentHistoryAddParams =
   | AgentHistoryErrorItem

@@ -1,14 +1,27 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { dump as dumpYaml } from 'js-yaml';
 
+import { getLlm } from '@/llm/index.js';
 import { expectError, testSetup } from '@tests/tools';
 // import { AGENT_RECURSION_DEPTH_MAX } from './constants';
 import * as chat from './chat';
 
-testSetup({ disableLog: false });
+vi.mock('@/llm/index.js', () => ({
+  getLlm: vi.fn().mockImplementation(() => ({
+    chat: vi.fn(),
+  })),
+}));
+
+const mockGetLlm = vi.mocked(getLlm);
+
+const { mockEmit } = testSetup();
 
 const question = 'some question';
+const content = 'some fake content';
 const decodeError = 'agent:decodeResponse';
+const id = 'test-id';
+const responseType = 'response' as const;
+const toolType = 'tool' as const;
 
 vi.mock('@/prompt/index.js', () => ({
   newPrompt: () => ({
@@ -26,22 +39,22 @@ describe('decodeResponse', () => {
       },
       reason:
         'To provide context for answering user questions, we can use the `codeSummaryQuery` tool, which searches relevant code snippets and summaries in the vector database. This tool will help us understand the codebase better.',
-      type: 'tool',
+      type: toolType,
     };
     const encodedResponse = dumpYaml(response);
     expect(chat.decodeResponse(encodedResponse)).toEqual(response);
   });
 
   it('should handle an error decoding an invalid json response', () => {
-    const response = 'some invalid response';
+    const response = content;
 
     expectError(chat.decodeResponse(response), decodeError);
   });
 
   it('should handle an error decoding a valid json response with incorrect type', () => {
     const response = {
-      text: 'some content',
-      type: 'response',
+      text: content,
+      type: responseType,
     };
 
     const encodedResponse = dumpYaml(response);
@@ -52,8 +65,8 @@ describe('decodeResponse', () => {
 describe('sendUserMessage', () => {
   it('should parse a response from a response message', async () => {
     const chatResponse = {
-      content: 'some fake content',
-      type: 'response' as const,
+      content,
+      type: responseType,
     };
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
@@ -61,6 +74,7 @@ describe('sendUserMessage', () => {
     const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
+      id,
       question,
       toolResponses,
     });
@@ -75,7 +89,7 @@ describe('sendUserMessage', () => {
         fakeParam: true,
       },
       reason: 'To answer the question',
-      type: 'tool' as const,
+      type: toolType,
     };
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
@@ -83,6 +97,7 @@ describe('sendUserMessage', () => {
     const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
+      id,
       question,
       toolResponses,
     });
@@ -91,13 +106,14 @@ describe('sendUserMessage', () => {
   });
 
   it('should handle an error decoding a response', async () => {
-    const chatResponse = 'some invalid response';
+    const chatResponse = content;
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
     };
     const toolResponses = [];
     const res = await chat.sendUserMessage({
       agentLlm,
+      id,
       question,
       toolResponses,
     });
@@ -109,8 +125,8 @@ describe('sendUserMessage', () => {
 describe('handleQuestionRecursive', () => {
   it('should handle a valid response immediately', async () => {
     const chatResponse = {
-      content: 'some fake content',
-      type: 'response' as const,
+      content,
+      type: responseType,
     };
     const agentLlm = {
       chat: async () => dumpYaml(chatResponse),
@@ -118,6 +134,7 @@ describe('handleQuestionRecursive', () => {
     const toolResponses = [];
     const res = await chat.handleQuestionRecursive({
       agentLlm,
+      id,
       question,
       toolResponses,
     });
@@ -140,6 +157,42 @@ describe('handleQuestionRecursive', () => {
 
   //   expect(handleQuestionSyp).toHaveBeenCalledTimes(AGENT_RECURSION_DEPTH_MAX);
 
+  //   expectError(res, decodeError);
+  // });
+});
+
+describe('chat', () => {
+  beforeEach(() => {
+    mockGetLlm.mockClear();
+    mockEmit.mockClear();
+  });
+  it('should handle a valid response', async () => {
+    const chatResponse = {
+      content: 'some fake content',
+      type: responseType,
+    };
+    const agentLlm = {
+      chat: async () => dumpYaml(chatResponse),
+    };
+    mockGetLlm.mockImplementation(() => agentLlm);
+    const res = await chat.chat(id)(question);
+    expect(res).toEqual(chatResponse);
+
+    expect(mockGetLlm).toHaveBeenCalledWith(id);
+    expect(mockEmit).toHaveBeenCalledWith({
+      content: question,
+      role: 'user',
+    });
+  });
+
+  // TODO: vite hangs on the recursive function call
+  // it('should handle an error decoding a response', async () => {
+  //   const chatResponse = 'some invalid response';
+  //   const agentLlm = {
+  //     chat: async () => dumpYaml(chatResponse),
+  //   };
+  //   mockGetLlm.mockImplementation(() => agentLlm);
+  //   const res = await chat.chat(id)(question);
   //   expectError(res, decodeError);
   // });
 });
