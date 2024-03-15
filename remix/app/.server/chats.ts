@@ -1,10 +1,17 @@
-import type { Agent, AgentHistoryItem } from '@codellm/core';
+import type {
+  Agent,
+  AgentEmitterChannels,
+  AgentHistoryItem,
+} from '@codellm/core';
 
 import { EventEmitter } from 'events';
-import { isError, log, newAgent } from '@codellm/core';
+import { AGENT_EMITTER_CHANNELS, isError, log, newAgent } from '@codellm/core';
 import omit from 'lodash/omit';
 import { getConfig } from './config';
 
+export const channelsToForward = Object.keys(
+  AGENT_EMITTER_CHANNELS,
+) as AgentEmitterChannels[];
 export type ChatItem = {
   client: Agent;
   id: string;
@@ -25,6 +32,19 @@ const onAgentEmit = (chatId: string) => (params: AgentHistoryItem) => {
   eventStreamEmitter.emit(`agent:${chatId}`, params);
 };
 
+const onEmitListeners = (client: Agent, id: string) => {
+  return channelsToForward.map((channel) => {
+    console.log('onEmitListeners', { channel });
+    return client.onEmit(channel, onAgentEmit(id));
+  });
+};
+
+const offEmitListeners = (client: Agent, id: string) => {
+  return channelsToForward.map((channel) => {
+    return client.offEmit(channel, onAgentEmit(id));
+  });
+};
+
 export const initChat = async (id?: string) => {
   let currentId: string;
   let currentChat: ChatItem | undefined;
@@ -34,7 +54,7 @@ export const initChat = async (id?: string) => {
   if (id) {
     currentChat = chats.get(id);
     if (currentChat) {
-      currentChat.client.offEmit(onAgentEmit(id));
+      offEmitListeners(currentChat.client, id);
     }
     currentId = id;
   } else {
@@ -46,7 +66,7 @@ export const initChat = async (id?: string) => {
     throw agentRes;
   }
 
-  agentRes.onEmit(onAgentEmit(currentId));
+  onEmitListeners(agentRes, currentId);
   const name = currentChat?.name || `chat-${getChatsLength() + 1}`;
   chats.set(currentId, {
     id: currentId,
@@ -71,7 +91,7 @@ export const getChat = (id: string) => {
 export const deleteChat = (id: string) => {
   const chat = chats.get(id);
   if (chat) {
-    chat.client.offEmit(onAgentEmit(id));
+    offEmitListeners(chat.client, id);
     chats.delete(id);
   }
 };

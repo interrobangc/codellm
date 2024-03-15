@@ -127,8 +127,10 @@ export const vectorizeFile = async ({
   prompt,
   toolName,
 }: VectorizeFileParams) => {
+  const relativeFilePath = filePath.replace(resolve(basePath), '.');
+
   // TODO: dynamic for different passes in a single run
-  const id = getId(idPrefix, filePath);
+  const id = getId(idPrefix, relativeFilePath);
 
   const trackingRes = await updateTrackingCache({
     action: 'add',
@@ -136,10 +138,7 @@ export const vectorizeFile = async ({
     filePath,
     idPrefix,
   });
-
   if (isError(trackingRes)) return trackingRes;
-
-  // TODO: track files that have been processed and check fo deletions
 
   const existingDocument = await dbClient.get({
     collectionName,
@@ -162,10 +161,6 @@ export const vectorizeFile = async ({
   log(
     `${toolName} ${countCurrent}/${countTotal} - ${id} is not up to date, updating...`,
   );
-
-  // We want to use the full path for ids to prevent overlap if different projects have the same structure,
-  // but only deal with relative paths for the rest of the metadata and document
-  const relativeFilePath = filePath.replace(resolve(basePath), '.');
 
   const summarizeRes = await summarize(
     llm,

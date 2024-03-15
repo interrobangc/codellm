@@ -1,4 +1,9 @@
-import type { CodeLlmError, LlmClient, ToolRunParamsParams } from '@/.';
+import type {
+  AGENT_EMITTER_CHANNELS,
+  CodeLlmError,
+  LlmClient,
+  ToolRunParamsParams,
+} from '@/.';
 
 import { z } from 'zod';
 import { isError } from '@/error/index.js';
@@ -156,9 +161,17 @@ export type AgentHistoryAddParams =
   | AgentHistoryUserItem
   | AgentResponseResponse;
 
+export type AgentEmitterChannels = keyof typeof AGENT_EMITTER_CHANNELS;
+
 export type Agent = {
   chat: (message: string) => Promise<AgentResponse>;
   getHistory: () => AgentHistory;
-  offEmit: (listener: (params: AgentHistoryItem) => void) => void;
-  onEmit: (listener: (params: AgentHistoryItem) => void) => void;
+  offEmit: (
+    channel: AgentEmitterChannels,
+    listener: (params: AgentHistoryItem) => void,
+  ) => void;
+  onEmit: (
+    channel: AgentEmitterChannels,
+    listener: (params: AgentHistoryItem) => void,
+  ) => void;
 };
