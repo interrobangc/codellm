@@ -1,16 +1,16 @@
 import type { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { getClientSafeChats, getClientSafeChat } from './chats';
+import { getChats, getChat } from './services/chats';
 
 export const loader: LoaderFunction = async ({
   params,
 }: LoaderFunctionArgs) => {
-  const chats = getClientSafeChats();
+  const chats = await getChats();
 
   if (!params.chatId) return { chats };
 
   try {
-    const currentChat = getClientSafeChat(params.chatId);
+    const currentChat = await getChat(params.chatId);
     return json({
       chats,
       currentChat,
@@ -19,3 +19,5 @@ export const loader: LoaderFunction = async ({
     return redirect('/chat');
   }
 };
+
+export type ChatLayoutLoaderData = ReturnType<typeof loader>;

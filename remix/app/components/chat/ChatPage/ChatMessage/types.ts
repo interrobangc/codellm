@@ -1,7 +1,7 @@
-import type { AgentHistoryItem } from '@codellm/core';
+import type { Message } from '@prisma/client';
 
 export type ChatMessageProps = {
-  message: AgentHistoryItem;
+  message: Message;
 };
 
 export type ChatMessageDisplayProps = {
@@ -10,8 +10,6 @@ export type ChatMessageDisplayProps = {
   outerClass?: string;
 };
 
-export type ChatMessageComponentFn = (
-  message: AgentHistoryItem,
-) => React.ReactNode;
+export type ChatMessageComponentFn = (message: Message) => React.ReactNode;
 
 export type ChatMessageComponents = Record<string, ChatMessageComponentFn>;

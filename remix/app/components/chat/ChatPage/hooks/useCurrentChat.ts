@@ -1,7 +1,17 @@
-import { useLoaderData } from '@remix-run/react';
-import type { ChatLoaderData } from '@remix/components/chat/types';
+import { useLoaderData, useParams } from '@remix-run/react';
+import type { Chat, ChatLoaderData } from '@remix/components/chat/types';
+import { useChatEventStream } from './useChatEventStream';
 
 export const useCurrentChat = () => {
-  const loaderData = useLoaderData<ChatLoaderData>();
-  return loaderData.currentChat;
+  const { chatId } = useParams();
+  // @ts-expect-error - we know this is a ChatLoaderData but probably need to check for error
+  const { currentChat } = useLoaderData<ChatLoaderData>();
+
+  console.log('useCurrentChat currentChat', currentChat);
+
+  useChatEventStream<Chat>(`chat:${chatId}`);
+
+  return currentChat as Chat;
 };
+
+export default useCurrentChat;

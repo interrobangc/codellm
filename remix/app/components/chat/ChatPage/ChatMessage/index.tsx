@@ -1,65 +1,54 @@
-import type {
-  AgentHistoryAssistantItem,
-  AgentHistoryErrorItem,
-  AgentHistoryItem,
-  AgentHistoryToolItem,
-  AgentHistoryUserItem,
-} from '@codellm/core';
+import type { Message } from '@prisma/client';
 import type { ChatMessageComponents, ChatMessageProps } from './types';
 
 import ChatMessageAlert from './ChatMessageAlert';
 import ChatMessageBubble from './ChatMessageBubble';
 
 const chatMessageComponents: ChatMessageComponents = {
-  assistant: (m: AgentHistoryItem) => {
-    const message = m as AgentHistoryAssistantItem;
+  assistant: (m: Message) => {
     return (
       <ChatMessageBubble outerClass="chat-end" innerClass="chat-bubble-primary">
-        {message.content}
+        {m.content}
       </ChatMessageBubble>
     );
   },
-  error: (m: AgentHistoryItem) => {
-    const message = m as AgentHistoryErrorItem;
+  error: (m: Message) => {
     return (
       <ChatMessageAlert innerClass="chat-bubble-error">
         There was an error:{' '}
         <div
           className="font-bold text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
-          data-tip={JSON.stringify(message.error, null, 4)}
+          data-tip={JSON.stringify(m.error, null, 4)}
         >
-          {message.error.message}
+          {/* @ts-expect-error - not fighting with Prisma types for now */}
+          {m.error?.message}
         </div>
       </ChatMessageAlert>
     );
   },
-  tool: (m: AgentHistoryItem) => {
-    const message = m as AgentHistoryToolItem;
+  tool: (m: Message) => {
     return (
       <ChatMessageAlert innerClass="chat-bubble-accent">
         Running the{' '}
         <div
           className="font-bold text-primary text-left tooltip tooltip-left tooltip-primary before:whitespace-pre-wrap"
-          data-tip={JSON.stringify(message.params, null, 4)}
+          data-tip={JSON.stringify(m.params, null, 4)}
         >
-          {message.name}
+          {m.name}
         </div>{' '}
         tool
       </ChatMessageAlert>
     );
   },
-  user: (m: AgentHistoryItem) => {
-    const message = m as AgentHistoryUserItem;
+  user: (m: Message) => {
     return (
-      <ChatMessageBubble outerClass="chat-start">
-        {message.content}
-      </ChatMessageBubble>
+      <ChatMessageBubble outerClass="chat-start">{m.content}</ChatMessageBubble>
     );
   },
 };
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
-  const role = message.role;
+  const role = message.type;
 
   return chatMessageComponents[role](message);
 };

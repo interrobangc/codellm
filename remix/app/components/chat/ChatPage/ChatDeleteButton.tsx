@@ -1,5 +1,5 @@
 import ActionButton from '@remix/components/common/ActionButton';
-import { useChatForm } from './hooks/useChatForm';
+import useChatForm from './hooks/useChatForm';
 
 export const ChatDeleteButton = ({
   buttonClassName,

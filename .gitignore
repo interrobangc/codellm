@@ -10,4 +10,7 @@ vscode-profile*
 
 .cache
 .chromadb
+.postgres
 **/*.log
+
+**/migrations/

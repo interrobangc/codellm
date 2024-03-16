@@ -1,37 +1,15 @@
-import { useLoaderData, useNavigation } from '@remix-run/react';
-import { useEffect, useState } from 'react';
-import { useEventStream } from '@remix-sse/client';
-import type { AgentHistory, AgentHistoryItem } from '@codellm/core';
-import type { ChatLoaderData } from '@remix/components/chat/types';
+import { useParams } from '@remix-run/react';
+import type { AgentHistoryItem } from '@codellm/core';
+import { useChatEventStream } from './useChatEventStream';
+import useCurrentChat from './useCurrentChat';
 
 export const useChatHistory = () => {
-  const loaderData = useLoaderData<ChatLoaderData>();
-  const navigation = useNavigation();
-  const [currentMessages, updateCurrentMessages] = useState<AgentHistoryItem[]>(
-    [],
-  );
+  const { chatId } = useParams();
+  const currentChat = useCurrentChat();
+  useChatEventStream<AgentHistoryItem>(`agent:${chatId}`);
 
-  const { id } = loaderData.currentChat;
-
-  const eventStream = useEventStream(`/chat/${id}/emitter`, {
-    deserialize: (raw) => JSON.parse(raw) as AgentHistoryItem,
-    returnLatestOnly: true,
-  });
-
-  useEffect(() => {
-    if (navigation.state === 'idle') {
-      updateCurrentMessages([]);
-    } else if (
-      navigation.state === 'submitting' &&
-      eventStream &&
-      eventStream?.role !== 'assistant'
-    ) {
-      updateCurrentMessages((c) => [...c, eventStream]);
-    }
-  }, [eventStream, navigation.state]);
-
-  // dirty hack. See https://github.com/remix-run/remix/issues/7246
-  return [...(loaderData.history as AgentHistory), ...currentMessages];
+  // @ts-expect-error - not fighting with Prisma types for now
+  return currentChat?.messages || [];
 };
 
 export default useChatHistory;

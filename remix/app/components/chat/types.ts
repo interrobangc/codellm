@@ -1,18 +1,7 @@
-import type { AgentHistory } from '@codellm/core';
-
-export type Chat = {
-  id: string;
-  name: string;
-};
+import type { ChatModel } from '@remix/.server/models';
+export type Chat = ChatModel;
 
 export type Chats = Chat[];
 
-export type ChatLayoutLoaderData = {
-  chats: Chats;
-  currentChat?: Chat;
-};
-
-export type ChatLoaderData = {
-  currentChat: Chat;
-  history: AgentHistory;
-};
+export type { ChatLoaderData } from '@remix/.server/chat.$chatId';
+export type { ChatLayoutLoaderData } from '@remix/.server/chat';

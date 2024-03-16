@@ -1,5 +1,11 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "prisma/seeds/users.js",
+    "prisma/seed.js"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2023"],
     "isolatedModules": true,
@@ -15,7 +21,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@remix/*": ["./app/*"]
+      "@remix/*": ["./app/*"],
+      "@remixTests/*": ["./tests/*"]
     },
 
     // Remix takes care of building everything in `remix build`.

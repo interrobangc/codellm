@@ -1,7 +1,7 @@
 import { redirect } from '@remix-run/node';
-import { initChat } from './chats';
+import { getChat } from './services/chats';
 
 export const loader = async () => {
-  const newChat = await initChat();
+  const newChat = await getChat();
   return redirect(`/chat/${newChat.id}`);
 };

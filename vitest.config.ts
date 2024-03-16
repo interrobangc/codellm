@@ -15,7 +15,7 @@ const config = defineConfig({
   },
   test: {
     coverage: {
-      include: ['**/src/**/*.ts'],
+      include: ['**/src/**/*.ts', '**/app/**/*.ts[x]'],
     },
     globals: true,
   },
