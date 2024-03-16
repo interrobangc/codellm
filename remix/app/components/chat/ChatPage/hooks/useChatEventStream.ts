@@ -15,7 +15,6 @@ export const useChatEventStream = <T>(channel: string) => {
 
   useEffect(() => {
     if (eventStream) {
-      console.log('revalidating', { channel, state: revalidator.state });
       revalidator.revalidate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

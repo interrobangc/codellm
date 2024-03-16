@@ -7,8 +7,6 @@ export const useCurrentChat = () => {
   // @ts-expect-error - we know this is a ChatLoaderData but probably need to check for error
   const { currentChat } = useLoaderData<ChatLoaderData>();
 
-  console.log('useCurrentChat currentChat', currentChat);
-
   useChatEventStream<Chat>(`chat:${chatId}`);
 
   return currentChat as Chat;
