@@ -1,12 +1,14 @@
 import type { ChatLayoutLoaderData } from '@remix/components/chat/types';
+import type { ChatModel } from '@remix/.server/models';
 
 import { Link, useLoaderData, useParams } from '@remix-run/react';
 import { FaPlus } from 'react-icons/fa6';
+import useParamRevalidate from '@remix/components/common/hooks/useParamRevalidate';
 
 const ChatNav = () => {
   const loaderData = useLoaderData<ChatLayoutLoaderData>();
-  const params = useParams();
-  const chatId = params.chatId;
+  const { chatId } = useParams();
+  useParamRevalidate('chatId');
 
   const handleClick = (event: React.MouseEvent) => {
     const elem = event.target as HTMLElement;
@@ -14,6 +16,9 @@ const ChatNav = () => {
       elem?.blur();
     }
   };
+
+  // @ts-expect-error - we know this is a ChatLoaderData but probably need to check for error
+  const chats = loaderData?.chats || [];
 
   return (
     <div className="flex flex-col pr-4 pl-4">
@@ -23,7 +28,7 @@ const ChatNav = () => {
         </Link>
       </div>
       <div className="flex flex-col space-y-1 flex- pt-4">
-        {loaderData.chats.toReversed().map((chat) => (
+        {chats.toReversed().map((chat: ChatModel) => (
           <Link
             key={chat.id}
             to={`/chat/${chat.id}`}

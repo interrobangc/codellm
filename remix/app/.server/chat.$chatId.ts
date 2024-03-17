@@ -1,28 +1,27 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import type { AgentHistory } from '@codellm/core';
 
 import { json, redirect } from '@remix-run/node';
-import { isAgentResponseResponse, isError } from '@codellm/core';
+import { isError } from '@codellm/core';
 import {
   deleteChat,
   getChat,
-  getClientSafeChat,
   getMostRecentChat,
-} from './chats';
+  sendChat,
+  updateChat,
+} from './services/chats';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
   const { chatId } = params;
 
-  const currentChat = await getChat(chatId);
-  const history = currentChat.client.getHistory();
+  console.log('chat.$chatId.ts loader chatId', chatId);
 
-  return json({ currentChat: getClientSafeChat(chatId), history });
+  const currentChat = await getChat(chatId);
+  if (!currentChat) return json({ error: 'Chat not found' }, { status: 404 });
+
+  return json({ currentChat });
 };
-export type ChatLoaderData = {
-  currentChat: ReturnType<typeof getClientSafeChat>;
-  history: AgentHistory;
-};
+export type ChatLoaderData = Awaited<ReturnType<typeof loader>>;
 
 export const sendChatAction = async (
   chatId: string,
@@ -33,32 +32,25 @@ export const sendChatAction = async (
     llmResponse: null,
   };
 
-  const agent = await getChat(chatId);
-  const agentResponse = await agent.client.chat(
-    formData.get('userMessage') as string,
-  );
-  if (isError(agentResponse)) return { ...result, error: agentResponse };
+  const userMessage = formData.get('userMessage') as string;
 
-  return json({
-    ...result,
-    llmResponse: isAgentResponseResponse(agentResponse)
-      ? agentResponse.content
-      : null,
-  });
+  // We don't want to wait because it will block the event stream
+  // triggered revalidation if this action is locked in a loading state
+  sendChat(chatId, userMessage);
+
+  return null;
 };
 
-export const deleteChatAction = (chatId: string) => {
-  deleteChat(chatId);
-  const mostRecentChat = getMostRecentChat();
+export const deleteChatAction = async (chatId: string) => {
+  await deleteChat(chatId);
+  const mostRecentChat = await getMostRecentChat();
   if (mostRecentChat) return redirect(`/chat/${mostRecentChat.id}`);
 
   return redirect('/chat');
 };
 
-export const renameChat = async (chatId: string, newName: string) => {
-  const chat = await getChat(chatId);
-  chat.name = newName;
-  return { ok: true };
+export const renameChat = (chatId: string, newName: string) => {
+  return updateChat(chatId, { name: newName });
 };
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {

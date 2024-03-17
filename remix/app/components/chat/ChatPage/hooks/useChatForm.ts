@@ -4,7 +4,10 @@ import { useCurrentChat } from './useCurrentChat';
 
 export const useChatForm = () => {
   const navigation = useNavigation();
-  const isSubmitting = Boolean(navigation.state === 'submitting');
+  const currentChat = useCurrentChat();
+  const isSubmitting = Boolean(
+    navigation.state === 'submitting' || currentChat.isLoading,
+  );
   const $form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -13,7 +16,7 @@ export const useChatForm = () => {
     }
   }, [isSubmitting]);
 
-  const currentChat = useCurrentChat();
-
   return { $form, currentChat, isSubmitting };
 };
+
+export default useChatForm;

@@ -1,7 +1,7 @@
 import type { HTMLFormMethod } from '@remix-run/router';
 import { Form, useSubmit } from '@remix-run/react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { useChatForm } from './hooks/useChatForm';
+import useChatForm from './hooks/useChatForm';
 
 const intent = 'sendChat';
 

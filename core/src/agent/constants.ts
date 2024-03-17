@@ -20,3 +20,10 @@ export const AGENT_ERRORS = {
 } as const;
 
 export const AGENT_RECURSION_DEPTH_MAX = 5;
+
+export const AGENT_EMITTER_CHANNELS = {
+  assistant: 'agent:assistant',
+  error: 'agent:error',
+  tool: 'agent:tool',
+  user: 'agent:user',
+} as const;
