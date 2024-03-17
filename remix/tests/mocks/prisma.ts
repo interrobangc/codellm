@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { beforeEach } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
@@ -27,5 +28,9 @@ export const mockChat = {
   updatedAt: new Date(),
   userId: mockUser.id,
 };
+
+vi.mock('@remix/.server/models/prisma', () => ({
+  prisma: prismaMock,
+}));
 
 export { prismaMock };
