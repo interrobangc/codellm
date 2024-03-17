@@ -1,10 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { prismaMock } from '@remixTests/mocks/prisma';
+import { llmAgentMock, prismaMock } from '@remixTests/mocks';
 import * as chats from './chats';
 
 vi.mock('@remix/.server/models/prisma', () => ({
   prisma: prismaMock,
+}));
+
+vi.mock('@codellm/core', () => ({
+  newAgent: llmAgentMock,
 }));
 
 const mockChat = {
