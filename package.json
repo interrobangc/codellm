@@ -66,6 +66,7 @@
     "start:datastore:seed": "npm run --workspaces --if-present datastore:seed",
     "stop:datastore": "docker compose down",
     "logs:datastore": "docker compose logs -f",
+    "prisma:generate": "npm run --workspaces --if-present prisma:generate",
     "test": "run-s lint:fix build test:unit",
     "test:all": "run-s test test:integration",
     "test:integration": "vitest --test-timeout=120000 run 'tests/integration'",

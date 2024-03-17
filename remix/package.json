@@ -6,6 +6,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev",
+    "prisma:generate": "npx prisma generate",
     "datastore:migrate": "npx prisma migrate dev --name init",
     "datastore:seed": "node ./prisma/seed.js",
     "start": "remix-serve ./build/server/index.js",
