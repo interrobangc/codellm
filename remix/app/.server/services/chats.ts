@@ -39,19 +39,11 @@ const onAgentEmit = (chatId: string) => async (params: AgentHistoryItem) => {
   eventStreamEmitter.emit(`agent:${chatId}`, params);
 };
 
-const onEmitListeners = (client: Agent, id: string) => {
-  console.log('onEmitListeners', id);
-  return channelsToForward.map((channel) => {
-    return client.onEmit(channel, onAgentEmit(id));
-  });
-};
+const onEmitListeners = (client: Agent, id: string) =>
+  channelsToForward.map((channel) => client.onEmit(channel, onAgentEmit(id)));
 
-const offEmitListeners = (client: Agent, id: string) => {
-  console.log('offEmitListeners', id);
-  return channelsToForward.map((channel) => {
-    return client.offEmit(channel, onAgentEmit(id));
-  });
-};
+const offEmitListeners = (client: Agent, id: string) =>
+  channelsToForward.map((channel) => client.offEmit(channel, onAgentEmit(id)));
 
 const clientCreationLocks = remember(
   'agentClientCreationLocks',
@@ -78,6 +70,7 @@ export const getOrCreateClient = async (id: string) => {
         throw newClient;
       }
       clients.set(id, newClient);
+      offEmitListeners(newClient, id); // Remove any existing listeners
       onEmitListeners(newClient, id);
       clientCreationLocks.delete(id); // Remove the lock
       return newClient;
@@ -103,7 +96,6 @@ export const getChat = async (id?: string) => {
       throw new Error('Chat not found');
     }
 
-    console.log('getchat noId');
     client = await getOrCreateClient(chat.id);
   }
 

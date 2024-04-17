@@ -16,7 +16,7 @@ export const getChats =
     prisma.chat.findMany({
       where: { userId: user.id },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
       include: withMessages
         ? {

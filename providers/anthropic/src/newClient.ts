@@ -31,8 +31,7 @@ export const newClient = async ({ config, model }: ProviderGetClientParams) => {
       //   models: await client.listModels(),
       // });
     },
-    prompt: async ({ prompt, system }: PromptParams) => {
-      return `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`;
-    },
+    prompt: async ({ prompt, system }: PromptParams) =>
+      `Not implemented yet for OpenAI. System: ${system}, Prompt: ${prompt}`,
   };
 };

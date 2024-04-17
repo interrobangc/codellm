@@ -14,8 +14,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
   const { chatId } = params;
 
-  console.log('chat.$chatId.ts loader chatId', chatId);
-
   const currentChat = await getChat(chatId);
   if (!currentChat) return json({ error: 'Chat not found' }, { status: 404 });
 
@@ -49,9 +47,8 @@ export const deleteChatAction = async (chatId: string) => {
   return redirect('/chat');
 };
 
-export const renameChat = (chatId: string, newName: string) => {
-  return updateChat(chatId, { name: newName });
-};
+export const renameChat = (chatId: string, newName: string) =>
+  updateChat(chatId, { name: newName });
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const { chatId } = params;

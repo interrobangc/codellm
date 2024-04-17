@@ -60,6 +60,13 @@ export const getConfig = async (): Promise<PartialConfig> => ({
       },
       module: '@codellm/tool-code-summary-query',
     },
+    docSummaryQuery: {
+      config: {
+        vectorDbCollection: 'docSummary',
+        vectorDbName: 'chromadb',
+      },
+      module: '@codellm/tool-doc-summary-query',
+    },
     fileReader: {
       config: {
         maxFileCount: 10,

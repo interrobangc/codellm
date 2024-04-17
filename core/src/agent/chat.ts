@@ -24,13 +24,12 @@ const prompt = newPrompt();
  *
  * @returns - The decoded response or an error
  */
-export const decodeResponse = (content: string) => {
-  return mayFail<agentTypes.AgentLlmResponse>(
+export const decodeResponse = (content: string) =>
+  mayFail(
     () => agentTypes.agentLlmResponseSchema.parse(loadYaml(content.trim())),
     'agent:decodeResponse',
     { content },
   );
-};
 
 /**
  * Get the tool responses as a string
@@ -41,15 +40,14 @@ export const decodeResponse = (content: string) => {
  */
 export const getToolResponses = (
   toolResponses: agentTypes.AgentToolResponses,
-) => {
-  return toolResponses
+) =>
+  toolResponses
     .map(
       (toolRes) => `####${toolRes.name}:
     ${toolRes.response}
   `,
     )
     .join('\n');
-};
 
 export const sendUserMessage = async ({
   agentLlm,

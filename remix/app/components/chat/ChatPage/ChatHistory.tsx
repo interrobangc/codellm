@@ -9,9 +9,9 @@ export const ChatHistory = () => {
   return (
     <div className="p-2">
       {/* @ts-expect-error - not fighting with Prisma types for now  */}
-      {history.map((message, index) => {
-        return <ChatMessage key={index} message={message} />;
-      })}
+      {history.map((message, index) => (
+        <ChatMessage key={index} message={message} />
+      ))}
       <ChatMessageLoading />
     </div>
   );

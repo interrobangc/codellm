@@ -17,6 +17,13 @@ export const fromAgentHistoryMessage = (
   content: (message as AgentHistoryUserItem).content,
 });
 
+export const parseMessages = (messages: Message[]) =>
+  messages.map((message) => ({
+    ...message,
+    error: message.error ? JSON.parse(message.error as string) : undefined,
+    params: message.params ? JSON.parse(message.params as string) : undefined,
+  }));
+
 export const addMessage = (chat: Chat) => (newMessage: AgentHistoryItem) => {
   const message = prisma.message.create({
     data: {
@@ -35,12 +42,14 @@ export const addMessage = (chat: Chat) => (newMessage: AgentHistoryItem) => {
 };
 
 export const getMessages = (chat: Chat) => () =>
-  prisma.message.findMany({
-    where: { chatId: chat.id },
-    orderBy: {
-      createdAt: 'asc',
-    },
-  });
+  prisma.message
+    .findMany({
+      where: { chatId: chat.id },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+    .then((messages) => parseMessages(messages));
 
 export const addChatFromUser = async (
   user: User,
@@ -91,17 +100,24 @@ export const prismaToModel = (chat: Chat) => ({
 });
 
 export const getById = async (id: string) => {
-  const chat = await prisma.chat.findUnique({
-    where: { id },
-    include: {
-      messages: {
-        orderBy: {
-          createdAt: 'asc',
+  const chat = await prisma.chat
+    .findUnique({
+      where: { id },
+      include: {
+        messages: {
+          orderBy: {
+            createdAt: 'asc',
+          },
         },
       },
-    },
-  });
+    })
+    .then((c) => {
+      if (!c) throw new Error('Chat not found');
+      return {
+        ...c,
+        messages: c.messages ? parseMessages(c.messages) : [],
+      };
+    });
 
-  if (!chat) throw new Error('Chat not found');
   return prismaToModel(chat);
 };

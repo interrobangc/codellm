@@ -28,7 +28,7 @@ const ChatNav = () => {
         </Link>
       </div>
       <div className="flex flex-col space-y-1 flex- pt-4">
-        {chats.toReversed().map((chat: ChatModel) => (
+        {chats.map((chat: ChatModel) => (
           <Link
             key={chat.id}
             to={`/chat/${chat.id}`}

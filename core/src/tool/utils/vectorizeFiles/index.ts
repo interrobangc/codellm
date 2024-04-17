@@ -40,15 +40,14 @@ export const newVectorizeFilesClient = async ({
       additionalMetadataFn:
         | VectorizeFilesAdditionalMetadataFn
         | undefined = undefined,
-    ) => {
-      return vectorizeFiles({
+    ) =>
+      vectorizeFiles({
         additionalMetadataFn,
         config,
         dbClient,
         prompts,
         toolConfig,
         toolName,
-      });
-    },
+      }),
   };
 };

@@ -15,6 +15,4 @@ export const setVectorDb = (name: VectorDb, db: VectorDbClient) => {
   vectorDbs.set(name, db);
 };
 
-export const getVectorDbs = () => {
-  return vectorDbs;
-};
+export const getVectorDbs = () => vectorDbs;
