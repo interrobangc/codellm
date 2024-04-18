@@ -25,5 +25,6 @@ export const AGENT_EMITTER_CHANNELS = {
   assistant: 'agent:assistant',
   error: 'agent:error',
   tool: 'agent:tool',
+  toolResponse: 'agent:toolResponse',
   user: 'agent:user',
 } as const;

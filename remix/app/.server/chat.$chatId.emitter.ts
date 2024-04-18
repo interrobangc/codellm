@@ -10,6 +10,9 @@ export const loader: LoaderFunction = ({ params, request }) => {
   return new EventStream(request, (send) => {
     const eventStreamEmitter = getEventStreamEmitter();
 
+    eventStreamEmitter.removeListener(`agent:${chatId}`, handleAgentMessage);
+    eventStreamEmitter.removeListener(`chat:${chatId}`, handleChatMessage);
+
     function handleAgentMessage(params: unknown) {
       send(JSON.stringify(params), { channel: `agent:${chatId}` });
     }

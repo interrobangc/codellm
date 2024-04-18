@@ -18,6 +18,7 @@ The system is composed of a few main components. It is designed to be extensible
 - [Core](core/): The core of the system. It is responsible for orchestrating the agents and tools.
 - [Providers](providers/): These are a standard interface for various LLM providers.
 - [Tools](tools/): These are the tools that the agent uses to gather data. They are responsible for taking a query and returning data. They are not responsible for making the query to the provider.
+- [Remix](remix/): A web interface that allows you to ask questions about the codebase and see the results.
 - [VectorDbs](vectorDbs/): A vector database that stores embeddings of code files and other data.
 
 ## Prerequisites

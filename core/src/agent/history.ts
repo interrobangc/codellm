@@ -3,12 +3,14 @@ import {
   agentResponseResponseSchema,
   isAgentResponseResponse,
 } from '@/agent/types.js';
-import { CodeLlmError, isError } from '@/error/index.js';
 import { getEmitter } from '@/agent/emitter.js';
+import { CodeLlmError, isError } from '@/error/index.js';
+import { log } from '@/log/index.js';
 
 const agentHistories: AgentHistories = new Map();
 
 export const addToHistory = (id: string, params: AgentHistoryAddParams) => {
+  log('addToHistory', 'debug', { id, params });
   const emitter = getEmitter(id);
   if (isError(emitter)) {
     return emitter;
@@ -46,6 +48,4 @@ export const clearHistory = () => {
 
 export const getHistories = () => agentHistories;
 
-export const getHistory = (id: string) => {
-  return agentHistories.get(id) || [];
-};
+export const getHistory = (id: string) => agentHistories.get(id) || [];

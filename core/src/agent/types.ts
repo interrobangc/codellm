@@ -6,7 +6,7 @@ import type {
 } from '@/.';
 
 import { z } from 'zod';
-import { isError } from '@/error/index.js';
+import { isError, mayFail } from '@/error/index.js';
 import { toolRunParamsParamSchema } from '@/tool/types.js';
 
 export const agentResponseResponseSchema = z.object({
@@ -28,7 +28,11 @@ export type AgentResponseResponse = z.infer<typeof agentResponseResponseSchema>;
 export const isAgentResponseResponse = (
   i: unknown,
 ): i is AgentResponseResponse => {
-  return !isError(i) && (i as AgentResponseResponse).type === 'response';
+  const res = mayFail(
+    () => agentResponseResponseSchema.parse(i),
+    'error:unknown',
+  );
+  return !isError(res);
 };
 
 export const agentToolResponseSchema = z.object({
@@ -40,10 +44,9 @@ export const agentToolResponseSchema = z.object({
 
 export type AgentToolResponse = z.infer<typeof agentToolResponseSchema>;
 
-export const isAgentToolResponse = (
-  i: AgentSelectToolResponse | CodeLlmError,
-): i is AgentToolResponse => {
-  return !isError(i) && i.type === 'tool';
+export const isAgentToolResponse = (i: unknown): i is AgentToolResponse => {
+  const res = mayFail(() => agentToolResponseSchema.parse(i), 'error:unknown');
+  return !isError(res);
 };
 
 export const agentLlmResponseSchema = z.union([
@@ -131,6 +134,21 @@ export const isAgentHistoryToolItem = (
   );
 };
 
+export type AgentHistoryToolResponseItem = {
+  content: string;
+  name: string;
+  role: 'toolResponse';
+};
+
+export const isAgentHistoryToolResponseItem = (
+  i: unknown,
+): i is AgentHistoryToolResponseItem => {
+  return (
+    'role' in (i as AgentHistoryToolResponseItem) &&
+    (i as AgentHistoryToolResponseItem).role === 'toolResponse'
+  );
+};
+
 export type AgentHistoryUserItem = {
   content: string;
   role: 'user';
@@ -149,6 +167,7 @@ export type AgentHistoryItem =
   | AgentHistoryAssistantItem
   | AgentHistoryErrorItem
   | AgentHistoryToolItem
+  | AgentHistoryToolResponseItem
   | AgentHistoryUserItem;
 
 export type AgentHistory = AgentHistoryItem[];
@@ -158,6 +177,7 @@ export type AgentHistories = Map<string, AgentHistory>;
 export type AgentHistoryAddParams =
   | AgentHistoryErrorItem
   | AgentHistoryToolItem
+  | AgentHistoryToolResponseItem
   | AgentHistoryUserItem
   | AgentResponseResponse;
 

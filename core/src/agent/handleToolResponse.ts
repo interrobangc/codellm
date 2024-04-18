@@ -63,6 +63,12 @@ export const handleToolResponse = async ({
     ];
   }
 
+  addToHistory(id, {
+    content: toolResponse,
+    name: toolName,
+    role: 'toolResponse',
+  });
+
   log('handleToolResponse - Tool responses', 'debug', { toolResponses });
 
   return [...toolResponses, { name: toolName, response: toolResponse }];

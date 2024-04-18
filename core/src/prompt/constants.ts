@@ -71,7 +71,7 @@ Your answer must be in one of the following two formats with no extra text. Do n
 
 (1) If you are choosing the correct Tool and parameters, return valid and properly escaped {responseFormat} using the following example. Do not use references to parameter values, you must put the value being passed in the Parameter value section If passing in code, do not include backticks. The type should be the exact string "tool".
 
-type: "tool" # Do not change this
+type: "tool" # Do not change this value
 reason: "<Describe your reasoning for why this tool was chosen in 3 sentences or less.
 name: "<Tool Name>"
 params:
@@ -81,7 +81,7 @@ params:
 
 (2) If you are responding directly to the user's questions, return valid {responseFormat} using this format. The type should be the exact string "response".
 
-type: "response" # Do not change this
+type: "response" # Do not change this value
 content: |
   <Write the text of your response here. You must use properly escaped and indented {responseFormat} with no wrapping quotes.>
 `,

@@ -26,19 +26,14 @@ import { mkdir, readFile, stat, writeFile } from '@/fs/index.js';
  *
  * @throws - If there is an error summarizing the code
  */
-export const summarize = async (
-  llm: LlmClient,
-  prompt: string,
-  code: string,
-) => {
-  return llm.prompt({
+export const summarize = async (llm: LlmClient, prompt: string, code: string) =>
+  llm.prompt({
     prompt: `
       ${prompt}
       ${code}
     `,
     system: '',
   });
-};
 
 //TODO: dynamic prefix for different passes on a single file in one collection
 export const getId = (idPrefix: string, filePath: string) =>

@@ -29,11 +29,11 @@ tools:
     config:
       vectorDbName: chromadb
       vectorDbCollectionName: codeSummary
-  # docSummaryQuery:
-  #   module: '@codellm/tool-doc-summary-query'
-  #   config:
-  #     vectorDbName: chromadb
-  #     vectorDbCollectionName: docSummary
+  docSummaryQuery:
+    module: '@codellm/tool-doc-summary-query'
+    config:
+      vectorDbName: chromadb
+      vectorDbCollectionName: docSummary
   fileReader:
     module: '@codellm/tool-file-reader'
     config:
