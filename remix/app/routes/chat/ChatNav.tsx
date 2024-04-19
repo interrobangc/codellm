@@ -1,4 +1,4 @@
-import type { ChatLayoutLoaderData } from '@remix/components/chat/types';
+import type { ChatLayoutLoaderData } from '@remix/.server/chat';
 import type { ChatModel } from '@remix/.server/models';
 
 import { Link, useLoaderData, useParams } from '@remix-run/react';

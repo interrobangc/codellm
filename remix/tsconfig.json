@@ -4,7 +4,9 @@
     "**/*.ts",
     "**/*.tsx",
     "prisma/seeds/users.js",
-    "prisma/seed.js"
+    "prisma/seed.js",
+    "app/routes/chat.$chatId.emitter/.server/loader.ts",
+    "app/routes/chat.$chatId/.server/server.ts"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2023"],

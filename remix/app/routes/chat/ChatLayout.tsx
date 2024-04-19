@@ -1,5 +1,5 @@
 import { Outlet } from '@remix-run/react';
-import ChatNav from '@remix/components/chat/ChatNav';
+import ChatNav from './ChatNav';
 
 export const ChatLayout = () => {
   return (

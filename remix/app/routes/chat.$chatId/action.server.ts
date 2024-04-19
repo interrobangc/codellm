@@ -1,35 +1,17 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
 
 import { json, redirect } from '@remix-run/node';
-import { isError } from '@codellm/core';
 import {
   deleteChat,
-  getChat,
   getMostRecentChat,
   sendChat,
   updateChat,
-} from './services/chats';
-
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
-  const { chatId } = params;
-
-  const currentChat = await getChat(chatId);
-  if (!currentChat) return json({ error: 'Chat not found' }, { status: 404 });
-
-  return json({ currentChat });
-};
-export type ChatLoaderData = Awaited<ReturnType<typeof loader>>;
+} from '../../.server/services/chats';
 
 export const sendChatAction = async (
   chatId: string,
   formData: Awaited<ReturnType<ActionFunctionArgs['request']['formData']>>,
 ) => {
-  const result = {
-    error: null,
-    llmResponse: null,
-  };
-
   const userMessage = formData.get('userMessage') as string;
 
   // We don't want to wait because it will block the event stream

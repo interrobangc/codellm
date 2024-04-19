@@ -8,7 +8,7 @@ import {
 } from '@remix-run/react';
 import stylesheet from './styles/app.css?url';
 
-import { Layout } from '@remix/components/layout/Layout';
+import { Layout } from '@remix/components/Layout';
 
 export const links: LinksFunction = () => [
   { href: stylesheet, rel: 'stylesheet' },

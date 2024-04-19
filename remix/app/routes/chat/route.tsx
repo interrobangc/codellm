@@ -1,4 +1,4 @@
 export { loader } from '@remix/.server/chat';
 
-import ChatLayout from '@remix/components/chat/ChatLayout';
+import ChatLayout from './ChatLayout';
 export default ChatLayout;
