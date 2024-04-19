@@ -1,5 +1,5 @@
 import type { ChatModel } from '@remix/.server/models';
-import type { ChatLoaderData } from '@remix/routes/chat.$chatId/server';
+import type { ChatLoaderData } from '@remix/routes/chat.$chatId/loader.server';
 
 import { useLoaderData, useParams } from '@remix-run/react';
 import { useChatEventStream } from './useChatEventStream';

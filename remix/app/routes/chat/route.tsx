@@ -1,4 +1,18 @@
-export { loader } from '@remix/.server/chat';
+import { Outlet } from '@remix-run/react';
+import ChatNav from './ChatNav';
 
-import ChatLayout from './ChatLayout';
+export const ChatLayout = () => {
+  return (
+    <div className="flex">
+      <div className="min-w-[15vw] max-w-[15vw]">
+        <ChatNav />
+      </div>
+      <div className="flex-auto">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
 export default ChatLayout;
+export { loader } from './loader.server';

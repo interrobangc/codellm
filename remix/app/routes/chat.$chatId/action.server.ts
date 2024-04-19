@@ -6,7 +6,7 @@ import {
   getMostRecentChat,
   sendChat,
   updateChat,
-} from '../../.server/services/chats';
+} from '@remix/.server/services/chats';
 
 export const sendChatAction = async (
   chatId: string,

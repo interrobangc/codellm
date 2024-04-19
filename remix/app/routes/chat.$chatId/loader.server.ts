@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 
 import { json } from '@remix-run/node';
-import { getChat } from '../../.server/services/chats';
+import { getChat } from '@remix/.server/services/chats';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
