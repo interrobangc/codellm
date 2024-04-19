@@ -1,6 +1,8 @@
+export { action } from './action.server';
+export { loader } from './loader.server';
+
 import type { MetaFunction } from '@remix-run/node';
 
-import useChatHistory from './hooks/useChatHistory';
 import ContentWrapper from '@remix/components/common/ContentWrapper';
 import ChatForm from './ChatForm';
 import ChatHistory from './ChatHistory';
@@ -14,7 +16,6 @@ export const meta: MetaFunction = () => {
 };
 
 export const ChatPage = () => {
-  useChatHistory();
   return (
     <div className="pr-4">
       <ContentWrapper>

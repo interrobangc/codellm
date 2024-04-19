@@ -8,12 +8,9 @@ import type { Prisma } from '@prisma/client';
 import { EventEmitter } from 'events';
 import { remember } from '@epic-web/remember';
 import { AGENT_EMITTER_CHANNELS, isError, log, newAgent } from '@codellm/core';
-import omit from 'lodash/omit';
-import { chatModel, userModel } from '../models/index.js';
-import { getConfig } from '../config.js';
+import { chatModel, userModel } from '@remix/.server/models';
+import { getConfig } from '@remix/.server/config.js';
 import { getUser } from './user.js';
-
-const user = getUser();
 
 export const channelsToForward = Object.keys(
   AGENT_EMITTER_CHANNELS,
@@ -91,6 +88,7 @@ export const getChat = async (id?: string) => {
     }
     client = await getOrCreateClient(id);
   } else {
+    const user = await getUser();
     chat = await user.addChat({ name: 'new chat' });
     if (!chat) {
       throw new Error('Chat not found');
@@ -110,7 +108,10 @@ export const deleteChat = async (id: string) => {
   }
 };
 
-export const getChats = () => user.getChats();
+export const getChats = async () => {
+  const user = await getUser();
+  return user.getChats();
+};
 
 export const updateChat = async (
   id: string,
@@ -127,6 +128,7 @@ export const updateChat = async (
 };
 
 export const getMostRecentChat = async () => {
+  const user = await getUser();
   const chats = await user.getChats();
 
   return chats[0];

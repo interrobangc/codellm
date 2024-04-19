@@ -1,16 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  llmAgentMock,
-  mockChat,
-  newAgentMock,
-  prismaMock,
-} from '@remixTests/mocks';
+import { mockChat, mockUser, prismaMock } from '@remixTests/mocks';
 import * as chats from './chats';
 
 describe('getChat', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    prismaMock.user.findUnique.mockResolvedValue(mockUser);
   });
 
   it('should return a new chat when called without an id', async () => {

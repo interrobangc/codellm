@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useChatForm } from '@remix/components/chat/ChatPage/hooks/useChatForm';
+import { useChatForm } from './hooks/useChatForm';
 import ActionForm from '@remix/components/common/ActionForm';
 
 export const ChatRenameButton = ({

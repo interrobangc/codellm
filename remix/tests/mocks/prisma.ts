@@ -3,11 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { beforeEach } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 
-const prismaMock = mockDeep<PrismaClient>();
-
-beforeEach(() => {
-  mockReset(prismaMock);
-});
+export const prismaMock = mockDeep<PrismaClient>();
 
 export const mockUser = {
   createdAt: new Date(),
@@ -18,7 +14,6 @@ export const mockUser = {
   password: 'fake-password',
   updatedAt: new Date(),
 };
-prismaMock.user.findUnique.mockResolvedValue(mockUser);
 
 export const mockChat = {
   createdAt: new Date(),
@@ -33,4 +28,8 @@ vi.mock('@remix/.server/models/prisma', () => ({
   prisma: prismaMock,
 }));
 
-export { prismaMock };
+// I don't think this is actually working.
+beforeEach(() => {
+  mockReset(prismaMock);
+  prismaMock.user.findUnique.mockResolvedValue(mockUser);
+});
