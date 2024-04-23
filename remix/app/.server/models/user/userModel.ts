@@ -49,3 +49,18 @@ export const getByEmail = async (email: string) => {
   if (!user) throw new Error('User not found');
   return prismaToModel(user);
 };
+
+export const getByAuth0Id = async (auth0Id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { auth0Id },
+    include: {
+      chats: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
+    },
+  });
+  if (!user) throw new Error('User not found');
+  return prismaToModel(user);
+};

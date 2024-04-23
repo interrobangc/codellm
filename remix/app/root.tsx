@@ -10,6 +10,8 @@ import stylesheet from './styles/app.css?url';
 
 import { Layout } from '@remix/components/Layout';
 
+export { loader } from './root.loader.server';
+
 export const links: LinksFunction = () => [
   { href: stylesheet, rel: 'stylesheet' },
 ];

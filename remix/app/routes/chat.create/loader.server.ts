@@ -1,7 +1,8 @@
+import type { LoaderFunction } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { getChat } from '@remix/.server/services/chats';
+import { createChat } from '@remix/.server/services/chats';
 
-export const loader = async () => {
-  const newChat = await getChat();
+export const loader: LoaderFunction = async ({ request }) => {
+  const newChat = await createChat({ request });
   return redirect(`/chat/${newChat.id}`);
 };

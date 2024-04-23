@@ -1,5 +1,13 @@
+import type { ServiceCommonParams } from './types';
+
 import { userModel } from '@remix/.server/models';
+import { getAuthUser } from '@remix/.server/services/auth';
 
-import { remember } from '@epic-web/remember';
+export const getUser = async ({ request }: ServiceCommonParams) => {
+  const authUser = await getAuthUser(request);
 
-export const getUser = () => userModel.getByEmail('bo@interrobang.consulting');
+  if (!authUser) {
+    return null;
+  }
+  return userModel.getByAuth0Id(authUser.id);
+};

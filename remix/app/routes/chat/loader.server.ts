@@ -4,20 +4,24 @@ import { getChat, getChats } from '@remix/.server/services/chats';
 
 export const loader: LoaderFunction = async ({
   params,
+  request,
 }: LoaderFunctionArgs) => {
-  const chats = await getChats();
-
-  if (!params.chatId) return { chats };
-
   try {
-    const currentChat = await getChat(params.chatId);
-    return json({
-      chats,
-      currentChat,
-    });
+    const chats = await getChats({ request });
+    if (!params.chatId) return { chats };
+
+    try {
+      const currentChat = await getChat({ id: params.chatId, request });
+      return json({
+        chats,
+        currentChat,
+      });
+    } catch (e) {
+      return redirect('/chat');
+    }
   } catch (e) {
-    return redirect('/chat');
+    return redirect('/');
   }
 };
 
-export type ChatLayoutLoaderData = ReturnType<typeof loader>;
+export type ChatLayoutLoaderData = Awaited<ReturnType<typeof loader>>;

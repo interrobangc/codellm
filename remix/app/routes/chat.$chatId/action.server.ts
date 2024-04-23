@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
+import type { Chat } from '@prisma/client';
 
 import { json, redirect } from '@remix-run/node';
 import {
@@ -8,29 +9,39 @@ import {
   updateChat,
 } from '@remix/.server/services/chats';
 
-export const sendChatAction = async (
-  chatId: string,
-  formData: Awaited<ReturnType<ActionFunctionArgs['request']['formData']>>,
-) => {
-  const userMessage = formData.get('userMessage') as string;
+export type ChatActionParams = {
+  formData: FormData;
+  id: Chat['id'];
+  request: Request;
+};
+
+export const sendChatAction = async ({
+  formData,
+  id,
+  request,
+}: ChatActionParams) => {
+  const message = formData.get('userMessage') as string;
 
   // We don't want to wait because it will block the event stream
   // triggered revalidation if this action is locked in a loading state
-  sendChat(chatId, userMessage);
+  sendChat({ id, message, request });
 
   return null;
 };
 
-export const deleteChatAction = async (chatId: string) => {
-  await deleteChat(chatId);
-  const mostRecentChat = await getMostRecentChat();
+export const deleteChatAction = async (params: ChatActionParams) => {
+  await deleteChat(params);
+  const mostRecentChat = await getMostRecentChat(params);
   if (mostRecentChat) return redirect(`/chat/${mostRecentChat.id}`);
 
   return redirect('/chat');
 };
 
-export const renameChat = (chatId: string, newName: string) =>
-  updateChat(chatId, { name: newName });
+export const renameChat = (params: ChatActionParams) =>
+  updateChat({
+    ...params,
+    update: { name: params.formData.get('name') as string },
+  });
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const { chatId } = params;
@@ -38,13 +49,14 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
   const formData = await request.clone().formData();
   const intent = formData.get('intent');
+  const requestParams = { formData, id: chatId, request };
   switch (intent) {
     case 'deleteChat':
-      return deleteChatAction(chatId);
+      return deleteChatAction(requestParams);
     case 'renameChat':
-      return renameChat(chatId, formData.get('name') as string);
+      return renameChat(requestParams);
     case 'sendChat':
-      return sendChatAction(chatId, formData);
+      return sendChatAction(requestParams);
     default:
       return json({ error: 'Invalid intent' }, { status: 400 });
   }

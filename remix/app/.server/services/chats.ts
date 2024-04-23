@@ -3,7 +3,8 @@ import type {
   AgentEmitterChannels,
   AgentHistoryItem,
 } from '@codellm/core';
-import type { Prisma } from '@prisma/client';
+import type { Chat, Prisma } from '@prisma/client';
+import type { ServiceCommonParams } from './types.js';
 
 import { EventEmitter } from 'events';
 import { remember } from '@epic-web/remember';
@@ -55,14 +56,14 @@ const clientCreationLocks = remember(
  * @param {string} id The chat id
  * @returns {Promise<Agent>} The client for the chat
  */
-export const getOrCreateClient = async (id: string) => {
+export const _getOrCreateClient = async (id: string) => {
   const existingClient = clients.get(id);
   if (existingClient) return existingClient;
 
   let lock = clientCreationLocks.get(id);
   if (!lock) {
     lock = (async () => {
-      const newClient = await newAgent(await getConfig(), id);
+      const newClient = await newAgent(getConfig('codellm'), id);
       if (isError(newClient)) {
         throw newClient;
       }
@@ -78,45 +79,57 @@ export const getOrCreateClient = async (id: string) => {
   return lock;
 };
 
-export const getChat = async (id?: string) => {
-  let client: Agent | undefined;
-  let chat: chatModel.ChatModel | undefined;
-  if (id) {
-    chat = await chatModel.getById(id);
-    if (!chat) {
-      throw new Error('Chat not found');
-    }
-    client = await getOrCreateClient(id);
-  } else {
-    const user = await getUser();
-    chat = await user.addChat({ name: 'new chat' });
-    if (!chat) {
-      throw new Error('Chat not found');
-    }
+export type ChatCommonParams = ServiceCommonParams & {
+  id: Chat['id'];
+};
 
-    client = await getOrCreateClient(chat.id);
+export const createChat = async (params: ServiceCommonParams) => {
+  const user = await getUser(params);
+
+  if (!user) {
+    throw new Error('User not found');
   }
+
+  const chat = await user.addChat({ name: 'new chat' });
+  if (!chat) {
+    throw new Error('Chat not found');
+  }
+  const client = await _getOrCreateClient(chat.id);
 
   return { client, ...chat };
 };
 
-export const deleteChat = async (id: string) => {
-  const chat = await getChat(id);
+export const getChat = async ({ id, request }: ChatCommonParams) => {
+  const chat = await chatModel.getById(id);
+  if (!chat) {
+    throw new Error('Chat not found');
+  }
+  const client = await _getOrCreateClient(id);
+
+  return { client, ...chat };
+};
+
+export const deleteChat = async (params: ChatCommonParams) => {
+  const chat = await getChat(params);
   if (chat) {
-    offEmitListeners(chat.client, id);
+    offEmitListeners(chat.client, params.id);
     await chat.remove();
   }
 };
 
-export const getChats = async () => {
-  const user = await getUser();
+export const getChats = async (params: ServiceCommonParams) => {
+  const user = await getUser(params);
+  if (!user) {
+    throw new Error('User not found');
+  }
   return user.getChats();
 };
 
-export const updateChat = async (
-  id: string,
-  update: Prisma.ChatUpdateInput,
-) => {
+export type UpdateChatParams = ChatCommonParams & {
+  update: Prisma.ChatUpdateInput;
+};
+
+export const updateChat = async ({ id, update }: UpdateChatParams) => {
   const chat = await chatModel.getById(id);
   if (!chat) {
     throw new Error('Chat not found');
@@ -127,18 +140,25 @@ export const updateChat = async (
   return updatedChat;
 };
 
-export const getMostRecentChat = async () => {
-  const user = await getUser();
+export const getMostRecentChat = async (params: ServiceCommonParams) => {
+  const user = await getUser(params);
+  if (!user) {
+    throw new Error('User not found');
+  }
   const chats = await user.getChats();
 
   return chats[0];
 };
 
-export const sendChat = async (chatId: string, userMessage: string) => {
-  const chat = await getChat(chatId);
+export type SendChatParams = ChatCommonParams & {
+  message: string;
+};
+
+export const sendChat = async (params: SendChatParams) => {
+  const chat = await getChat(params);
   if (!chat) throw new Error('Chat not found');
 
-  await updateChat(chatId, { isLoading: true });
-  await chat.client.chat(userMessage);
-  await updateChat(chatId, { isLoading: false });
+  await updateChat({ ...params, update: { isLoading: true } });
+  await chat.client.chat(params.message);
+  await updateChat({ ...params, update: { isLoading: false } });
 };
