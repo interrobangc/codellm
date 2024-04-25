@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockChat, mockUser, prismaMock } from '@remixTests/mocks';
-import * as chats from './chats';
+import { expectError } from '@remixTests/tools';
+import * as chats from './chat';
 
 const request = new Request('http://localhost:3000');
 
@@ -19,9 +20,10 @@ describe('getChat', () => {
     expect(prismaMock.chat.findUnique).toHaveBeenCalledTimes(1);
   });
 
-  it('should throw an error when chat is not found', async () => {
+  it('should return an error when chat is not found', async () => {
     prismaMock.chat.findUnique.mockResolvedValueOnce(null);
     const id = 'non-existent-id';
-    await expect(chats.getChat({ id, request })).rejects.toThrow();
+    const chat = await chats.getChat({ id, request });
+    expectError(chat, 'chatModel:notFound');
   });
 });

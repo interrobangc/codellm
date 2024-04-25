@@ -9,7 +9,7 @@ export const tools: Tools = new Map();
  *
  * @param {string} name The name of the tool
  *
- * @returns {Tool | CodeLlmError} The tool instance or an error
+ * @returns {Tool | CodeLlmErrorType} The tool instance or an error
  */
 export const getTool = (name: string) => {
   const tool = tools.get(name);

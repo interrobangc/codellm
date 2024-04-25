@@ -7,7 +7,8 @@ import {
   getMostRecentChat,
   sendChat,
   updateChat,
-} from '@remix/.server/services/chats';
+} from '@remix/.server/services/chat';
+import { isError } from '@remix/.server/errors';
 
 export type ChatActionParams = {
   formData: FormData;
@@ -32,6 +33,7 @@ export const sendChatAction = async ({
 export const deleteChatAction = async (params: ChatActionParams) => {
   await deleteChat(params);
   const mostRecentChat = await getMostRecentChat(params);
+  if (isError(mostRecentChat)) throw mostRecentChat;
   if (mostRecentChat) return redirect(`/chat/${mostRecentChat.id}`);
 
   return redirect('/chat');

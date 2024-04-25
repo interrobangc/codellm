@@ -1,4 +1,4 @@
-import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
+import { CodeLlmErrorType, isError, promiseMayFail } from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { getTool } from '@/tool/index.js';
@@ -19,7 +19,7 @@ export const handleToolResponse = async ({
   response,
   toolResponses,
 }: agentTypes.AgentHandleToolResponseParams): Promise<
-  agentTypes.AgentToolResponses | CodeLlmError
+  agentTypes.AgentToolResponses | CodeLlmErrorType
 > => {
   if (!agentTypes.isAgentToolResponse(response)) return toolResponses || {};
   const toolName = response.name;

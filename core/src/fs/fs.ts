@@ -18,7 +18,7 @@ import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
  *
  * @param {string} filePath - The file path to validate
  *
- * @returns {string | CodeLlmError} The resolved file path if it is valid or a CodeLlmError with the error in the meta
+ * @returns {string | CodeLlmErrorType} The resolved file path if it is valid or a CodeLlmError with the error in the meta
  */
 export const validatePath = (filePath: string) => {
   const config = getConfig();

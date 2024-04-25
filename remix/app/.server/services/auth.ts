@@ -4,8 +4,11 @@ import { Authenticator } from 'remix-auth';
 import { Auth0Strategy } from 'remix-auth-auth0';
 
 import { getConfig } from '@remix/.server/config.js';
+import { userModel } from '@remix/.server/models';
 
 // This does not currently handle token refreshes. See https://github.com/danestves/remix-auth-auth0/issues/104
+
+export const ERRORS = {} as const;
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -23,9 +26,21 @@ export const auth = new Authenticator<Auth0Profile>(sessionStorage);
 const auth0Strategy = new Auth0Strategy(
   getConfig('auth0'),
   async ({ profile }) => {
-    //
-    // Use the returned information to process or write to the DB.
-    //
+    if (!profile.id) {
+      return profile;
+    }
+
+    const user = await userModel.getByAuth0Id(profile.id);
+
+    if (user) return profile;
+
+    await userModel.create({
+      auth0Id: profile.id,
+      email: profile.emails?.[0].value || '',
+      firstName: profile.displayName?.split(' ')[0],
+      lastName: profile.displayName?.split(' ')[-1],
+    });
+
     return profile;
   },
 );

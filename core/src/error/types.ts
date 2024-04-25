@@ -4,22 +4,14 @@ import { z } from 'zod';
 
 export type ErrorCode = keyof typeof CODE_LLM_ERRORS;
 
-export type ErrorConstItem = {
-  message: string;
-};
-
-export type ErrorConsts = Record<string, ErrorConstItem>;
-
-export type CodeLlmErrorParams = {
+export type CodeLlmErrorParams<
+  TCode extends TCodeBase,
+  TCodeBase = ErrorCode,
+> = {
   cause?: unknown;
-  code: ErrorCode;
+  code: TCode;
   message?: string;
   meta?: Record<string, unknown>;
-};
-
-export type CodeLlmLibErrorParams = CodeLlmErrorParams & {
-  code: string;
-  errorConsts: ErrorConsts;
 };
 
 export const codeLlmErrorSchema = z.object({

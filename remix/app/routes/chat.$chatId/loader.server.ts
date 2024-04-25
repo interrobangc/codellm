@@ -1,7 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node';
 
 import { json, redirect } from '@remix-run/node';
-import { getChat } from '@remix/.server/services/chats';
+import { getChat } from '@remix/.server/services/chat';
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   if (!params.chatId) return redirect('/chat');

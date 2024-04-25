@@ -8,10 +8,17 @@ import type { ServiceCommonParams } from './types.js';
 
 import { EventEmitter } from 'events';
 import { remember } from '@epic-web/remember';
-import { AGENT_EMITTER_CHANNELS, isError, log, newAgent } from '@codellm/core';
-import { chatModel, userModel } from '@remix/.server/models';
+import { AGENT_EMITTER_CHANNELS, log, newAgent } from '@codellm/core';
 import { getConfig } from '@remix/.server/config.js';
-import { getUser } from './user.js';
+import { chatModel } from '@remix/.server/models';
+import { isError, newError } from '@remix/.server/errors';
+import { getUser, validateUser } from './user.js';
+
+export const ERRORS = {
+  'chatService:noChat': {
+    message: 'No chat found',
+  },
+} as const;
 
 export const channelsToForward = Object.keys(
   AGENT_EMITTER_CHANNELS,
@@ -29,9 +36,7 @@ export const getEventStreamEmitter = () => eventStreamEmitter;
 // TODO: we're going to need channels for this eventually
 const onAgentEmit = (chatId: string) => async (params: AgentHistoryItem) => {
   const chat = await chatModel.getById(chatId);
-  if (!chat) {
-    throw new Error('Chat not found');
-  }
+  if (isError(chat)) return chat;
   await chat.addMessage(params);
   log('onAgentEmit emitting', 'debug', params);
   eventStreamEmitter.emit(`agent:${chatId}`, params);
@@ -52,31 +57,28 @@ const clientCreationLocks = remember(
  * This could be called simultaneously by multiple requests, so we need to ensure
  * that we only create one client per chat. We use a lock to ensure that only one
  * request creates the client, and the others wait for it to be created.
- *
- * @param {string} id The chat id
- * @returns {Promise<Agent>} The client for the chat
  */
 export const _getOrCreateClient = async (id: string) => {
   const existingClient = clients.get(id);
   if (existingClient) return existingClient;
 
   let lock = clientCreationLocks.get(id);
-  if (!lock) {
-    lock = (async () => {
-      const newClient = await newAgent(getConfig('codellm'), id);
-      if (isError(newClient)) {
-        throw newClient;
-      }
-      clients.set(id, newClient);
-      offEmitListeners(newClient, id); // Remove any existing listeners
-      onEmitListeners(newClient, id);
-      clientCreationLocks.delete(id); // Remove the lock
-      return newClient;
-    })();
-    clientCreationLocks.set(id, lock);
-  }
+  if (lock) return lock;
+  const newLock = (async () => {
+    const newClient = await newAgent(getConfig('codellm'), id);
+    if (isError(newClient)) throw newClient;
+    if (!newClient) throw newError({ code: 'chatService:noChat' });
 
-  return lock;
+    clients.set(id, newClient);
+    offEmitListeners(newClient, id); // Remove any existing listeners
+    onEmitListeners(newClient, id);
+    clientCreationLocks.delete(id); // Remove the lock
+    return newClient;
+  })();
+
+  clientCreationLocks.set(id, newLock);
+
+  return newLock;
 };
 
 export type ChatCommonParams = ServiceCommonParams & {
@@ -84,44 +86,41 @@ export type ChatCommonParams = ServiceCommonParams & {
 };
 
 export const createChat = async (params: ServiceCommonParams) => {
-  const user = await getUser(params);
-
-  if (!user) {
-    throw new Error('User not found');
-  }
+  const user = validateUser(await getUser(params));
+  if (isError(user)) return user;
 
   const chat = await user.addChat({ name: 'new chat' });
-  if (!chat) {
-    throw new Error('Chat not found');
-  }
+  if (isError(chat)) return chat;
+
   const client = await _getOrCreateClient(chat.id);
+  if (isError(client)) return client;
+  if (!client) return newError({ code: 'chatService:noChat' });
 
   return { client, ...chat };
 };
 
 export const getChat = async ({ id, request }: ChatCommonParams) => {
   const chat = await chatModel.getById(id);
-  if (!chat) {
-    throw new Error('Chat not found');
-  }
+  if (isError(chat)) return chat;
+
   const client = await _getOrCreateClient(id);
+  if (isError(client)) return client;
 
   return { client, ...chat };
 };
 
 export const deleteChat = async (params: ChatCommonParams) => {
   const chat = await getChat(params);
-  if (chat) {
-    offEmitListeners(chat.client, params.id);
-    await chat.remove();
-  }
+  if (isError(chat)) return chat;
+
+  offEmitListeners(chat.client as Agent, params.id);
+  await chat.remove();
 };
 
 export const getChats = async (params: ServiceCommonParams) => {
   const user = await getUser(params);
-  if (!user) {
-    throw new Error('User not found');
-  }
+  if (isError(user)) return user;
+
   return user.getChats();
 };
 
@@ -131,9 +130,7 @@ export type UpdateChatParams = ChatCommonParams & {
 
 export const updateChat = async ({ id, update }: UpdateChatParams) => {
   const chat = await chatModel.getById(id);
-  if (!chat) {
-    throw new Error('Chat not found');
-  }
+  if (isError(chat)) return chat;
 
   const updatedChat = await chat.update(update);
   eventStreamEmitter.emit(`chat:${id}`, updatedChat);
@@ -142,10 +139,10 @@ export const updateChat = async ({ id, update }: UpdateChatParams) => {
 
 export const getMostRecentChat = async (params: ServiceCommonParams) => {
   const user = await getUser(params);
-  if (!user) {
-    throw new Error('User not found');
-  }
+  if (isError(user)) return user;
+
   const chats = await user.getChats();
+  if (isError(chats)) return chats;
 
   return chats[0];
 };
@@ -156,7 +153,7 @@ export type SendChatParams = ChatCommonParams & {
 
 export const sendChat = async (params: SendChatParams) => {
   const chat = await getChat(params);
-  if (!chat) throw new Error('Chat not found');
+  if (isError(chat)) return chat;
 
   await updateChat({ ...params, update: { isLoading: true } });
   await chat.client.chat(params.message);

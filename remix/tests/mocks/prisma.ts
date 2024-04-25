@@ -11,6 +11,7 @@ export const mockUser = {
   email: 'fake@fake.fake',
   firstName: 'Fake',
   id: 'fake-user-id-0',
+  isVerified: true,
   lastName: 'User',
   password: 'fake-password',
   updatedAt: new Date(),

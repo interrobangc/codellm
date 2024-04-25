@@ -1,6 +1,6 @@
 import type { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { getChat, getChats } from '@remix/.server/services/chats';
+import { getChat, getChats } from '@remix/.server/services/chat';
 
 export const loader: LoaderFunction = async ({
   params,

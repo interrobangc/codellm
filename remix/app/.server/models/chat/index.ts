@@ -1,2 +1,2 @@
-export { getById } from './chatModel';
+export { getById, ERRORS } from './chatModel';
 export * from './types';

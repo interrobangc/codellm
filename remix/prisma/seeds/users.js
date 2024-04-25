@@ -3,8 +3,8 @@ const users = [
     auth0Id: 'github|7569921',
     email: 'bo@interrobang.consulting',
     firstName: 'Bo',
+    isVerified: true,
     lastName: 'Davis',
-    password: 'password',
   },
 ];
 
