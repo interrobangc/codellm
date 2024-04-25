@@ -179,3 +179,7 @@ export const throwOrReturn = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
 
   return e;
 };
+
+export const newError = (args: CodeLlmErrorParams<ErrorCode>) => {
+  return new CodeLlmError(args);
+};

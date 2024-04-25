@@ -4,7 +4,7 @@ import {
   isAgentResponseResponse,
 } from '@/agent/types.js';
 import { getEmitter } from '@/agent/emitter.js';
-import { CodeLlmError, isError } from '@/error/index.js';
+import { isError, newError } from '@/error/index.js';
 import { log } from '@/log/index.js';
 
 const agentHistories: AgentHistories = new Map();
@@ -34,7 +34,7 @@ export const addToHistory = (id: string, params: AgentHistoryAddParams) => {
   }
 
   if (isAgentResponseResponse(params)) {
-    return new CodeLlmError({ code: 'agent:addHistory', meta: { params } });
+    return newError({ code: 'agent:addHistory', meta: { params } });
   }
 
   emitter.emit(params);

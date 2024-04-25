@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { unitTestConfig, validTool } from '@tests/mocks';
 import { testSetup } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
-import { CodeLlmError, isError } from '@/error/index.js';
+import { isError, newError } from '@/error/index.js';
 import { toolSchema } from './types.js';
 import { importTool } from './importTool.js';
 import * as initTools from './initTools.js';
@@ -36,10 +36,7 @@ describe('initTools', () => {
   });
 
   it('should return an error when a tool module cannot be imported', async () => {
-    // vi.spyOn(initTools, 'importTool').mockResolvedValue(
-    //   new CodeLlmError({ code: 'tool:import' }),
-    // );
-    mockImportTool.mockResolvedValue(new CodeLlmError({ code: 'tool:import' }));
+    mockImportTool.mockResolvedValue(newError({ code: 'tool:import' }));
 
     initConfig(unitTestConfig);
 

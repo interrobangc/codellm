@@ -1,4 +1,4 @@
-import { CodeLlmError } from '@/error/index.js';
+import { newError } from '@/error/index.js';
 import { Prompt, Prompts } from './types';
 
 const prompts: Prompts = new Map();
@@ -7,7 +7,7 @@ const baseParams: Record<string, string> = {};
 export const getPrompt = (promptName: string) => {
   const prompt = prompts.get(promptName);
   if (!prompt) {
-    return new CodeLlmError({ code: 'prompt:notFound', meta: { promptName } });
+    return newError({ code: 'prompt:notFound', meta: { promptName } });
   }
   return prompt;
 };
@@ -19,7 +19,7 @@ export const setPrompt = (promptName: string, prompt: Prompt) => {
 export const getBaseParam = (key: string) => {
   const value = baseParams[key];
   if (!value) {
-    return new CodeLlmError({
+    return newError({
       code: 'prompt:baseParamNotFound',
       meta: { promptName: key },
     });

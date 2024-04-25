@@ -6,13 +6,7 @@ import type {
 } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import {
-  CodeLlmError,
-  initConfig,
-  isError,
-  log,
-  toolUtils,
-} from '@codellm/core';
+import { initConfig, isError, log, newError, toolUtils } from '@codellm/core';
 import { DEFAULT_CONFIG, description } from './constants.js';
 
 /**
@@ -38,7 +32,7 @@ export const newTool = async (toolName: string, config: Config) => {
       const { globPatterns } = params;
 
       if (!Array.isArray(globPatterns)) {
-        return new CodeLlmError({
+        return newError({
           code: 'error:unknown',
           message: 'globPatterns must be an array',
           meta: { globPatterns },

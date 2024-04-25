@@ -1,5 +1,5 @@
 import type { Config, VectorDb } from '@/.';
-import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
+import { isError, newError, promiseMayFail } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import { isVectorDbModule } from './types.js';
 
@@ -15,7 +15,7 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
   const dbConfig = config?.vectorDbs?.[name];
 
   if (!dbConfig) {
-    return new CodeLlmError({ code: 'vectorDb:configNotFound' });
+    return newError({ code: 'vectorDb:configNotFound' });
   }
   const dbModuleName = dbConfig.module;
   const dbModule = await promiseMayFail(
@@ -34,7 +34,7 @@ export const importVectorDbModule = async (name: VectorDb, config: Config) => {
   if (isError(dbModule)) return dbModule;
 
   if (!isVectorDbModule(dbModule)) {
-    return new CodeLlmError({
+    return newError({
       code: 'vectorDb:invalidModule',
       meta: { dbModuleName },
     });
