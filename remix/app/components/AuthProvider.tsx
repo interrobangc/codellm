@@ -1,25 +1,28 @@
-import type { User } from '@prisma/client';
-import type { RootLoaderData } from '@remix/root.loader.server';
+import type { RootLoader, RootLoaderData } from '@remix/root.loader.server';
 
 import { useLoaderData } from '@remix-run/react';
 import { createContext } from 'react';
 
-export type AuthContextType = {
-  user: User | null;
+export const noAuthPayload = {
+  isAuthed: false,
+  isVerified: false,
+  user: null,
 };
 
-export const AuthContext = createContext({ user: null });
+export const AuthContext = createContext<RootLoaderData>(noAuthPayload);
 
 export type AuthProviderProps = {
   children: React.ReactNode;
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const data = useLoaderData<RootLoaderData>();
-  // @ts-expect-error - we know this is a User or null
-  const value = data?.user ? { user: data.user } : { user: null };
+  const data = useLoaderData<RootLoader>();
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={data as RootLoaderData}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

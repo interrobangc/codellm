@@ -12,7 +12,7 @@ import { AGENT_EMITTER_CHANNELS, log, newAgent } from '@codellm/core';
 import { getConfig } from '@remix/.server/config.js';
 import { chatModel } from '@remix/.server/models';
 import { isError, newError } from '@remix/.server/errors';
-import { getUser, validateUser } from './user.js';
+import { getValidatedUser, validateUser } from './user.js';
 
 export const ERRORS = {
   'chatService:noChat': {
@@ -86,7 +86,7 @@ export type ChatCommonParams = ServiceCommonParams & {
 };
 
 export const createChat = async (params: ServiceCommonParams) => {
-  const user = validateUser(await getUser(params));
+  const user = await getValidatedUser(params);
   if (isError(user)) return user;
 
   const chat = await user.addChat({ name: 'new chat' });
@@ -118,7 +118,7 @@ export const deleteChat = async (params: ChatCommonParams) => {
 };
 
 export const getChats = async (params: ServiceCommonParams) => {
-  const user = await getUser(params);
+  const user = await getValidatedUser(params);
   if (isError(user)) return user;
 
   return user.getChats();
@@ -138,7 +138,7 @@ export const updateChat = async ({ id, update }: UpdateChatParams) => {
 };
 
 export const getMostRecentChat = async (params: ServiceCommonParams) => {
-  const user = await getUser(params);
+  const user = await getValidatedUser(params);
   if (isError(user)) return user;
 
   const chats = await user.getChats();

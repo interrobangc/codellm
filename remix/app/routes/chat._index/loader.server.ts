@@ -1,14 +1,14 @@
-import type { LoaderFunction } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { isError } from '@remix/.server/errors';
 import { getMostRecentChat } from '@remix/.server/services/chat';
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const chat = await getMostRecentChat({ request });
 
-  if (isError(chat)) return redirect('/');
+  if (isError(chat)) throw redirect('/');
 
-  if (chat) return redirect(`${chat.id}`);
+  if (chat) throw redirect(`${chat.id}`);
 
-  return redirect('create');
+  throw redirect('create');
 };

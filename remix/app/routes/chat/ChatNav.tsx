@@ -1,5 +1,4 @@
 import type { ChatLayoutLoaderData } from '@remix/routes/chat/loader.server';
-import type { ChatModel } from '@remix/.server/models';
 
 import { Link, useLoaderData, useParams } from '@remix-run/react';
 import { FaPlus } from 'react-icons/fa6';
@@ -17,7 +16,6 @@ const ChatNav = () => {
     }
   };
 
-  // @ts-expect-error - we know this is a ChatLoaderData but probably need to check for error
   const chats = loaderData?.chats || [];
 
   return (
@@ -28,7 +26,7 @@ const ChatNav = () => {
         </Link>
       </div>
       <div className="flex flex-col space-y-1 flex- pt-4">
-        {chats.map((chat: ChatModel) => (
+        {chats.map((chat) => (
           <Link
             key={chat.id}
             to={`/chat/${chat.id}`}

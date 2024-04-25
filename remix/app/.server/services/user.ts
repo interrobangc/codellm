@@ -40,3 +40,9 @@ export const validateUser = (user: UserModel | RemixError) => {
 
   return user;
 };
+
+export const getValidatedUser = async (params: ServiceCommonParams) => {
+  const user = await getUser(params);
+
+  return validateUser(user);
+};

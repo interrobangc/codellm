@@ -2,7 +2,7 @@ import useUser from '@remix/components/hooks/useUser';
 import { Form, Link } from '@remix-run/react';
 
 const Navbar = () => {
-  const { hasAuth } = useUser();
+  const { isAuthed, isVerified } = useUser();
 
   return (
     <nav className="navbar bg-base-100">
@@ -12,18 +12,26 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-end">
-        {hasAuth ? (
+        {isAuthed ? (
           <>
-            <Link to="/chat" prefetch="intent" className="btn btn-ghost btn-sm">
-              Chat
-            </Link>
-            <Link
-              to="/import"
-              prefetch="intent"
-              className="btn btn-ghost btn-sm"
-            >
-              Import
-            </Link>
+            {isVerified && (
+              <>
+                <Link
+                  to="/chat"
+                  prefetch="intent"
+                  className="btn btn-ghost btn-sm"
+                >
+                  Chat
+                </Link>
+                <Link
+                  to="/import"
+                  prefetch="intent"
+                  className="btn btn-ghost btn-sm"
+                >
+                  Import
+                </Link>
+              </>
+            )}
             <Form method="post" action="/logout">
               <button className="btn btn-ghost btn-sm">Logout</button>
             </Form>

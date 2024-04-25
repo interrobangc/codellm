@@ -1,27 +1,16 @@
-import type { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { getChat, getChats } from '@remix/.server/services/chat';
+import { isError } from '@remix/.server/errors';
 
-export const loader: LoaderFunction = async ({
-  params,
-  request,
-}: LoaderFunctionArgs) => {
-  try {
-    const chats = await getChats({ request });
-    if (!params.chatId) return { chats };
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const chats = await getChats({ request });
+  if (isError(chats)) throw redirect('/');
+  if (!params.chatId) return { chats };
 
-    try {
-      const currentChat = await getChat({ id: params.chatId, request });
-      return json({
-        chats,
-        currentChat,
-      });
-    } catch (e) {
-      return redirect('/chat');
-    }
-  } catch (e) {
-    return redirect('/');
-  }
+  const chat = await getChat({ id: params.chatId, request });
+  if (isError(chat)) throw redirect('/');
+  return { chat, chats };
 };
 
 export type ChatLayoutLoaderData = Awaited<ReturnType<typeof loader>>;

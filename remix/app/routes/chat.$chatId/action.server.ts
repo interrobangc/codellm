@@ -34,9 +34,9 @@ export const deleteChatAction = async (params: ChatActionParams) => {
   await deleteChat(params);
   const mostRecentChat = await getMostRecentChat(params);
   if (isError(mostRecentChat)) throw mostRecentChat;
-  if (mostRecentChat) return redirect(`/chat/${mostRecentChat.id}`);
+  if (mostRecentChat) throw redirect(`/chat/${mostRecentChat.id}`);
 
-  return redirect('/chat');
+  throw redirect('/chat');
 };
 
 export const renameChat = (params: ChatActionParams) =>

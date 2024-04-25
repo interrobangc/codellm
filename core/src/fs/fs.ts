@@ -6,7 +6,7 @@ import {
   writeFile as fsWriteFile,
 } from 'fs/promises';
 import { getConfig } from '../config/index.js';
-import { CodeLlmError, isError, promiseMayFail } from '@/error/index.js';
+import { isError, newError, promiseMayFail } from '@/error/index.js';
 
 /**
  * We want to make sure that the file path is within the project paths before we do anything with it.
@@ -30,7 +30,7 @@ export const validatePath = (filePath: string) => {
     if (resolvedFilePath.startsWith(resolve(path))) return resolvedFilePath;
   }
 
-  return new CodeLlmError({
+  return newError({
     code: 'fs:invalidPath',
     meta: { filePath },
   });
