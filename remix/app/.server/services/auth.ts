@@ -38,13 +38,15 @@ const auth0Strategy = new Auth0Strategy(
     }
 
     const user = await userModel.getByAuth0Id(profile.id);
-    if (user) return profile;
+    if (!isError(user)) return profile;
+    if (!isError(user, 'userModel:notFound')) throw user;
 
     const createRes = await userModel.create({
       auth0Id: profile.id,
       email: profile.emails?.[0].value || '',
       firstName: profile.displayName?.split(' ')[0],
       lastName: profile.displayName?.split(' ')[-1],
+      isVerified: getConfig('user.userAutoVerify'),
     });
     if (isError(createRes)) throw createRes;
 
@@ -66,11 +68,11 @@ export const getSession = async ({ request }: ServiceCommonParams) => {
   return session;
 };
 
-export type GetLogoutURLParams = ServiceCommonParams & {
-  returnToPath: string;
+export type LogoutParams = ServiceCommonParams & {
+  returnToPath?: string;
 };
 
-export const getLogoutURL = ({ request, returnToPath }: GetLogoutURLParams) => {
+export const getLogoutURL = ({ request, returnToPath = '/' }: LogoutParams) => {
   // Parse the request URL to get the origin and replace the path
   const url = new URL(request.url);
   const returnToURL = new URL(returnToPath, url.origin);
@@ -93,7 +95,16 @@ export const getLogoutOptions = async (params: ServiceCommonParams) => {
   };
 };
 
+export const logout = async (params: LogoutParams) => {
+  const logoutUrl = getLogoutURL(params);
+  const logoutOptions = await getLogoutOptions(params);
+  if (isError(logoutOptions)) throw redirect('/');
+
+  throw redirect(logoutUrl, logoutOptions);
+};
+
 export const getAuthProfile = async ({ request }: ServiceCommonParams) => {
+  if (getConfig('user.userAutoLogin')) return { id: 'mock-user' };
   const session = await getSession({ request });
 
   if (!session) return null;

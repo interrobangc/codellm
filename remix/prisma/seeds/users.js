@@ -1,7 +1,7 @@
 const users = [
   {
-    auth0Id: 'github|7569921',
-    email: 'bo@interrobang.consulting',
+    auth0Id: 'mock-user',
+    email: 'bo+codellm-mock@interrobang.consulting',
     firstName: 'Bo',
     isVerified: true,
     lastName: 'Davis',

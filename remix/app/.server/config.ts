@@ -12,9 +12,15 @@ export type Auth0Config = {
   secrets: string;
 };
 
+export type UserConfig = {
+  userAutoLogin: boolean;
+  userAutoVerify: boolean;
+};
+
 export type Config = {
   auth0: Auth0Config;
   codellm: PartialConfig;
+  user: UserConfig;
 };
 
 let config: Config;
@@ -110,6 +116,11 @@ export const getAuth0Config = () =>
     secrets: process.env.AUTH0_SECRETS ?? '',
   }) as Auth0Config;
 
+export const getUserConfig = () => ({
+  userAutoLogin: process.env.USER_AUTO_LOGIN === 'true',
+  userAutoVerify: process.env.USER_AUTO_VERIFY === 'true',
+});
+
 export const initConfig = () => {
   config = remember(
     'config',
@@ -117,6 +128,7 @@ export const initConfig = () => {
       ({
         auth0: getAuth0Config(),
         codellm: getCodellmConfig(),
+        user: getUserConfig(),
       }) as Config,
   );
 };
