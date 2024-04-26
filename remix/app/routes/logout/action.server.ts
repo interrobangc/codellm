@@ -1,18 +1,15 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
-import {
-  destroySession,
-  getLogoutURL,
-  getSession,
-} from '@remix/.server/services/auth';
+import { getLogoutOptions, getLogoutURL } from '@remix/.server/services/auth';
+import { isError } from '@remix/.server/errors';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const session = await getSession(request.headers.get('Cookie'));
+  const logoutUrl = getLogoutURL({ request, returnToPath: '/' });
+  const logoutOptions = await getLogoutOptions({ request });
+  if (isError(logoutOptions)) {
+    return redirect('/');
+  }
 
-  throw redirect(getLogoutURL('/'), {
-    headers: {
-      'Set-Cookie': await destroySession(session),
-    },
-  });
+  throw redirect(logoutUrl, logoutOptions);
 };

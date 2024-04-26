@@ -1,14 +1,21 @@
 import type { Auth0Profile } from 'remix-auth-auth0';
-import { createCookieSessionStorage } from '@remix-run/node';
+import type { ServiceCommonParams } from './types';
+
+import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import { Authenticator } from 'remix-auth';
 import { Auth0Strategy } from 'remix-auth-auth0';
 
-import { getConfig } from '@remix/.server/config.js';
+import { getConfig } from '@remix/.server/config';
+import { isError, newError } from '@remix/.server/errors';
 import { userModel } from '@remix/.server/models';
 
 // This does not currently handle token refreshes. See https://github.com/danestves/remix-auth-auth0/issues/104
 
-export const ERRORS = {} as const;
+export const ERRORS = {
+  'auth:noSession': {
+    message: 'No session found',
+  },
+} as const;
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -31,15 +38,15 @@ const auth0Strategy = new Auth0Strategy(
     }
 
     const user = await userModel.getByAuth0Id(profile.id);
-
     if (user) return profile;
 
-    await userModel.create({
+    const createRes = await userModel.create({
       auth0Id: profile.id,
       email: profile.emails?.[0].value || '',
       firstName: profile.displayName?.split(' ')[0],
       lastName: profile.displayName?.split(' ')[-1],
     });
+    if (isError(createRes)) throw createRes;
 
     return profile;
   },
@@ -47,20 +54,48 @@ const auth0Strategy = new Auth0Strategy(
 
 auth.use(auth0Strategy);
 
-export const { getSession, commitSession, destroySession } = sessionStorage;
+export const { commitSession, destroySession } = sessionStorage;
 
 export const isAuthenticated = () => auth.isAuthenticated;
 
-export const getLogoutURL = (returnTo: string) => {
-  const logoutURL = new URL(getConfig('auth0.logoutURL'));
+export const getSession = async ({ request }: ServiceCommonParams) => {
+  if (!request?.headers.has('Cookie')) return null;
+  const session = await sessionStorage.getSession(
+    request.headers.get('Cookie'),
+  );
+  return session;
+};
 
+export type GetLogoutURLParams = ServiceCommonParams & {
+  returnToPath: string;
+};
+
+export const getLogoutURL = ({ request, returnToPath }: GetLogoutURLParams) => {
+  // Parse the request URL to get the origin and replace the path
+  const url = new URL(request.url);
+  const returnToURL = new URL(returnToPath, url.origin);
+
+  const logoutURL = new URL(getConfig('auth0.logoutURL'));
   logoutURL.searchParams.set('client_id', getConfig('auth0.clientID'));
-  logoutURL.searchParams.set('returnTo', returnTo);
+  logoutURL.searchParams.set('returnTo', returnToURL.toString());
 
   return logoutURL.toString();
 };
 
-export const getAuthUser = async (request: Request) => {
-  const session = await getSession(request.headers.get('Cookie'));
+export const getLogoutOptions = async (params: ServiceCommonParams) => {
+  const session = await getSession(params);
+  if (!session) return newError({ code: 'auth:noSession' });
+
+  return {
+    headers: {
+      'Set-Cookie': await destroySession(session),
+    },
+  };
+};
+
+export const getAuthProfile = async ({ request }: ServiceCommonParams) => {
+  const session = await getSession({ request });
+
+  if (!session) return null;
   return session.data.user;
 };

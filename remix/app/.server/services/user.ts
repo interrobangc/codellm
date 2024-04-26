@@ -3,7 +3,7 @@ import type { UserModel } from '@remix/.server/models';
 import type { RemixError } from '@remix/.server/errors';
 
 import { userModel } from '@remix/.server/models';
-import { getAuthUser } from '@remix/.server/services/auth';
+import { getAuthProfile } from '@remix/.server/services/auth';
 import { isError, newError } from '@remix/.server/errors';
 
 export const ERRORS = {
@@ -18,8 +18,8 @@ export const ERRORS = {
   },
 } as const;
 
-export const getUser = async ({ request }: ServiceCommonParams) => {
-  const authUser = await getAuthUser(request);
+export const getUser = async (params: ServiceCommonParams) => {
+  const authUser = await getAuthProfile(params);
 
   if (!authUser) {
     return newError({
@@ -33,9 +33,7 @@ export const getUser = async ({ request }: ServiceCommonParams) => {
 
 export const validateUser = (user: UserModel | RemixError) => {
   if (isError(user)) return user;
-
   if (!user) return newError({ code: 'userService:noUser' });
-
   if (!user.isVerified) return newError({ code: 'userService:notVerified' });
 
   return user;
