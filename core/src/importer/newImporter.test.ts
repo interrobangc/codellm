@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { CodeLlmError, Config } from '@/index.js';
+import { Config, newError } from '@/index.js';
 import { unitTestConfig, validTool } from '@tests/mocks';
 import { expectError, testSetup } from '@tests/tools';
 import { initConfig } from '@/config/index.js';
@@ -62,9 +62,7 @@ describe('newImporter', () => {
     'should return an error when broken tool is imported',
     async (config: Config) => {
       initConfig(config);
-      mocks.initTools.mockResolvedValue(
-        new CodeLlmError({ code: 'tool:init' }),
-      );
+      mocks.initTools.mockResolvedValue(newError({ code: 'tool:init' }));
 
       const importer = await newImporter(unitTestConfig);
       expectError(importer, 'tool:init');
@@ -75,7 +73,7 @@ describe('newImporter', () => {
     'should return an error when import fails',
     async (config: Config) => {
       initConfig(config);
-      const badImport = () => new CodeLlmError({ code: 'tool:import' });
+      const badImport = () => newError({ code: 'tool:import' });
       mocks.initTools.mockResolvedValue(
         new Map([['validTool', { ...validTool, import: badImport }]]),
       );

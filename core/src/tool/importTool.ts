@@ -5,7 +5,7 @@ import { promiseMayFail } from '@/error/index.js';
  *
  * @param {string} moduleName The name of the module to import
  *
- * @returns {Promise<unknown | CodeLlmError>}The tool module or an error
+ * @returns {Promise<unknown | CodeLlmErrorType>}The tool module or an error
  */
 export const importTool = async (moduleName: string) =>
   promiseMayFail(import(moduleName), 'tool:import', {

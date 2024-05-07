@@ -1,7 +1,7 @@
 import type { Config, Tool, ToolRunParamsCommon } from '@codellm/core';
 import type { ToolConfig } from './types';
 
-import { CodeLlmError, fs, initConfig, log } from '@codellm/core';
+import { fs, initConfig, log, newError } from '@codellm/core';
 import { resolve } from 'path';
 import { DEFAULT_CONFIG, description } from './constants.js';
 
@@ -28,7 +28,7 @@ export const newTool = async (toolName: string, config: Config) => {
       const { filePaths } = params;
 
       if (!Array.isArray(filePaths)) {
-        return new CodeLlmError({
+        return newError({
           code: 'error:unknown',
           message: 'filePaths must be an array',
           meta: { filePaths },
@@ -36,7 +36,7 @@ export const newTool = async (toolName: string, config: Config) => {
       }
 
       if (filePaths.length > toolConfig.maxFileCount) {
-        return new CodeLlmError({
+        return newError({
           code: 'error:unknown',
           message: `The maximum number of files that can be read is ${toolConfig.maxFileCount}`,
           meta: { filePaths },

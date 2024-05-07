@@ -1,6 +1,6 @@
 import { AgentEmitterChannels, AgentHistoryItem } from './types';
 import EventEmitter from 'events';
-import { CodeLlmError } from '@/error/index.js';
+import { newError } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import { AGENT_EMITTER_CHANNELS } from './constants.js';
 
@@ -42,7 +42,7 @@ export const getEmitter = (id: string) => {
   const emitter = emitters.get(id);
 
   if (!emitter) {
-    return new CodeLlmError({
+    return newError({
       code: 'agent:emitter:getEmmitter',
       meta: { id },
     });

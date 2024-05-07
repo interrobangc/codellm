@@ -2,7 +2,7 @@ import type { Config, PartialConfig } from '@/.';
 
 import get from 'lodash/get.js';
 import merge from 'lodash/merge.js';
-import { CodeLlmError, isError } from '@/error/index.js';
+import { isError, newError } from '@/error/index.js';
 import { initLogger, log } from '@/log/index.js';
 import { DEFAULTS, LLM_DEFAULTS, REQUIRED_KEYS } from './constants.js';
 import { setConfig } from './config.js';
@@ -17,7 +17,7 @@ export const validateConfig = (config: Config) => {
   }
 
   if (missing.length > 0) {
-    return new CodeLlmError({
+    return newError({
       code: 'config:ValidationError',
       meta: { missing },
     });

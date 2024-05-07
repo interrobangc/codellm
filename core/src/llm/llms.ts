@@ -1,13 +1,13 @@
 import type { LlmClient, Llms, Service } from '@/.';
 
-import { CodeLlmError } from '@/error/index.js';
+import { newError } from '@/error/index.js';
 
 const llms: Llms = new Map();
 
 export const getLlm = (service: Service) => {
   const llm = llms.get(service);
   if (!llm) {
-    return new CodeLlmError({
+    return newError({
       code: 'llm:noServiceLlm',
       meta: { llms: Object.fromEntries(llms), service },
     });

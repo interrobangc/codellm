@@ -6,10 +6,12 @@ import { mockDeep, mockReset } from 'vitest-mock-extended';
 export const prismaMock = mockDeep<PrismaClient>();
 
 export const mockUser = {
+  auth0Id: 'fake-auth0-id-0',
   createdAt: new Date(),
   email: 'fake@fake.fake',
   firstName: 'Fake',
   id: 'fake-user-id-0',
+  isVerified: true,
   lastName: 'User',
   password: 'fake-password',
   updatedAt: new Date(),

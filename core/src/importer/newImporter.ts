@@ -1,8 +1,8 @@
 import type { Config, Importer, PartialConfig, Tool, Tools } from '@/.';
 
 import {
-  CodeLlmError,
   isError,
+  newError,
   promiseMapMayFail,
   promiseMayFail,
 } from '@/error/index.js';
@@ -50,7 +50,7 @@ export const asyncImport = async (tools: Tools) => {
 };
 
 export const runImport = (config: Config, tools: Tools) => {
-  if (!tools.size) return new CodeLlmError({ code: 'importer:noTools' });
+  if (!tools.size) return newError({ code: 'importer:noTools' });
   if (config.shouldImportAsync) {
     log('asynchronous import started');
     return asyncImport(tools);

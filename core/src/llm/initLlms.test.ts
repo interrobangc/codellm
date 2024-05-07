@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { getValidLlmClient, unitTestConfig } from '@tests/mocks';
 import { expectError } from '@tests/tools';
-import { CodeLlmError } from '@/error/index.js';
+import { newError } from '@/error/index.js';
 import { getConfig, initConfig } from '@/config/index.js';
 import * as initLlms from './initLlms.js';
 import * as newLlmClient from './newLlmClient.js';
@@ -45,7 +45,7 @@ describe('initLlms', () => {
     const servicesToInit = Object.keys(config.llms).map((n) => n);
 
     newLlmClientSpy.mockImplementation(() =>
-      Promise.resolve(new CodeLlmError({ code: 'llm:initClients' })),
+      Promise.resolve(newError({ code: 'llm:initClients' })),
     );
 
     const initLlmClientsRes = await initLlms.initLlms(servicesToInit);

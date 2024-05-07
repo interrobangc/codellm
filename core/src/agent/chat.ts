@@ -1,12 +1,7 @@
 import type { MessageList } from '@/.';
 
 import { load as loadYaml } from 'js-yaml';
-import {
-  CodeLlmError,
-  isError,
-  mayFail,
-  promiseMayFail,
-} from '@/error/index.js';
+import { isError, mayFail, newError, promiseMayFail } from '@/error/index.js';
 import { getLlm } from '@/llm/index.js';
 import { log } from '@/log/index.js';
 import { newPrompt } from '@/prompt/index.js';
@@ -96,7 +91,7 @@ export const handleQuestionRecursive = async ({
   });
 
   if (depth >= AGENT_RECURSION_DEPTH_MAX) {
-    const e = new CodeLlmError({
+    const e = newError({
       code: 'agent:maxDepthExceeded',
     });
     addToHistory(id, {

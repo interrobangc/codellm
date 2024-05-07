@@ -1,12 +1,12 @@
 import type { ConversationHistory, MessageList, Service } from '@/.';
-import { CodeLlmError, isError } from '@/error/index.js';
+import { isError, newError } from '@/error/index.js';
 
 const conversationHistory: ConversationHistory = new Map();
 
 export const getHistory = (service: Service) => {
   const history = conversationHistory.get(service);
   if (!history)
-    return new CodeLlmError({
+    return newError({
       code: 'llm:noConversationHistory',
       meta: { service },
     });

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export * from './utils/types.js';
 import { llmClientSchema } from '@/llm/types.js';
-import { CodeLlmError } from '@/error/errors.js';
+import type { CodeLlmErrorType } from '@/error/errors.js';
 
 export * from './utils/types.js';
 
@@ -25,11 +25,13 @@ export const toolRunParamsCommonSchema = z.object({
 export type ToolRunParamsCommon = z.infer<typeof toolRunParamsCommonSchema>;
 
 export const toolRunReturnSchema = z.string();
-export type ToolRunReturn = z.infer<typeof toolRunReturnSchema> | CodeLlmError;
+export type ToolRunReturn =
+  | z.infer<typeof toolRunReturnSchema>
+  | CodeLlmErrorType;
 
 export type ToolImportReturn =
   | z.infer<typeof toolRunReturnSchema>
-  | CodeLlmError;
+  | CodeLlmErrorType;
 
 export const toolConfigSchema = z.record(z.unknown());
 export type ToolConfig = z.infer<typeof toolConfigSchema>;

@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockChat, mockUser, prismaMock } from '@remixTests/mocks';
-import * as chats from './chats';
+import { expectError } from '@remixTests/tools';
+import * as chats from './chat';
+
+const request = new Request('http://localhost:3000');
 
 describe('getChat', () => {
   beforeEach(() => {
@@ -9,22 +12,18 @@ describe('getChat', () => {
     prismaMock.user.findUnique.mockResolvedValue(mockUser);
   });
 
-  it('should return a new chat when called without an id', async () => {
-    prismaMock.chat.create.mockResolvedValueOnce(mockChat);
-    const chat = await chats.getChat();
-    expect(chat).toEqual(expect.objectContaining(mockChat));
-    expect(prismaMock.chat.create).toHaveBeenCalledTimes(1);
-  });
-
   it('should return a chat when called with an id', async () => {
     prismaMock.chat.findUnique.mockResolvedValueOnce(mockChat);
-    const chat = await chats.getChat(mockChat.id);
+    const { id } = mockChat;
+    const chat = await chats.getChat({ id, request });
     expect(chat).toEqual(expect.objectContaining(mockChat));
     expect(prismaMock.chat.findUnique).toHaveBeenCalledTimes(1);
   });
 
-  it('should throw an error when chat is not found', async () => {
+  it('should return an error when chat is not found', async () => {
     prismaMock.chat.findUnique.mockResolvedValueOnce(null);
-    await expect(chats.getChat('non-existent-id')).rejects.toThrow();
+    const id = 'non-existent-id';
+    const chat = await chats.getChat({ id, request });
+    expectError(chat, 'chatModel:notFound');
   });
 });

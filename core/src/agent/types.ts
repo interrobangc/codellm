@@ -1,6 +1,6 @@
 import type {
   AGENT_EMITTER_CHANNELS,
-  CodeLlmError,
+  CodeLlmErrorType,
   LlmClient,
   ToolRunParamsParams,
 } from '@/.';
@@ -65,7 +65,7 @@ export type AgentResponseCodeItemList = AgentResponseCodeItem[];
 
 export type AgentSelectToolResponse = AgentResponseResponse | AgentToolResponse;
 
-export type AgentResponse = CodeLlmError | AgentResponseResponse;
+export type AgentResponse = CodeLlmErrorType | AgentResponseResponse;
 
 export type AgentToolResponseItem = {
   name: string;
@@ -106,7 +106,7 @@ export const isAgentHistoryAssistantItem = (
 };
 
 export type AgentHistoryErrorItem = {
-  error: CodeLlmError;
+  error: CodeLlmErrorType;
   role: 'error';
 };
 

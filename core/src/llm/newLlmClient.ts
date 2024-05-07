@@ -6,12 +6,7 @@ import type {
   Service,
 } from '@/.';
 
-import {
-  CodeLlmError,
-  isError,
-  mayFail,
-  promiseMayFail,
-} from '@/error/index.js';
+import { isError, mayFail, newError, promiseMayFail } from '@/error/index.js';
 import { log } from '@/log/index.js';
 import * as conversation from './conversation/index.js';
 import { llmProviderClientSchema } from './types.js';
@@ -85,7 +80,7 @@ export const newLlmClient = async (
 ) => {
   const llmConfig = config.llms[service] ?? config.llms[defaultType];
   if (!llmConfig) {
-    return new CodeLlmError({
+    return newError({
       code: 'llm:noServiceConfig',
       meta: { defaultType, service },
     });
@@ -94,7 +89,7 @@ export const newLlmClient = async (
 
   const providerConfigEntry = config.providers[provider];
   if (!providerConfigEntry) {
-    return new CodeLlmError({
+    return newError({
       code: 'llm:noProviderConfig',
       meta: { provider, service },
     });

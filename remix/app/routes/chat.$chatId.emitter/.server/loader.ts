@@ -1,9 +1,9 @@
-import type { LoaderFunction } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { EventStream } from '@remix-sse/server';
-import { getEventStreamEmitter } from '@remix/.server/services/chats';
+import { getEventStreamEmitter } from '@remix/.server/services/chat';
 
-export const loader: LoaderFunction = ({ params, request }) => {
+export const loader = ({ params, request }: LoaderFunctionArgs) => {
   if (!params.chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
   const { chatId } = params;
 

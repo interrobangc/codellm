@@ -79,6 +79,7 @@ const config = {
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
     '@typescript-eslint/dot-notation': 'off',
+    '@typescript-eslint/no-throw-literal': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',

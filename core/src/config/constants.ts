@@ -40,7 +40,7 @@ export const LLM_DEFAULTS = {
   },
   ollama: {
     chat: {
-      model: 'mixtral:8x7b',
+      model: 'llama3',
       provider: 'ollama',
     },
     embedding: {

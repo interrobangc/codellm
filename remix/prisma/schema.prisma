@@ -15,13 +15,14 @@ datasource db {
 
 model User {
   id       String   @id @default(uuid())
+  auth0Id  String   @unique
   email    String   @unique
   firstName String?
   lastName   String?
-  password String
   chats    Chat[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isVerified Boolean @default(false)
 }
 
 model Chat {

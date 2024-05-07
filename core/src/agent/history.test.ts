@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { CodeLlmError } from '@/error/index.js';
+import { newError } from '@/error/index.js';
 import { testSetup } from '@tests/tools/';
 import {
   addToHistory,
@@ -52,11 +52,11 @@ describe('addToHistory', () => {
     },
     {
       params: {
-        error: new CodeLlmError('error:unknown'),
+        error: newError('error:unknown'),
         role: 'error',
       },
       result: {
-        error: new CodeLlmError('error:unknown'),
+        error: newError('error:unknown'),
         role: 'error',
       },
       role: 'tool',
