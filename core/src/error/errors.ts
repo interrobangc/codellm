@@ -1,14 +1,27 @@
-import type { CodeLlmErrorParams, ErrorCode } from '@/.';
+import type { CodeLlmErrorParams, ErrorCodes } from '@/.';
 
 import { CODE_LLM_ERRORS } from './constants.js';
 import { getConfig } from '@/config/index.js';
+
+/**
+ * These functions make up a TS safe error handling system.
+ *
+ * The types are a bit messy and overly complicated so that this system can be extended
+ * and used by other projects that use it (like the Remix frontend).
+ *
+ * The double generics extends/defaults are ugly, but it works. The
+ * base problem is that we want type hinting for the error codes, but we also want to
+ * allow for custom error codes in the Remix project.
+ *
+ * Since the
+ */
 
 const isErrorCode = (code: unknown): code is keyof typeof CODE_LLM_ERRORS => {
   return (code as string) in CODE_LLM_ERRORS;
 };
 
-const getErrorMessage = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
-  code: TCode,
+const getErrorMessage = <TCodes extends ErrorCodes = ErrorCodes>(
+  code: keyof TCodes,
   message?: string,
 ): string => {
   if (message) {
@@ -22,7 +35,7 @@ const getErrorMessage = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
   return code as string;
 };
 
-export type CodeLlmErrorType = CodeLlmError<ErrorCode>;
+export type CodeLlmErrorType = CodeLlmError<ErrorCodes>;
 
 /**
  * A custom error class for the CodeLlm project.
@@ -35,26 +48,20 @@ export type CodeLlmErrorType = CodeLlmError<ErrorCode>;
  * The message will be pulled from the CODE_LLM_ERRORS constant.
  */
 export class CodeLlmError<
-  TCode extends TCodeBase,
-  TCodeBase = ErrorCode,
+  TCodes extends ErrorCodes = ErrorCodes,
 > extends Error {
-  code: TCode;
+  code: keyof TCodes;
 
   override message: string;
 
-  override cause: CodeLlmErrorParams<TCode, TCodeBase>['cause'];
+  override cause: CodeLlmErrorParams<TCodes>['cause'];
 
-  meta: CodeLlmErrorParams<TCode, TCodeBase>['meta'];
+  meta: CodeLlmErrorParams<TCodes>['meta'];
 
-  constructor({
-    cause,
-    code,
-    message,
-    meta,
-  }: CodeLlmErrorParams<TCode, TCodeBase>) {
+  constructor({ cause, code, message, meta }: CodeLlmErrorParams<TCodes>) {
     super();
     this.code = code;
-    this.message = getErrorMessage<TCode, TCodeBase>(code, message);
+    this.message = getErrorMessage<TCodes>(code, message);
     this.cause = cause;
     this.meta = meta || {};
   }
@@ -67,13 +74,13 @@ export class CodeLlmError<
  *
  * @returns {bool} Whether the target is a CodeLlmError
  */
-export const isError = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
+export const isError = <TCodes extends ErrorCodes = ErrorCodes>(
   target: unknown,
-  code?: TCode,
-): target is CodeLlmError<TCode, TCodeBase> => {
+  code?: keyof TCodes,
+): target is CodeLlmError<TCodes> => {
   return (
     target instanceof CodeLlmError &&
-    (!code || (target as CodeLlmError<TCode, TCodeBase>).code === code)
+    (!code || (target as CodeLlmError<TCodes>).code === code)
   );
 };
 
@@ -86,17 +93,17 @@ export const isError = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
  *
  * @returns The result of the target or a CodeLlmError with the error in the meta
  */
-export const mayFail = <T, TCode extends TCodeBase, TCodeBase = ErrorCode>(
+export const mayFail = <T, TCodes extends ErrorCodes = ErrorCodes>(
   target: () => T,
-  code: TCode,
-  meta: CodeLlmErrorParams<TCode, TCodeBase>['meta'] = {},
+  code: keyof TCodes,
+  meta: CodeLlmErrorParams<TCodes>['meta'] = {},
 ) => {
   try {
     const targetResp = target();
     if (isError(targetResp)) throw targetResp;
     return targetResp;
   } catch (e) {
-    return new CodeLlmError<TCode, TCodeBase>({ cause: e, code, meta });
+    return new CodeLlmError<TCodes>({ cause: e, code, meta });
   }
 };
 
@@ -110,21 +117,17 @@ export const mayFail = <T, TCode extends TCodeBase, TCodeBase = ErrorCode>(
  * @returns - The result of the promise or a CodeLlmError with the error in the meta
  *
  */
-export const promiseMayFail = async <
-  T,
-  TCode extends TCodeBase,
-  TCodeBase = ErrorCode,
->(
+export const promiseMayFail = async <T, TCodes extends ErrorCodes = ErrorCodes>(
   target: Promise<T>,
-  code: TCode,
-  meta: CodeLlmErrorParams<TCode, TCodeBase>['meta'] = {},
+  code: keyof TCodes,
+  meta: CodeLlmErrorParams<TCodes>['meta'] = {},
 ) => {
   try {
     const targetRes = await target;
     if (isError(targetRes)) throw targetRes;
     return targetRes;
   } catch (e) {
-    return new CodeLlmError<TCode, TCodeBase>({ cause: e, code, meta });
+    return new CodeLlmError<TCodes>({ cause: e, code, meta });
   }
 };
 
@@ -138,11 +141,10 @@ export const promiseMayFail = async <
  */
 export const promiseMapMayFail = async <
   T,
-  TCode extends TCodeBase,
-  TCodeBase = ErrorCode,
+  TCodes extends ErrorCodes = ErrorCodes,
 >(
   map: Promise<T>[],
-  code: TCode,
+  code: keyof TCodes,
 ) => {
   const resolved = await Promise.allSettled(map);
   const errors = resolved.filter(
@@ -151,7 +153,7 @@ export const promiseMapMayFail = async <
 
   const results = resolved.filter((item) => item.status === 'fulfilled');
   if (errors.length) {
-    return new CodeLlmError<TCode, TCodeBase>({
+    return new CodeLlmError<TCodes>({
       code,
       meta: { errors, results },
     });
@@ -168,8 +170,8 @@ export const promiseMapMayFail = async <
  * @returns The error
  * @throws The error if the config is initialized and shouldThrow is true
  */
-export const throwOrReturn = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
-  e: CodeLlmError<TCode, TCodeBase>,
+export const throwOrReturn = <TCodes extends ErrorCodes = ErrorCodes>(
+  e: CodeLlmError<TCodes>,
 ) => {
   const config = getConfig();
   if (isError(config, 'config:NotInitialized')) throw e;
@@ -180,6 +182,6 @@ export const throwOrReturn = <TCode extends TCodeBase, TCodeBase = ErrorCode>(
   return e;
 };
 
-export const newError = (args: CodeLlmErrorParams<ErrorCode>) => {
+export const newError = (args: CodeLlmErrorParams<ErrorCodes>) => {
   return new CodeLlmError(args);
 };
