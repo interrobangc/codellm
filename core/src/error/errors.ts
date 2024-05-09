@@ -9,10 +9,6 @@ import { getConfig } from '@/config/index.js';
  * The types are a bit messy and overly complicated so that this system can be extended
  * and used by other projects that use it (like the Remix frontend).
  *
- * The double generics extends/defaults are ugly, but it works. The
- * base problem is that we want type hinting for the error codes, but we also want to
- * allow for custom error codes in the Remix project.
- *
  * Since the
  */
 
