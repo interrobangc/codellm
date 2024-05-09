@@ -1,7 +1,4 @@
-import type {
-  ErrorCode as BaseErrorCode,
-  CodeLlmErrorParams,
-} from '@codellm/core';
+import type { CodeLlmErrorParams } from '@codellm/core';
 
 import { ERROR_CODES } from './constants';
 
@@ -12,35 +9,35 @@ import {
   promiseMayFail as basePromiseMayFail,
 } from '@codellm/core';
 
-export type RemixErrorCodes = keyof typeof ERROR_CODES;
+export type ErrorCodes = typeof ERROR_CODES;
 
-export type ErrorCode = BaseErrorCode | RemixErrorCodes;
+export type ErrorCode = keyof ErrorCodes;
 
-export type RemixError = CodeLlmError<ErrorCode, ErrorCode>;
+export type RemixError = CodeLlmError<ErrorCodes>;
 
 export const isError = (
   target: unknown,
   code?: ErrorCode,
 ): target is RemixError => {
-  return baseIsError<ErrorCode, ErrorCode>(target, code);
+  return baseIsError<ErrorCodes>(target, code);
 };
 
 export const mayFail = <T>(
   target: () => T,
   code: ErrorCode,
-  meta: CodeLlmError<ErrorCode, ErrorCode>['meta'] = {},
+  meta: CodeLlmError<ErrorCodes>['meta'] = {},
 ) => {
-  return BaseMayFail<T, ErrorCode, ErrorCode>(target, code, meta);
+  return BaseMayFail<T, ErrorCodes>(target, code, meta);
 };
 
 export const promiseMayFail = async <T>(
   target: Promise<T>,
   code: ErrorCode,
-  meta: CodeLlmError<ErrorCode, ErrorCode>['meta'] = {},
+  meta: CodeLlmError<ErrorCodes>['meta'] = {},
 ) => {
-  return basePromiseMayFail<T, ErrorCode, ErrorCode>(target, code, meta);
+  return basePromiseMayFail<T, ErrorCodes>(target, code, meta);
 };
 
-export const newError = (params: CodeLlmErrorParams<ErrorCode, ErrorCode>) => {
-  return new CodeLlmError<ErrorCode, ErrorCode>(params);
+export const newError = (params: CodeLlmErrorParams<ErrorCodes>) => {
+  return new CodeLlmError<ErrorCodes>(params);
 };
