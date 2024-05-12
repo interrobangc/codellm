@@ -1,5 +1,4 @@
 import type { ChatInsert, User, UserInsert } from '@remix/.server/db';
-import { desc, eq } from 'drizzle-orm';
 import { isError, newError, promiseMayFail } from '@remix/.server/errors';
 import { db, chatSchema, userSchema, messageSchema } from '@remix/.server/db';
 import * as chatModel from '@remix/.server/models/chat/chatModel';
@@ -37,10 +36,12 @@ export const getChats =
   } = {}) =>
     promiseMayFail(
       db.query.chatSchema.findMany({
-        where: eq(chatSchema.userId, user.id),
-        orderBy: desc(chatSchema.createdAt),
+        where: (model, { eq }) => eq(model.userId, user.id),
+        orderBy: (model, { desc }) => desc(model.createdAt),
         with: withMessages
-          ? { messages: { orderBy: desc(messageSchema.createdAt) } }
+          ? {
+              messages: { orderBy: (model, { desc }) => desc(model.createdAt) },
+            }
           : {},
       }),
       'userModel:getChats',
@@ -55,10 +56,10 @@ export const dbToModel = (user: User) => ({
 export const getByEmail = async (email: string) => {
   const user = await promiseMayFail(
     db.query.userSchema.findFirst({
-      where: eq(userSchema.email, email),
+      where: (model, { eq }) => eq(model.email, email),
       with: {
         chats: {
-          orderBy: desc(chatSchema.createdAt),
+          orderBy: (model, { desc }) => desc(model.createdAt),
         },
       },
     }),
@@ -87,10 +88,10 @@ export const create = async (data: UserInsert) => {
 export const getByAuth0Id = async (auth0Id: string) => {
   const user = await promiseMayFail(
     db.query.userSchema.findFirst({
-      where: eq(userSchema.auth0Id, auth0Id),
+      where: (model, { eq }) => eq(model.auth0Id, auth0Id),
       with: {
         chats: {
-          orderBy: desc(chatSchema.createdAt),
+          orderBy: (model, { desc }) => desc(model.createdAt),
         },
       },
     }),

@@ -6,7 +6,7 @@ import type {
   AgentHistoryUserItem,
 } from '@codellm/core';
 
-import { desc, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { db, chatSchema, messageSchema } from '@remix/.server/db';
 import { isError, newError, promiseMayFail } from '@remix/.server/errors';
 
@@ -57,8 +57,8 @@ export const addMessage = (chat: Chat) => (newMessage: AgentHistoryItem) =>
 export const getMessages = (chat: Chat) => () =>
   promiseMayFail(
     db.query.messageSchema.findMany({
-      where: eq(messageSchema.chatId, chat.id),
-      orderBy: desc(messageSchema.createdAt),
+      where: (model, { eq }) => eq(model.chatId, chat.id),
+      orderBy: (model, { desc }) => desc(model.createdAt),
     }),
     'chatModel:getMessages',
   );
@@ -118,10 +118,10 @@ export const dbToModel = (chat: Chat) =>
 export const getById = async (id: Chat['id']) => {
   const chat = await promiseMayFail(
     db.query.chatSchema.findFirst({
-      where: eq(chatSchema.id, id),
+      where: (model, { eq }) => eq(model.id, id),
       with: {
         messages: {
-          orderBy: desc(messageSchema.createdAt),
+          orderBy: (model, { desc }) => desc(model.createdAt),
         },
       },
     }),
