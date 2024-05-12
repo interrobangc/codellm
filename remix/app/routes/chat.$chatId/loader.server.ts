@@ -6,10 +6,10 @@ import { getChat } from '@remix/.server/services/chat';
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   if (!params.chatId) throw redirect('/chat');
-  const { chatId: id } = params;
+  const { chatId } = params;
 
   const currentChat = await getChat({
-    id,
+    id: Number(chatId),
     request,
   });
   if (!currentChat || isError(currentChat)) throw redirect('/');

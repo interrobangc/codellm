@@ -8,8 +8,8 @@ export const ChatHistory = () => {
 
   return (
     <div className="p-2">
-      {/* @ts-expect-error - not fighting with Prisma types for now  */}
       {history.map((message, index) => (
+        /* @ts-expect-error - not working */
         <ChatMessage key={index} message={message} />
       ))}
       <ChatMessageLoading />

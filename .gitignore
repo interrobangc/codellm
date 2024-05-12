@@ -12,5 +12,3 @@ vscode-profile*
 .chromadb
 .postgres
 **/*.log
-
-**/migrations/

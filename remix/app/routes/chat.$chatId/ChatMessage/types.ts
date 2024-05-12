@@ -1,4 +1,4 @@
-import type { Message } from '@prisma/client';
+import { Message } from '@remix/.server/db';
 
 export type ChatMessageProps = {
   message: Message;

@@ -73,12 +73,9 @@ export class CodeLlmError<
 export const isError = <TCodes extends ErrorCodes = ErrorCodes>(
   target: unknown,
   code?: keyof TCodes,
-): target is CodeLlmError<TCodes> => {
-  return (
-    target instanceof CodeLlmError &&
-    (!code || (target as CodeLlmError<TCodes>).code === code)
-  );
-};
+): target is CodeLlmError<TCodes> =>
+  target instanceof CodeLlmError &&
+  (!code || (target as CodeLlmError<TCodes>).code === code);
 
 /**
  * Resolves a target that could throw and returns a CodeLlmError if the target fails

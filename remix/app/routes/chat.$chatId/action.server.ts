@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import type { Chat } from '@prisma/client';
 
 import { json, redirect } from '@remix-run/node';
 import {
@@ -9,6 +8,7 @@ import {
   updateChat,
 } from '@remix/.server/services/chat';
 import { isError } from '@remix/.server/errors';
+import { Chat } from '@remix/.server/db';
 
 export type ChatActionParams = {
   formData: FormData;
@@ -51,7 +51,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
   const formData = await request.clone().formData();
   const intent = formData.get('intent');
-  const requestParams = { formData, id: chatId, request };
+  const requestParams = { formData, id: Number(chatId), request };
   switch (intent) {
     case 'deleteChat':
       return deleteChatAction(requestParams);

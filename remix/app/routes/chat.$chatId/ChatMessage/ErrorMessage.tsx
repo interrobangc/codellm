@@ -14,7 +14,7 @@ export const ErrorMessage = ({ message }: ChatMessageProps) => {
         className="text-primary font-bold"
         onClick={() => $modal.current?.showModal()}
       >
-        {/* @ts-expect-error - ignore prisma error for now */}
+        {/* @ts-expect-error - ignore error for now */}
         {error.message}
       </button>
       <dialog ref={$modal} className="modal">

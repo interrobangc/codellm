@@ -3,12 +3,17 @@ import type {
   AgentEmitterChannels,
   AgentHistoryItem,
 } from '@codellm/core';
-import type { Chat, Prisma } from '@prisma/client';
 import type { ServiceCommonParams } from './types.js';
 
 import { EventEmitter } from 'events';
 import { remember } from '@epic-web/remember';
 import { AGENT_EMITTER_CHANNELS, log, newAgent } from '@codellm/core';
+import {
+  ChatInsert,
+  Chat,
+  User,
+  ChatUpdate,
+} from '@remix/.server/db/schema.js';
 import { getConfig } from '@remix/.server/config.js';
 import { chatModel } from '@remix/.server/models';
 import { isError, newError } from '@remix/.server/errors';
@@ -24,7 +29,10 @@ export const channelsToForward = Object.keys(
   AGENT_EMITTER_CHANNELS,
 ) as AgentEmitterChannels[];
 
-const clients = remember('chatsServiceClients', () => new Map<string, Agent>());
+const clients = remember(
+  'chatsServiceClients',
+  () => new Map<Chat['id'], Agent>(),
+);
 
 const eventStreamEmitter = remember(
   'eventStreamEmitter',
@@ -34,23 +42,24 @@ const eventStreamEmitter = remember(
 export const getEventStreamEmitter = () => eventStreamEmitter;
 
 // TODO: we're going to need channels for this eventually
-const onAgentEmit = (chatId: string) => async (params: AgentHistoryItem) => {
-  const chat = await chatModel.getById(chatId);
-  if (isError(chat)) return chat;
-  await chat.addMessage(params);
-  log('onAgentEmit emitting', 'debug', params);
-  eventStreamEmitter.emit(`agent:${chatId}`, params);
-};
+const onAgentEmit =
+  (chatId: User['id']) => async (params: AgentHistoryItem) => {
+    const chat = await chatModel.getById(chatId);
+    if (isError(chat)) return chat;
+    await chat.addMessage(params);
+    log('onAgentEmit emitting', 'debug', params);
+    eventStreamEmitter.emit(`agent:${chatId}`, params);
+  };
 
-const onEmitListeners = (client: Agent, id: string) =>
+const onEmitListeners = (client: Agent, id: Chat['id']) =>
   channelsToForward.map((channel) => client.onEmit(channel, onAgentEmit(id)));
 
-const offEmitListeners = (client: Agent, id: string) =>
+const offEmitListeners = (client: Agent, id: Chat['id']) =>
   channelsToForward.map((channel) => client.offEmit(channel, onAgentEmit(id)));
 
 const clientCreationLocks = remember(
   'agentClientCreationLocks',
-  () => new Map<string, Promise<Agent>>(),
+  () => new Map<Chat['id'], Promise<Agent>>(),
 );
 
 /**
@@ -58,14 +67,14 @@ const clientCreationLocks = remember(
  * that we only create one client per chat. We use a lock to ensure that only one
  * request creates the client, and the others wait for it to be created.
  */
-export const _getOrCreateClient = async (id: string) => {
+export const _getOrCreateClient = async (id: Chat['id']) => {
   const existingClient = clients.get(id);
   if (existingClient) return existingClient;
 
   let lock = clientCreationLocks.get(id);
   if (lock) return lock;
   const newLock = (async () => {
-    const newClient = await newAgent(getConfig('codellm'), id);
+    const newClient = await newAgent(getConfig('codellm'), id.toString());
     if (isError(newClient)) throw newClient;
     if (!newClient) throw newError({ code: 'chatService:noChat' });
 
@@ -114,7 +123,7 @@ export const deleteChat = async (params: ChatCommonParams) => {
   if (isError(chat)) return chat;
 
   offEmitListeners(chat.client as Agent, params.id);
-  await chat.remove();
+  await chat.destroy();
 };
 
 export const getChats = async (params: ServiceCommonParams) => {
@@ -125,7 +134,7 @@ export const getChats = async (params: ServiceCommonParams) => {
 };
 
 export type UpdateChatParams = ChatCommonParams & {
-  update: Prisma.ChatUpdateInput;
+  update: ChatUpdate;
 };
 
 export const updateChat = async ({ id, update }: UpdateChatParams) => {

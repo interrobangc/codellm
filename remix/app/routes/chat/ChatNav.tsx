@@ -32,7 +32,7 @@ const ChatNav = () => {
             to={`/chat/${chat.id}`}
             type="button"
             onClick={handleClick}
-            className={`btn btn-sm w-full text-ellipsis ${chat.id === chatId ? 'btn-primary' : 'btn-ghost'}`}
+            className={`btn btn-sm w-full text-ellipsis ${chat.id === Number(chatId) ? 'btn-primary' : 'btn-ghost'}`}
           >
             {chat.name}
           </Link>
