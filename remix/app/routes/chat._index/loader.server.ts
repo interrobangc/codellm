@@ -5,7 +5,6 @@ import { getMostRecentChat } from '@remix/.server/services/chat';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const chat = await getMostRecentChat({ request });
-
   if (isError(chat)) throw redirect('/');
 
   if (chat) throw redirect(`${chat.id}`);

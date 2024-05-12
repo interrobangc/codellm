@@ -1,9 +1,11 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { getUser, validateUser } from '@remix/.server/services/user';
+import { initClient } from '@remix/.server/db/db';
 import { isError } from '@remix/.server/errors';
 import { noAuthPayload } from '@remix/components/AuthProvider';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await initClient();
   const user = await getUser({ request });
   if (isError(user)) return noAuthPayload;
 

@@ -1,3 +1,6 @@
+import { db } from '@remix/.server/db';
+import { userSchema } from '@remix/.server/db/schema.js';
+
 const users = [
   {
     auth0Id: 'mock-user',
@@ -8,12 +11,8 @@ const users = [
   },
 ];
 
-export default async function seedUsers(prisma) {
+export default async function seedUsers() {
   for (const user of users) {
-    await prisma.user.upsert({
-      create: user,
-      update: {},
-      where: { email: user.email },
-    });
+    await db.insert(userSchema).values(user);
   }
 }

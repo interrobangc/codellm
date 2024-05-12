@@ -8,7 +8,6 @@ export const useChatHistory = () => {
   const currentChat = useCurrentChat();
   useChatEventStream<AgentHistoryItem>(`agent:${chatId}`);
 
-  // @ts-expect-error - not fighting with Prisma types for now
   return currentChat?.messages || [];
 };
 

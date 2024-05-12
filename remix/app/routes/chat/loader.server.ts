@@ -8,7 +8,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   if (isError(chats)) throw redirect('/');
   if (!params.chatId) return { chats };
 
-  const chat = await getChat({ id: params.chatId, request });
+  const chat = await getChat({ id: Number(params.chatId), request });
   if (isError(chat)) throw redirect('/');
   return { chat, chats };
 };

@@ -1,4 +1,3 @@
-import type { Message } from '@prisma/client';
 import type { ChatMessageComponents, ChatMessageProps } from './types';
 
 import AssistantMessage from './AssistantMessage';
@@ -6,6 +5,7 @@ import ErrorMessage from './ErrorMessage';
 import ToolMessage from './ToolMessage';
 import ToolResponseMessage from './ToolResponseMessage';
 import UserMessage from './UserMessage';
+import { Message } from '@remix/.server/db';
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   const chatMessageComponents: ChatMessageComponents = {

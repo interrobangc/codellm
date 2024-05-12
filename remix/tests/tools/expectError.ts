@@ -1,9 +1,8 @@
-import type { ErrorCode, ErrorCodes } from '@remix/.server/errors';
+import type { ErrorCode } from '@remix/.server/errors';
 
 import { expect } from 'vitest';
-import { CodeLlmError } from '@codellm/core';
+import { isError } from '@remix/.server/errors';
 
 export const expectError = (resp: unknown, code: ErrorCode) => {
-  expect(resp).toBeInstanceOf(CodeLlmError);
-  expect((resp as CodeLlmError<ErrorCodes>).code).toEqual(code);
+  expect(isError(resp, code)).toBeTruthy();
 };

@@ -1,2 +1,2 @@
 export * from './codellm';
-export * from './prisma';
+export * from './db';

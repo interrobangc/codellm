@@ -1,6 +1,7 @@
-import type { Prisma, User } from '@prisma/client';
+import type { ChatInsert, User, UserInsert } from '@remix/.server/db';
+import { desc, eq } from 'drizzle-orm';
 import { isError, newError, promiseMayFail } from '@remix/.server/errors';
-import { prisma } from '@remix/.server/models/prisma';
+import { db, chatSchema, userSchema, messageSchema } from '@remix/.server/db';
 import * as chatModel from '@remix/.server/models/chat/chatModel';
 
 export const ERRORS = {
@@ -24,9 +25,8 @@ export const ERRORS = {
   },
 } as const;
 
-export const addChat =
-  (user: User) => (newChat: Prisma.ChatCreateWithoutUserInput) =>
-    chatModel.addChatFromUser(user, newChat);
+export const addChat = (user: User) => (newChat: Omit<ChatInsert, 'userId'>) =>
+  chatModel.addChatFromUser(user, newChat);
 
 export const getChats =
   (user: User) =>
@@ -36,25 +36,17 @@ export const getChats =
     withMessages?: boolean;
   } = {}) =>
     promiseMayFail(
-      prisma.chat.findMany({
-        where: { userId: user.id },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: withMessages
-          ? {
-              messages: {
-                orderBy: {
-                  createdAt: 'desc',
-                },
-              },
-            }
-          : undefined,
+      db.query.chatSchema.findMany({
+        where: eq(chatSchema.userId, user.id),
+        orderBy: desc(chatSchema.createdAt),
+        with: withMessages
+          ? { messages: { orderBy: desc(messageSchema.createdAt) } }
+          : {},
       }),
       'userModel:getChats',
     );
 
-export const prismaToModel = (user: User) => ({
+export const dbToModel = (user: User) => ({
   ...user,
   addChat: addChat(user),
   getChats: getChats(user),
@@ -62,13 +54,11 @@ export const prismaToModel = (user: User) => ({
 
 export const getByEmail = async (email: string) => {
   const user = await promiseMayFail(
-    prisma.user.findUnique({
-      where: { email },
-      include: {
+    db.query.userSchema.findFirst({
+      where: eq(userSchema.email, email),
+      with: {
         chats: {
-          orderBy: {
-            createdAt: 'desc',
-          },
+          orderBy: desc(chatSchema.createdAt),
         },
       },
     }),
@@ -77,38 +67,37 @@ export const getByEmail = async (email: string) => {
   if (isError(user)) return user;
 
   if (!user) return newError({ code: 'userModel:notFound' });
-  return prismaToModel(user);
+  return dbToModel(user);
 };
 
-export const create = async (data: Prisma.UserCreateInput) => {
-  const user = await promiseMayFail(
-    prisma.user.create({
-      data,
-    }),
+export const create = async (data: UserInsert) => {
+  const insertedUsers = await promiseMayFail(
+    db.insert(userSchema).values(data).returning(),
     'userModel:create',
   );
 
-  if (isError(user)) return user;
-  return prismaToModel(user);
+  if (isError(insertedUsers)) return insertedUsers;
+
+  const insertedUser = await getByAuth0Id(insertedUsers[0].auth0Id);
+  if (isError(insertedUser)) return insertedUser;
+
+  return dbToModel(insertedUser);
 };
 
 export const getByAuth0Id = async (auth0Id: string) => {
   const user = await promiseMayFail(
-    prisma.user.findUnique({
-      where: { auth0Id },
-      include: {
+    db.query.userSchema.findFirst({
+      where: eq(userSchema.auth0Id, auth0Id),
+      with: {
         chats: {
-          orderBy: {
-            createdAt: 'desc',
-          },
+          orderBy: desc(chatSchema.createdAt),
         },
       },
     }),
     'userModel:getByAuth0Id',
   );
-
   if (isError(user)) return user;
 
   if (!user) return newError({ code: 'userModel:notFound' });
-  return prismaToModel(user);
+  return dbToModel(user);
 };

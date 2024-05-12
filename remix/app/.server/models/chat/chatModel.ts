@@ -1,11 +1,13 @@
-import type { Chat, Message, Prisma, User } from '@prisma/client';
+import type { Chat, ChatInsert, MessageInsert, User } from '@remix/.server/db';
 import type {
   AgentHistoryErrorItem,
   AgentHistoryItem,
   AgentHistoryToolItem,
   AgentHistoryUserItem,
 } from '@codellm/core';
-import { prisma } from '@remix/.server/models/prisma';
+
+import { desc, eq } from 'drizzle-orm';
+import { db, chatSchema, messageSchema } from '@remix/.server/db';
 import { isError, newError, promiseMayFail } from '@remix/.server/errors';
 
 export const ERRORS = {
@@ -18,7 +20,7 @@ export const ERRORS = {
   'chatModel:addChatFromUser': {
     message: 'Failed to add chat from user',
   },
-  'chatModel:remove': {
+  'chatModel:destroy': {
     message: 'Failed to remove chat',
   },
   'chatModel:update': {
@@ -31,7 +33,7 @@ export const ERRORS = {
 
 export const fromAgentHistoryMessage = (
   message: AgentHistoryItem,
-): Omit<Prisma.MessageCreateWithoutChatInput, 'userId'> => ({
+): Omit<MessageInsert, 'chatId' | 'userId' | 'updatedAt'> => ({
   type: message.role,
   error: JSON.stringify((message as AgentHistoryErrorItem).error),
   params: JSON.stringify((message as AgentHistoryToolItem).params),
@@ -39,126 +41,94 @@ export const fromAgentHistoryMessage = (
   content: (message as AgentHistoryUserItem).content,
 });
 
-export const parseMessages = (messages: Message[]) =>
-  messages.map((message) => ({
-    ...message,
-    error: message.error ? JSON.parse(message.error as string) : undefined,
-    params: message.params ? JSON.parse(message.params as string) : undefined,
-  }));
-
 export const addMessage = (chat: Chat) => (newMessage: AgentHistoryItem) =>
   promiseMayFail(
-    prisma.message.create({
-      data: {
+    db
+      .insert(messageSchema)
+      .values({
         ...fromAgentHistoryMessage(newMessage),
+        chatId: chat.id,
         userId: chat.userId,
-        chat: {
-          connect: {
-            id: chat.id,
-          },
-        },
-      },
-    }),
+      })
+      .returning(),
     'chatModel:addMessage',
   );
 
 export const getMessages = (chat: Chat) => () =>
   promiseMayFail(
-    prisma.message
-      .findMany({
-        where: { chatId: chat.id },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      })
-      .then((messages) => parseMessages(messages)),
+    db.query.messageSchema.findMany({
+      where: eq(messageSchema.chatId, chat.id),
+      orderBy: desc(messageSchema.createdAt),
+    }),
     'chatModel:getMessages',
   );
 
 export const addChatFromUser = async (
   user: User,
-  newChat: Prisma.ChatCreateWithoutUserInput,
+  newChat: Omit<ChatInsert, 'userId'>,
 ) => {
-  const chat = await promiseMayFail(
-    prisma.chat.create({
-      data: {
-        ...newChat,
-        user: {
-          connect: {
-            id: user.id,
-          },
-        },
-      },
-      include: {
-        messages: {
-          orderBy: {
-            createdAt: 'asc',
-          },
-        },
-      },
-    }),
+  const insertedChats = await promiseMayFail(
+    db
+      .insert(chatSchema)
+      .values({ ...newChat, userId: user.id })
+      .returning(),
     'chatModel:addChatFromUser',
   );
 
-  if (isError(chat)) return chat;
+  if (isError(insertedChats)) return insertedChats;
+  const insertedChat = await getById(insertedChats[0].id);
+  if (isError(insertedChat)) return insertedChat;
 
-  return prismaToModel(chat);
+  return dbToModel(insertedChat);
 };
 
-export const remove = (chat: Chat) => () =>
+export const destroy = (chat: Chat) => () =>
   promiseMayFail(
-    prisma.chat.delete({ where: { id: chat.id } }),
-    'chatModel:remove',
+    db.delete(chatSchema).where(eq(chatSchema.id, chat.id)),
+    'chatModel:destroy',
   );
 
-export const update =
-  (chat: Chat) => async (newData: Prisma.ChatUpdateInput) => {
-    const updatedChat = await promiseMayFail(
-      prisma.chat.update({
-        where: { id: chat.id },
-        data: newData,
-      }),
-      'chatModel:update',
-    );
+export const update = (chat: Chat) => async (newData: Partial<ChatInsert>) => {
+  const updatedChats = await promiseMayFail(
+    db
+      .update(chatSchema)
+      .set(newData)
+      .where(eq(chatSchema.id, chat.id))
+      .returning(),
+    'chatModel:update',
+  );
 
-    if (isError(updatedChat)) return updatedChat;
+  if (isError(updatedChats)) return updatedChats;
 
-    return prismaToModel(updatedChat);
-  };
+  const updatedChat = await getById(updatedChats[0].id);
+  if (isError(updatedChat)) return updatedChat;
 
-export const prismaToModel = (chat: Chat) => ({
-  ...chat,
-  addMessage: addMessage(chat),
-  getMessages: getMessages(chat),
-  remove: remove(chat),
-  update: update(chat),
-});
+  return dbToModel(updatedChat);
+};
 
-export const getById = async (id: string) => {
+export const dbToModel = (chat: Chat) =>
+  Object.freeze({
+    ...chat,
+    addMessage: addMessage(chat),
+    getMessages: getMessages(chat),
+    destroy: destroy(chat),
+    update: update(chat),
+  } as const);
+
+export const getById = async (id: Chat['id']) => {
   const chat = await promiseMayFail(
-    prisma.chat
-      .findUnique({
-        where: { id },
-        include: {
-          messages: {
-            orderBy: {
-              createdAt: 'asc',
-            },
-          },
+    db.query.chatSchema.findFirst({
+      where: eq(chatSchema.id, id),
+      with: {
+        messages: {
+          orderBy: desc(messageSchema.createdAt),
         },
-      })
-      .then((c) => {
-        if (!c) return newError({ code: 'chatModel:notFound' });
-        return {
-          ...c,
-          messages: c.messages ? parseMessages(c.messages) : [],
-        };
-      }),
+      },
+    }),
     'chatModel:notFound',
   );
-
   if (isError(chat)) return chat;
   if (!chat) return newError({ code: 'chatModel:notFound' });
 
-  return prismaToModel(chat);
+  return dbToModel(chat);
 };

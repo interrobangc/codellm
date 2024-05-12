@@ -5,8 +5,7 @@
     "**/remix.config.js",
     "**/vite.config.js",
     "**/*.ts",
-    "**/*.tsx",
-    "**/prisma/**.js"
+    "**/*.tsx"
   ],
   "exclude": [
     "**/build/**",

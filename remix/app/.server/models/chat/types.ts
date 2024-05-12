@@ -1,3 +1,3 @@
-import type { prismaToModel } from './chatModel';
+import type { dbToModel } from './chatModel';
 
-export type ChatModel = Awaited<ReturnType<typeof prismaToModel>>;
+export type ChatModel = Awaited<ReturnType<typeof dbToModel>>;

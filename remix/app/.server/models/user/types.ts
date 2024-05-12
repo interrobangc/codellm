@@ -1,3 +1,3 @@
-import type { prismaToModel } from './userModel';
+import type { dbToModel } from './userModel';
 
-export type UserModel = Awaited<ReturnType<typeof prismaToModel>>;
+export type UserModel = Awaited<ReturnType<typeof dbToModel>>;
