@@ -1,9 +1,11 @@
-import useUser from '@remix/components/hooks/useUser';
 import { Form, Link } from '@remix-run/react';
 
-const Navbar = () => {
-  const { isAuthed, isVerified } = useUser();
+import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/remix';
 
+const Navbar = () => {
+  const user = useUser();
+
+  console.log('user', user);
   return (
     <nav className="navbar bg-base-100">
       <div className="navbar-start">
@@ -12,35 +14,20 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-end">
-        {isAuthed ? (
-          <>
-            {isVerified && (
-              <>
-                <Link
-                  to="/chat"
-                  prefetch="intent"
-                  className="btn btn-ghost btn-sm"
-                >
-                  Chat
-                </Link>
-                <Link
-                  to="/import"
-                  prefetch="intent"
-                  className="btn btn-ghost btn-sm"
-                >
-                  Import
-                </Link>
-              </>
-            )}
-            <Form method="post" action="/logout">
-              <button className="btn btn-ghost btn-sm">Logout</button>
-            </Form>
-          </>
-        ) : (
-          <Form method="post" action="/login">
+        <SignedIn>
+          <Link to="/chat" prefetch="intent" className="btn btn-ghost btn-sm">
+            Chat
+          </Link>
+          <Link to="/import" prefetch="intent" className="btn btn-ghost btn-sm">
+            Import
+          </Link>
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <Link to="/login">
             <button className="btn btn-ghost btn-sm">Login</button>
-          </Form>
-        )}
+          </Link>
+        </SignedOut>
       </div>
     </nav>
   );

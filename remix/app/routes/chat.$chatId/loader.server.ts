@@ -4,13 +4,13 @@ import { redirect } from '@remix-run/node';
 import { isError } from '@remix/.server/errors';
 import { getChat } from '@remix/.server/services/chat';
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  if (!params.chatId) throw redirect('/chat');
-  const { chatId } = params;
+export const loader = async (args: LoaderFunctionArgs) => {
+  if (!args.params.chatId) throw redirect('/chat');
+  const { chatId } = args.params;
 
   const currentChat = await getChat({
+    ...args,
     id: Number(chatId),
-    request,
   });
   if (!currentChat || isError(currentChat)) throw redirect('/');
 

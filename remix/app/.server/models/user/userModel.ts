@@ -1,6 +1,6 @@
 import type { ChatInsert, User, UserInsert } from '@remix/.server/db';
 import { isError, newError, promiseMayFail } from '@remix/.server/errors';
-import { db, chatSchema, userSchema, messageSchema } from '@remix/.server/db';
+import { db, userSchema } from '@remix/.server/db';
 import * as chatModel from '@remix/.server/models/chat/chatModel';
 
 export const ERRORS = {

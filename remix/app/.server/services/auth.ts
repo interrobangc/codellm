@@ -1,5 +1,5 @@
 import type { Auth0Profile } from 'remix-auth-auth0';
-import type { ServiceCommonParams } from './types';
+import type { ServiceCommonArgs } from './types';
 
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import { Authenticator } from 'remix-auth';
@@ -60,7 +60,7 @@ export const { commitSession, destroySession } = sessionStorage;
 
 export const isAuthenticated = () => auth.isAuthenticated;
 
-export const getSession = async ({ request }: ServiceCommonParams) => {
+export const getSession = async ({ request }: ServiceCommonArgs) => {
   if (!request?.headers.has('Cookie')) return null;
   const session = await sessionStorage.getSession(
     request.headers.get('Cookie'),
@@ -68,11 +68,11 @@ export const getSession = async ({ request }: ServiceCommonParams) => {
   return session;
 };
 
-export type LogoutParams = ServiceCommonParams & {
+export type LogoutArgs = ServiceCommonArgs & {
   returnToPath?: string;
 };
 
-export const getLogoutURL = ({ request, returnToPath = '/' }: LogoutParams) => {
+export const getLogoutURL = ({ request, returnToPath = '/' }: LogoutArgs) => {
   // Parse the request URL to get the origin and replace the path
   const url = new URL(request.url);
   const returnToURL = new URL(returnToPath, url.origin);
@@ -84,8 +84,8 @@ export const getLogoutURL = ({ request, returnToPath = '/' }: LogoutParams) => {
   return logoutURL.toString();
 };
 
-export const getLogoutOptions = async (params: ServiceCommonParams) => {
-  const session = await getSession(params);
+export const getLogoutOptions = async (args: ServiceCommonArgs) => {
+  const session = await getSession(args);
   if (!session) return newError({ code: 'auth:noSession' });
 
   return {
@@ -95,17 +95,17 @@ export const getLogoutOptions = async (params: ServiceCommonParams) => {
   };
 };
 
-export const logout = async (params: LogoutParams) => {
-  const logoutUrl = getLogoutURL(params);
-  const logoutOptions = await getLogoutOptions(params);
+export const logout = async (args: LogoutArgs) => {
+  const logoutUrl = getLogoutURL(args);
+  const logoutOptions = await getLogoutOptions(args);
   if (isError(logoutOptions)) throw redirect('/');
 
   throw redirect(logoutUrl, logoutOptions);
 };
 
-export const getAuthProfile = async ({ request }: ServiceCommonParams) => {
+export const getAuthProfile = async (args: ServiceCommonArgs) => {
   if (getConfig('user.userAutoLogin')) return { id: 'mock-user' };
-  const session = await getSession({ request });
+  const session = await getSession(args);
 
   if (!session) return null;
   return session.data.user;

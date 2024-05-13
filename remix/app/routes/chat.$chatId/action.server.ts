@@ -10,48 +10,43 @@ import {
 import { isError } from '@remix/.server/errors';
 import { Chat } from '@remix/.server/db';
 
-export type ChatActionParams = {
+export type ChatActionArgs = ActionFunctionArgs & {
   formData: FormData;
   id: Chat['id'];
-  request: Request;
 };
 
-export const sendChatAction = async ({
-  formData,
-  id,
-  request,
-}: ChatActionParams) => {
-  const message = formData.get('userMessage') as string;
+export const sendChatAction = async (args: ChatActionArgs) => {
+  const message = args.formData.get('userMessage') as string;
 
   // We don't want to wait because it will block the event stream
   // triggered revalidation if this action is locked in a loading state
-  sendChat({ id, message, request });
+  sendChat({ ...args, message });
 
   return null;
 };
 
-export const deleteChatAction = async (params: ChatActionParams) => {
-  await deleteChat(params);
-  const mostRecentChat = await getMostRecentChat(params);
+export const deleteChatAction = async (args: ChatActionArgs) => {
+  await deleteChat(args);
+  const mostRecentChat = await getMostRecentChat(args);
   if (isError(mostRecentChat)) throw mostRecentChat;
   if (mostRecentChat) throw redirect(`/chat/${mostRecentChat.id}`);
 
   throw redirect('/chat');
 };
 
-export const renameChat = (params: ChatActionParams) =>
+export const renameChat = (args: ChatActionArgs) =>
   updateChat({
-    ...params,
-    update: { name: params.formData.get('name') as string },
+    ...args,
+    update: { name: args.formData.get('name') as string },
   });
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
-  const { chatId } = params;
+export const action = async (args: ActionFunctionArgs) => {
+  const { chatId } = args.params;
   if (!chatId) return json({ error: 'Invalid chatId' }, { status: 400 });
 
-  const formData = await request.clone().formData();
+  const formData = await args.request.clone().formData();
   const intent = formData.get('intent');
-  const requestParams = { formData, id: Number(chatId), request };
+  const requestParams = { ...args, formData, id: Number(chatId) };
   switch (intent) {
     case 'deleteChat':
       return deleteChatAction(requestParams);

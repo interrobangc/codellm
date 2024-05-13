@@ -3,7 +3,7 @@ import type {
   AgentEmitterChannels,
   AgentHistoryItem,
 } from '@codellm/core';
-import type { ServiceCommonParams } from './types.js';
+import type { ServiceCommonArgs } from './types.js';
 
 import { EventEmitter } from 'events';
 import { remember } from '@epic-web/remember';
@@ -42,14 +42,13 @@ const eventStreamEmitter = remember(
 export const getEventStreamEmitter = () => eventStreamEmitter;
 
 // TODO: we're going to need channels for this eventually
-const onAgentEmit =
-  (chatId: User['id']) => async (params: AgentHistoryItem) => {
-    const chat = await chatModel.getById(chatId);
-    if (isError(chat)) return chat;
-    await chat.addMessage(params);
-    log('onAgentEmit emitting', 'debug', params);
-    eventStreamEmitter.emit(`agent:${chatId}`, params);
-  };
+const onAgentEmit = (chatId: User['id']) => async (args: AgentHistoryItem) => {
+  const chat = await chatModel.getById(chatId);
+  if (isError(chat)) return chat;
+  await chat.addMessage(args);
+  log('onAgentEmit emitting', 'debug', args);
+  eventStreamEmitter.emit(`agent:${chatId}`, args);
+};
 
 const onEmitListeners = (client: Agent, id: Chat['id']) =>
   channelsToForward.map((channel) => client.onEmit(channel, onAgentEmit(id)));
@@ -90,12 +89,12 @@ export const _getOrCreateClient = async (id: Chat['id']) => {
   return newLock;
 };
 
-export type ChatCommonParams = ServiceCommonParams & {
+export type ChatCommonArgs = ServiceCommonArgs & {
   id: Chat['id'];
 };
 
-export const createChat = async (params: ServiceCommonParams) => {
-  const user = await getValidatedUser(params);
+export const createChat = async (args: ServiceCommonArgs) => {
+  const user = await getValidatedUser(args);
   if (isError(user)) return user;
 
   const chat = await user.addChat({ name: 'new chat' });
@@ -108,7 +107,7 @@ export const createChat = async (params: ServiceCommonParams) => {
   return { client, ...chat };
 };
 
-export const getChat = async ({ id, request }: ChatCommonParams) => {
+export const getChat = async ({ id }: ChatCommonArgs) => {
   const chat = await chatModel.getById(id);
   if (isError(chat)) return chat;
 
@@ -118,26 +117,26 @@ export const getChat = async ({ id, request }: ChatCommonParams) => {
   return { client, ...chat };
 };
 
-export const deleteChat = async (params: ChatCommonParams) => {
-  const chat = await getChat(params);
+export const deleteChat = async (args: ChatCommonArgs) => {
+  const chat = await getChat(args);
   if (isError(chat)) return chat;
 
-  offEmitListeners(chat.client as Agent, params.id);
+  offEmitListeners(chat.client as Agent, args.id);
   await chat.destroy();
 };
 
-export const getChats = async (params: ServiceCommonParams) => {
-  const user = await getValidatedUser(params);
+export const getChats = async (args: ServiceCommonArgs) => {
+  const user = await getValidatedUser(args);
   if (isError(user)) return user;
 
   return user.getChats();
 };
 
-export type UpdateChatParams = ChatCommonParams & {
+export type UpdateChatArgs = ChatCommonArgs & {
   update: ChatUpdate;
 };
 
-export const updateChat = async ({ id, update }: UpdateChatParams) => {
+export const updateChat = async ({ id, update }: UpdateChatArgs) => {
   const chat = await chatModel.getById(id);
   if (isError(chat)) return chat;
 
@@ -146,8 +145,8 @@ export const updateChat = async ({ id, update }: UpdateChatParams) => {
   return updatedChat;
 };
 
-export const getMostRecentChat = async (params: ServiceCommonParams) => {
-  const user = await getValidatedUser(params);
+export const getMostRecentChat = async (args: ServiceCommonArgs) => {
+  const user = await getValidatedUser(args);
   if (isError(user)) return user;
 
   const chats = await user.getChats();
@@ -156,15 +155,15 @@ export const getMostRecentChat = async (params: ServiceCommonParams) => {
   return chats[0];
 };
 
-export type SendChatParams = ChatCommonParams & {
+export type SendChatArgs = ChatCommonArgs & {
   message: string;
 };
 
-export const sendChat = async (params: SendChatParams) => {
-  const chat = await getChat(params);
+export const sendChat = async (args: SendChatArgs) => {
+  const chat = await getChat(args);
   if (isError(chat)) return chat;
 
-  await updateChat({ ...params, update: { isLoading: true } });
-  await chat.client.chat(params.message);
-  await updateChat({ ...params, update: { isLoading: false } });
+  await updateChat({ ...args, update: { isLoading: true } });
+  await chat.client.chat(args.message);
+  await updateChat({ ...args, update: { isLoading: false } });
 };

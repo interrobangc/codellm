@@ -1,23 +1,15 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
+import { getAuth, rootAuthLoader } from '@clerk/remix/ssr.server';
+
 import { getUser, validateUser } from '@remix/.server/services/user';
 import { initClient } from '@remix/.server/db/db';
 import { isError } from '@remix/.server/errors';
-import { noAuthPayload } from '@remix/components/AuthProvider';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await initClient();
-  const user = await getUser({ request });
-  if (isError(user)) return noAuthPayload;
-
-  const validatedUser = validateUser(user);
-  const isVerified = !isError(validatedUser);
-
-  return {
-    isAuthed: true,
-    isVerified,
-    user,
-  };
-};
+export const loader = async (args: LoaderFunctionArgs) =>
+  rootAuthLoader(args, (cbArgs) => {
+    console.log('cbArgs', cbArgs);
+    return {};
+  });
 
 export type RootLoader = typeof loader;
 

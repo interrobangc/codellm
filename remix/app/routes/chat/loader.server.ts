@@ -3,12 +3,12 @@ import { redirect } from '@remix-run/node';
 import { getChat, getChats } from '@remix/.server/services/chat';
 import { isError } from '@remix/.server/errors';
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const chats = await getChats({ request });
+export const loader = async (args: LoaderFunctionArgs) => {
+  const chats = await getChats(args);
   if (isError(chats)) throw redirect('/');
-  if (!params.chatId) return { chats };
+  if (!args.params.chatId) return { chats };
 
-  const chat = await getChat({ id: Number(params.chatId), request });
+  const chat = await getChat({ id: Number(args.params.chatId), ...args });
   if (isError(chat)) throw redirect('/');
   return { chat, chats };
 };

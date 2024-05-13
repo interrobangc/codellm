@@ -1,5 +1,6 @@
 import type { MetaFunction } from '@remix-run/node';
 
+import { useUser } from '@clerk/remix';
 import ContentWrapper from '@remix/components/common/ContentWrapper';
 
 export const meta: MetaFunction = () => {
@@ -10,6 +11,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const user = useUser();
+
+  console.log('Index user', user);
   // const isLoading = Boolean(transition.action?.type === 'idle');
   return (
     <div className="pl-5 pr-5">
