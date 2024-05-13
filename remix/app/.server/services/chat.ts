@@ -75,7 +75,11 @@ export const _getOrCreateClient = async (id: Chat['id']) => {
   if (lock) return lock;
   const newLock = (async () => {
     const newClient = await newAgent(getConfig('codellm'), id.toString());
-    if (isError(newClient)) throw newClient;
+    if (isError(newClient)) {
+      // eslint-disable-next-line no-console
+      console.dir(newClient, { depth: null });
+      throw newClient;
+    }
     if (!newClient) throw newError({ code: 'chatService:noChat' });
 
     clients.set(id, newClient);

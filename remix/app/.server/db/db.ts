@@ -13,7 +13,7 @@ export const client = remember(
 
 // { schema } is used for relational queries
 export const db = remember('drizzle', () =>
-  drizzle(client, { schema, logger: true }),
+  drizzle(client, { schema, logger: false }),
 );
 
 export const initClient = () => {
