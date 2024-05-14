@@ -1,3 +1,6 @@
+import type { ToolModule } from '@/tool/types.js';
+
+import isString from 'lodash/isString.js';
 import { promiseMayFail } from '@/error/index.js';
 
 /**
@@ -7,7 +10,12 @@ import { promiseMayFail } from '@/error/index.js';
  *
  * @returns {Promise<unknown | CodeLlmErrorType>}The tool module or an error
  */
-export const importTool = async (moduleName: string) =>
-  promiseMayFail(import(moduleName), 'tool:import', {
-    moduleName,
-  });
+export const importTool = async (module: ToolModule) => {
+  if (isString(module)) {
+    return promiseMayFail(import(module), 'tool:import', {
+      moduleName: module,
+    });
+  }
+
+  return module;
+};

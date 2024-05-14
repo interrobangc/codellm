@@ -36,15 +36,6 @@ export type ToolImportReturn =
 export const toolConfigSchema = z.record(z.unknown());
 export type ToolConfig = z.infer<typeof toolConfigSchema>;
 
-export const toolConfigItemSchema = z.object({
-  config: toolConfigSchema.optional(),
-  module: z.string(),
-});
-export type ToolConfigItem = z.infer<typeof toolConfigItemSchema>;
-
-export const toolConfigsSchema = z.record(toolConfigItemSchema);
-export type ToolConfigs = z.infer<typeof toolConfigsSchema>;
-
 export const toolDescriptionParamsTypeSchema = z.enum([
   'array',
   'bool',
@@ -82,3 +73,22 @@ export const toolSchema = z.object({
 export type Tool = z.infer<typeof toolSchema>;
 
 export type Tools = Map<string, Tool>;
+
+export const toolModuleSchema = z.union([
+  z.string(),
+  z.object({
+    newTool: z
+      .function(z.tuple([z.string(), toolConfigSchema]))
+      .returns(z.promise(toolSchema)),
+  }),
+]);
+export type ToolModule = z.infer<typeof toolModuleSchema>;
+
+export const toolConfigItemSchema = z.object({
+  config: toolConfigSchema.optional(),
+  module: toolModuleSchema,
+});
+export type ToolConfigItem = z.infer<typeof toolConfigItemSchema>;
+
+export const toolConfigsSchema = z.record(toolConfigItemSchema);
+export type ToolConfigs = z.infer<typeof toolConfigsSchema>;

@@ -11,6 +11,7 @@ import { log } from '@codellm/core';
 
 export const newClient = async ({ config, model }: ProviderGetClientParams) => {
   const client = new Anthropic({ apiKey: (config as AnthropicConfig).apiKey });
+
   return {
     chat: async (messages: MessageList) => {
       const request = {
@@ -24,7 +25,7 @@ export const newClient = async ({ config, model }: ProviderGetClientParams) => {
       // @ts-expect-error - `messages` is not typed correctly yet
       const response = await client.messages.create(request);
 
-      return response?.content[0]?.text;
+      return response?.content[0]?.text || '';
     },
     initModel: async () => {
       // log('mistral availableModels', 'debug', {

@@ -20,6 +20,9 @@ import { isError, newError } from '@remix/.server/errors';
 import { getValidatedUser, validateUser } from './user.js';
 
 export const ERRORS = {
+  'chatService:newAgent': {
+    message: 'Error creating agent',
+  },
   'chatService:noChat': {
     message: 'No chat found',
   },
@@ -78,7 +81,10 @@ export const _getOrCreateClient = async (id: Chat['id']) => {
     if (isError(newClient)) {
       // eslint-disable-next-line no-console
       console.dir(newClient, { depth: null });
-      throw newClient;
+      throw newError({
+        code: 'chatService:newAgent',
+        meta: { newClient },
+      });
     }
     if (!newClient) throw newError({ code: 'chatService:noChat' });
 

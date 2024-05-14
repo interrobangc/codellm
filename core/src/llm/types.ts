@@ -45,7 +45,7 @@ export type LlmProviderClient = z.infer<typeof llmProviderClientSchema>;
 export const providerConfigSchema = z.record(z.unknown());
 export type ProviderConfig = z.infer<typeof providerConfigSchema>;
 
-export const providerModule = z.union([
+export const providerModuleSchema = z.union([
   z.string(),
   z.object({
     newClient: z
@@ -54,11 +54,11 @@ export const providerModule = z.union([
   }),
 ]);
 
-export type ProviderModule = z.infer<typeof providerModule>;
+export type ProviderModule = z.infer<typeof providerModuleSchema>;
 
 export const providerConfigItemSchema = z.object({
   config: providerConfigSchema,
-  module: providerModule,
+  module: providerModuleSchema,
 });
 export type ProviderConfigItem = z.infer<typeof providerConfigItemSchema>;
 

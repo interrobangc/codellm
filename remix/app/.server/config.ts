@@ -1,4 +1,34 @@
-import type { LogLevel, PartialConfig } from '@codellm/core';
+import type {
+  LogLevel,
+  PartialConfig,
+  ProviderModule,
+  ToolModule,
+} from '@codellm/core';
+
+import * as providerAnthropic from '@codellm/provider-anthropic';
+import * as providerLangchain from '@codellm/provider-langchain';
+import * as providerMistral from '@codellm/provider-mistral';
+import * as providerOllama from '@codellm/provider-ollama';
+import * as providerOpenai from '@codellm/provider-openai';
+
+const anthropic = providerAnthropic as ProviderModule;
+const langchain = providerLangchain as ProviderModule;
+const mistral = providerMistral as ProviderModule;
+const ollama = providerOllama as ProviderModule;
+// @ts-expect-error - not fighting with module types for now
+const openai = providerOpenai as ProviderModule;
+
+import * as toolCodeElementsQuery from '@codellm/tool-code-elements-query';
+import * as toolCodeSummaryQuery from '@codellm/tool-code-summary-query';
+import * as toolDocSummaryQuery from '@codellm/tool-doc-summary-query';
+import * as toolFileReader from '@codellm/tool-file-reader';
+import * as toolProjectGlob from '@codellm/tool-project-glob';
+
+const codeElementsQuery = toolCodeElementsQuery as ToolModule;
+const codeSummaryQuery = toolCodeSummaryQuery as ToolModule;
+const docSummaryQuery = toolDocSummaryQuery as ToolModule;
+const fileReader = toolFileReader as ToolModule;
+const projectGlob = toolProjectGlob as ToolModule;
 
 import get from 'lodash/get';
 import { remember } from '@epic-web/remember';
@@ -42,7 +72,7 @@ export const getCodellmConfig = () =>
         config: {
           apiKey: process.env.ANTHROPIC_API_KEY,
         },
-        module: '@codellm/provider-anthropic',
+        module: anthropic,
       },
       langchain: {
         config: {
@@ -50,25 +80,25 @@ export const getCodellmConfig = () =>
           config: {},
           module: '',
         },
-        module: '@codellm/provider-langchain',
+        module: langchain,
       },
       mistral: {
         config: {
           apiKey: process.env.MISTRAL_API_KEY,
         },
-        module: '@codellm/provider-mistral',
+        module: mistral,
       },
       ollama: {
         config: {
           host: process.env.OLLAMA_HOST ?? 'http://localhost:11434',
         },
-        module: '@codellm/provider-ollama',
+        module: ollama,
       },
       openai: {
         config: {
           apiKey: process.env.OPENAI_API_KEY,
         },
-        module: '@codellm/provider-openai',
+        module: openai,
       },
     },
     tools: {
@@ -77,30 +107,30 @@ export const getCodellmConfig = () =>
           vectorDbCollection: 'codeElements',
           vectorDbName: 'chromadb',
         },
-        module: '@codellm/tool-code-elements-query',
+        module: codeElementsQuery,
       },
       codeSummaryQuery: {
         config: {
           vectorDbCollection: 'codeSummary',
           vectorDbName: 'chromadb',
         },
-        module: '@codellm/tool-code-summary-query',
+        module: codeSummaryQuery,
       },
       docSummaryQuery: {
         config: {
           vectorDbCollection: 'docSummary',
           vectorDbName: 'chromadb',
         },
-        module: '@codellm/tool-doc-summary-query',
+        module: docSummaryQuery,
       },
       fileReader: {
         config: {
           maxFileCount: 10,
         },
-        module: '@codellm/tool-file-reader',
+        module: fileReader,
       },
       projectGlob: {
-        module: '@codellm/tool-project-glob',
+        module: projectGlob,
       },
     },
   }) as PartialConfig;
@@ -131,6 +161,7 @@ export const initConfig = () => {
         user: getUserConfig(),
       }) as Config,
   );
+  console.dir(config, { depth: null });
 };
 
 export const getConfig = (key: string | undefined) => {

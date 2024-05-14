@@ -1,5 +1,6 @@
 import type { CodeLlmErrorParams, ErrorCodes } from '@/.';
 
+import { log } from '@/log/index.js';
 import { CODE_LLM_ERRORS } from './constants.js';
 import { getConfig } from '@/config/index.js';
 
@@ -138,6 +139,7 @@ export const promiseMapMayFail = async <
 >(
   map: Promise<T>[],
   code: keyof TCodes,
+  meta: CodeLlmErrorParams<TCodes>['meta'] = {},
 ) => {
   const resolved = await Promise.allSettled(map);
   const errors = resolved.filter(
@@ -148,7 +150,7 @@ export const promiseMapMayFail = async <
   if (errors.length) {
     return new CodeLlmError<TCodes>({
       code,
-      meta: { errors, results },
+      meta: { ...meta, errors, results },
     });
   }
 

@@ -20,7 +20,7 @@ export const initLlmClients = async (
     return llmClient;
   });
 
-  return promiseMapMayFail(llmsMap, 'llm:initClients');
+  return promiseMapMayFail(llmsMap, 'llm:initClients', { servicesToInit });
 };
 
 export const initLlmModels = async (servicesToInit: Service[]) => {
