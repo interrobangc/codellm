@@ -33,6 +33,7 @@
     "@remix-sse/server": "^1.0.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.10",
+    "globby": "^14.0.1",
     "install": "^0.13.0",
     "isbot": "^4.1.0",
     "lodash": "^4.17.21",
