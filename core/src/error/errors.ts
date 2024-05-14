@@ -1,6 +1,5 @@
 import type { CodeLlmErrorParams, ErrorCodes } from '@/.';
 
-import { log } from '@/log/index.js';
 import { CODE_LLM_ERRORS } from './constants.js';
 import { getConfig } from '@/config/index.js';
 
