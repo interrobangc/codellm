@@ -15,7 +15,7 @@ const anthropic = providerAnthropic as ProviderModule;
 const langchain = providerLangchain as ProviderModule;
 const mistral = providerMistral as ProviderModule;
 const ollama = providerOllama as ProviderModule;
-// @ts-expect-error - not fighting with module types for now
+// @ts-expect-error - not fighting with weird type error for now
 const openai = providerOpenai as ProviderModule;
 
 import * as toolCodeElementsQuery from '@codellm/tool-code-elements-query';
